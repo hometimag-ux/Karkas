@@ -1178,132 +1178,187 @@ body.mobile-preview .footer-col h4:after {
     filter: brightness(1.05);
 }
 
-/* ===== МОДАЛЬНОЕ ОКНО БЫСТРОГО ПРОСМОТРА ===== */
-.quick-view-modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.8);
-    backdrop-filter: blur(8px);
-    justify-content: center;
-    align-items: center;
-    z-index: 2000;
+/* ===== ГАЛЕРЕЯ В БЫСТРОМ ПРОСМОТРЕ ===== */
+.quick-view-left {
+    flex: 1;
 }
 
-.quick-view-modal.active {
-    display: flex;
-}
-
-.quick-view-content {
-    background: white;
-    border-radius: 2rem;
-    width: 90%;
-    max-width: 900px;
-    max-height: 85vh;
-    overflow-y: auto;
-    position: relative;
-    animation: modalFadeIn 0.3s ease;
-}
-
-@keyframes modalFadeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.9);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-.quick-view-close {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: white;
-    border: none;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    font-size: 1.2rem;
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    z-index: 10;
-}
-
-.quick-view-body {
+.quick-view-gallery {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
-    padding: 2rem;
+    gap: 1rem;
 }
 
-@media (min-width: 768px) {
-    .quick-view-body {
-        flex-direction: row;
-    }
-}
-
-.quick-view-image {
-    flex: 1;
-    text-align: center;
+.gallery-main {
     background: #f8fafc;
     border-radius: 1.5rem;
-    padding: 2rem;
+    overflow: hidden;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.quick-view-image img {
-    max-width: 100%;
-    font-size: 8rem;
+.gallery-main img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
-.quick-view-info {
-    flex: 1;
+.gallery-thumbs {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
 }
 
-.quick-view-info h3 {
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
+.gallery-thumb {
+    width: 70px;
+    height: 70px;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s;
+    background: #f1f5f9;
 }
 
-.quick-view-info .category {
-    color: #64748b;
-    font-size: 0.85rem;
-    margin-bottom: 0.5rem;
+.gallery-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
-.quick-view-info .prices {
+.gallery-thumb.active {
+    border-color: #1f6e8c;
+}
+
+.gallery-thumb:hover {
+    transform: scale(1.05);
+}
+
+/* ===== ХАРАКТЕРИСТИКИ ===== */
+.quick-view-characteristics {
     margin: 1rem 0;
+    padding: 1rem;
+    background: #f8fafc;
+    border-radius: 1rem;
 }
 
-.quick-view-info .current-price {
-    font-size: 2rem;
+.quick-view-characteristics h4 {
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
 }
 
-.quick-view-info .sizes {
+.chars-table {
+    width: 100%;
+    font-size: 0.8rem;
+}
+
+.chars-table td {
+    padding: 0.25rem 0;
+}
+
+.chars-table td:first-child {
+    font-weight: 600;
+    color: #475569;
+    width: 100px;
+}
+
+/* ===== ГАБАРИТЫ УПАКОВКИ ===== */
+.quick-view-packaging {
     margin: 1rem 0;
+    padding: 1rem;
+    background: #f8fafc;
+    border-radius: 1rem;
 }
 
-.size-badge {
-    display: inline-block;
+.quick-view-packaging h4 {
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+}
+
+.packaging-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.packaging-grid div {
+    font-size: 0.8rem;
+}
+
+/* ===== ЯРЛЫКИ ===== */
+.quick-view-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0.5rem 0;
+}
+
+.product-tag {
+    background: #e2e8f0;
+    padding: 0.2rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    color: #475569;
+}
+
+/* ===== РАЗМЕРЫ ===== */
+.product-sizes-info {
+    margin: 0.75rem 0;
+}
+
+.sizes-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.size-option {
     background: #f1f5f9;
     padding: 0.25rem 0.75rem;
     border-radius: 20px;
     font-size: 0.75rem;
-    margin: 0.25rem;
+    cursor: pointer;
+    transition: all 0.2s;
 }
 
-.quick-view-add {
-    width: 100%;
-    background: linear-gradient(135deg, #1f6e8c, #0a5a75);
+.size-option:hover {
+    background: #1f6e8c;
     color: white;
-    border: none;
-    padding: 0.75rem;
-    border-radius: 40px;
-    font-weight: 600;
-    cursor: pointer;
-    margin-top: 1rem;
+}
+
+/* ===== ЦЕНЫ В БЫСТРОМ ПРОСМОТРЕ ===== */
+.product-prices.quick {
+    margin: 1rem 0;
+}
+
+.reviews-count {
+    font-size: 0.7rem;
+    color: #94a3b8;
+    margin-left: 0.5rem;
+}
+
+/* ===== АДАПТАЦИЯ МОДАЛЬНОГО ОКНА ===== */
+@media (min-width: 768px) {
+    .quick-view-body {
+        flex-direction: row !important;
+    }
+    .quick-view-left, .quick-view-right {
+        flex: 1;
+    }
+}
+
+@media (max-width: 767px) {
+    .quick-view-body {
+        flex-direction: column;
+    }
+    .gallery-thumb {
+        width: 50px;
+        height: 50px;
+    }
+    .chars-table td:first-child {
+        width: 80px;
+    }
 }
