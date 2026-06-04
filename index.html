@@ -134,9 +134,17 @@
             <div class="offer-card"><div class="icon">💎</div><h3>Подарочный набор</h3><p>При первом заказе</p><div class="price">Бесплатно</div></div>
         </div>
 
-        <!-- Товары -->
-        <h2 class="section-title">🌟 Аква-коллекция 🌟</h2>
-        <div class="products-grid" id="productsGrid"></div>
+       <!-- Виджет каталога товаров -->
+<div id="productCatalogWidgetContainer"></div>
+
+<script>
+    // Загрузка виджета
+    fetch('/widgets/product-catalog.html')
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('productCatalogWidgetContainer').innerHTML = html;
+        });
+</script>
 
         <!-- Преимущества -->
         <div class="benefits">
