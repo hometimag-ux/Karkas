@@ -191,7 +191,6 @@ function openQuickView(id) {
     const chars = product.characteristics || {};
     const pack = product.packaging || {};
 
-       
     // Размеры
     let sizesList = [];
     if (product.sizes_data && product.sizes_data.length > 0) {
@@ -346,87 +345,13 @@ function openQuickView(id) {
         </div>
     `;
     
-       const oldModal = document.getElementById('quickViewModal');
+    const oldModal = document.getElementById('quickViewModal');
     if (oldModal) oldModal.remove();
     document.body.insertAdjacentHTML('beforeend', modalHtml);
     document.body.style.overflow = 'hidden';
     
-    // ==== ИНИЦИАЛИЗАЦИЯ СОБЫТИЙ ПОСЛЕ СОЗДАНИЯ МОДАЛКИ ====
-    
-    // Обработчик закрытия
-    const closeBtn = document.querySelector('#quickViewModal .quick-view-close');
-    if (closeBtn) {
-        closeBtn.onclick = () => closeQuickView();
-    }
-    
-    // Размеры
-    const sizeBtns = document.querySelectorAll('#quickViewModal .size-btn');
-    sizeBtns.forEach(btn => {
-        btn.onclick = function() {
-            sizeBtns.forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-        };
-    });
-    
-    // Цвета
-    const swatches = document.querySelectorAll('#quickViewModal .swatch');
-    swatches.forEach(sw => {
-        sw.onclick = function() {
-            swatches.forEach(s => s.classList.remove('active'));
-            this.classList.add('active');
-        };
-    });
-    
-    // Табы
-    const tabBtns = document.querySelectorAll('#quickViewModal .tab-btn');
-    const panes = document.querySelectorAll('#quickViewModal .tab-pane');
-    tabBtns.forEach(btn => {
-        btn.onclick = () => {
-            const tabId = btn.getAttribute('data-tab');
-            tabBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            panes.forEach(p => p.classList.remove('active'));
-            const activePane = document.getElementById(tabId);
-            if (activePane) activePane.classList.add('active');
-        };
-    });
-    
-    // Кнопка "В корзину"
-    const buyBtn = document.getElementById('modalBuyBtn');
-    if (buyBtn) {
-        buyBtn.onclick = () => {
-            addToCartById(product.id);
-            closeQuickView();
-        };
-    }
-    
-    // Быстрый заказ
-    const oneClickBtn = document.getElementById('modalOneClickBtn');
-    if (oneClickBtn) {
-        oneClickBtn.onclick = () => showToast('📞 Оставьте номер телефона — менеджер перезвонит через 5 минут');
-    }
-    
-    // Лид-магнит
-    const leadBtn = document.getElementById('modalLeadMagnetBtn');
-    if (leadBtn) {
-        leadBtn.onclick = () => showToast('📧 Чек-лист примерки отправлен на ваш email');
-    }
-    
-    // B2B кнопка в табе
-    const b2bBtn = document.getElementById('modalB2bBtn');
-    if (b2bBtn) {
-        b2bBtn.onclick = () => showToast('📩 Запрос для B2B принят. Подготовим КП с ценами от 5 шт');
-    }
-    
-    // Корпоративная кнопка
-    const corpBtn = document.getElementById('modalCorpBtn');
-    if (corpBtn) {
-        corpBtn.onclick = () => showToast('📩 Свяжитесь с B2B-отделом: b2b@murano-apparel.ru');
-    }
-}
-
-
     // ==== ИНИЦИАЛИЗАЦИЯ СОБЫТИЙ ====
+    
     // Закрытие
     const closeBtn = document.querySelector('#quickViewModal .quick-view-close');
     if (closeBtn) closeBtn.onclick = () => closeQuickView();
@@ -481,7 +406,6 @@ function openQuickView(id) {
     const corpBtn = document.getElementById('modalCorpBtn');
     if (corpBtn) corpBtn.onclick = () => showToast('📩 Свяжитесь с B2B-отделом: b2b@murano-apparel.ru');
 }
-
 // ===== КОРЗИНА =====
 function addToCartById(id) {
     const product = allProducts.find(p => p.id === id);
