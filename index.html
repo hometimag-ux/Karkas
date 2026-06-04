@@ -10,12 +10,32 @@
 </head>
 <body>
 
+<!-- ===== ВРЕМЕННАЯ ПАНЕЛЬ ПЕРЕКЛЮЧЕНИЯ ВИДА (СВЕРХУ) ===== -->
+<div class="view-switcher-top">
+    <span>🔍 Режим просмотра:</span>
+    <button id="desktopViewBtn" class="active">💻 Десктоп</button>
+    <button id="mobileViewBtn">📱 Мобильный</button>
+    <span class="info-badge">⚡ Временно, будет удалено</span>
+</div>
+
 <!-- Анимированный фон -->
 <div class="animated-bg">
     <div class="gradient-orb orb-1"></div>
     <div class="gradient-orb orb-2"></div>
     <div class="gradient-orb orb-3"></div>
     <div class="gradient-orb orb-4"></div>
+</div>
+
+<!-- ===== ВИДЖЕТ: МАСКОТ (КАПЕЛЬКА) ===== -->
+<div class="mascot" id="mascot">
+    <div class="mascot-icon">💧</div>
+    <div class="mascot-bubble" id="mascotBubble">Привет! Я Капля 💙</div>
+</div>
+
+<!-- ===== ВИДЖЕТ: СНЕЙК-БАР АКЦИЙ (СКИДКА 15%) ===== -->
+<div class="snackbar" id="snackbar">
+    <span>🎉 Скидка 15% на первый заказ!</span>
+    <button id="closeSnackbar">✕</button>
 </div>
 
 <header>
@@ -175,12 +195,6 @@
         </div>
     </div>
 </footer>
-
-<!-- Временная панель переключения вида -->
-<div class="view-switcher">
-    <button id="desktopViewBtn" class="active">💻 Десктоп</button>
-    <button id="mobileViewBtn">📱 Мобильный</button>
-</div>
 
 <script src="js/script.js"></script>
 </body>
