@@ -190,6 +190,12 @@ function openQuickView(id) {
     const img = product.images && product.images.length > 0 ? product.images[0] : null;
     const chars = product.characteristics || {};
     const pack = product.packaging || {};
+
+    // Обработчик закрытия
+    const closeBtn = document.querySelector('#quickViewModal .quick-view-close');
+    if (closeBtn) {
+        closeBtn.onclick = () => closeQuickView();
+    }
     
     // Размеры
     let sizesList = [];
