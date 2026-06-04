@@ -7,13 +7,13 @@
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: #0f1115;
-  color: #e1e3e6;
+  background: linear-gradient(135deg, #e8f5e9 0%, #e0f2f1 25%, #b2dfdb 50%, #80cbc4 75%, #4db6ac 100%);
+  color: #004d40;
   overflow-x: hidden;
   min-height: 100vh;
 }
 
-/* ===== АНИМИРОВАННЫЙ ФОН (ТЁМНАЯ ВЕРСИЯ) ===== */
+/* ===== АНИМИРОВАННЫЙ ФОН ===== */
 .animated-bg {
   position: fixed;
   top: 0;
@@ -29,20 +29,19 @@ body {
   border-radius: 50%;
   filter: blur(100px);
   animation: floatOrb 25s infinite ease-in-out;
-  opacity: 0.4;
 }
 
 @keyframes floatOrb {
-  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
-  25% { transform: translate(15%, -10%) scale(1.2); opacity: 0.5; }
-  50% { transform: translate(-10%, 15%) scale(0.9); opacity: 0.2; }
-  75% { transform: translate(10%, 10%) scale(1.1); opacity: 0.4; }
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.6; }
+  25% { transform: translate(15%, -10%) scale(1.2); opacity: 0.8; }
+  50% { transform: translate(-10%, 15%) scale(0.9); opacity: 0.5; }
+  75% { transform: translate(10%, 10%) scale(1.1); opacity: 0.7; }
 }
 
-.orb-1 { width: 500px; height: 500px; background: radial-gradient(circle, #6366f1, #8b5cf6); top: -200px; left: -200px; }
-.orb-2 { width: 450px; height: 450px; background: radial-gradient(circle, #8b5cf6, #a855f7); bottom: -150px; right: -150px; animation-delay: 5s; }
-.orb-3 { width: 350px; height: 350px; background: radial-gradient(circle, #4f46e5, #6366f1); top: 40%; left: 30%; animation-delay: 10s; }
-.orb-4 { width: 400px; height: 400px; background: radial-gradient(circle, #a855f7, #7c3aed); bottom: 20%; right: 15%; animation-delay: 15s; }
+.orb-1 { width: 500px; height: 500px; background: radial-gradient(circle, #80cbc4, #4db6ac); top: -200px; left: -200px; }
+.orb-2 { width: 450px; height: 450px; background: radial-gradient(circle, #4db6ac, #26a69a); bottom: -150px; right: -150px; animation-delay: 5s; }
+.orb-3 { width: 350px; height: 350px; background: radial-gradient(circle, #b2dfdb, #80cbc4); top: 40%; left: 30%; animation-delay: 10s; }
+.orb-4 { width: 400px; height: 400px; background: radial-gradient(circle, #26a69a, #00897b); bottom: 20%; right: 15%; animation-delay: 15s; }
 
 /* ===== КОНТЕЙНЕР ===== */
 .container {
@@ -56,8 +55,8 @@ body {
 /* ===== HEADER ===== */
 header {
   backdrop-filter: blur(20px);
-  background: rgba(26, 29, 36, 0.8);
-  border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+  background: rgba(255,255,255,0.5);
+  border-bottom: 1px solid rgba(77,182,172,0.3);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -81,7 +80,6 @@ header {
 .logo-icon {
   font-size: 2rem;
   animation: dropBounce 2s ease-in-out infinite;
-  filter: drop-shadow(0 0 5px rgba(99,102,241,0.5));
 }
 
 @keyframes dropBounce {
@@ -91,7 +89,7 @@ header {
 
 .logo h1 {
   font-size: 1.6rem;
-  background: linear-gradient(135deg, #fff, #cbd5e1);
+  background: linear-gradient(135deg, #00897b, #4db6ac, #80cbc4);
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
@@ -100,13 +98,13 @@ header {
 
 /* ===== РОЛЬ-ПЕРЕКЛЮЧАТЕЛЬ ===== */
 .role-switch {
-  background: rgba(26, 29, 36, 0.9);
+  background: rgba(77,182,172,0.15);
   backdrop-filter: blur(10px);
   border-radius: 9999px;
   padding: 0.25rem;
   display: flex;
   gap: 0.25rem;
-  border: 1px solid rgba(139, 92, 246, 0.3);
+  border: 1px solid rgba(77,182,172,0.4);
 }
 
 .role-btn {
@@ -117,13 +115,13 @@ header {
   font-weight: 700;
   transition: all 0.3s;
   background: transparent;
-  color: #e1e3e6;
+  color: #004d40;
 }
 
 .role-btn.active {
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  background: linear-gradient(135deg, #4db6ac, #00897b);
   color: white;
-  box-shadow: 0 5px 15px rgba(99,102,241,0.3);
+  box-shadow: 0 5px 15px rgba(77,182,172,0.3);
 }
 
 /* ===== ФИШКА 1: MASCOT (ТАЛИСМАН) ===== */
@@ -134,11 +132,6 @@ header {
   cursor: pointer;
   z-index: 150;
   animation: mascotFloat 3s ease-in-out infinite;
-  background: rgba(26, 29, 36, 0.8);
-  backdrop-filter: blur(10px);
-  border-radius: 50%;
-  padding: 0.5rem;
-  border: 1px solid rgba(139, 92, 246, 0.3);
 }
 
 @keyframes mascotFloat {
@@ -148,17 +141,16 @@ header {
 
 .mascot-bubble {
   position: absolute;
-  bottom: 70px;
+  bottom: 60px;
   left: 50px;
-  background: #1a1d24;
+  background: white;
   padding: 0.75rem 1rem;
   border-radius: 1.5rem;
   font-size: 0.8rem;
   font-weight: 600;
-  color: #e1e3e6;
+  color: #00897b;
   white-space: nowrap;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-  border: 1px solid rgba(139, 92, 246, 0.3);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
   opacity: 0;
   transition: opacity 0.3s;
   pointer-events: none;
@@ -175,13 +167,12 @@ header {
 }
 
 .parallax-card {
-  background: rgba(26, 29, 36, 0.7);
+  background: rgba(255,255,255,0.7);
   backdrop-filter: blur(10px);
   border-radius: 2rem;
   padding: 2rem;
   transition: transform 0.2s;
   text-align: center;
-  border: 1px solid rgba(139, 92, 246, 0.2);
 }
 
 /* ===== ФИШКА 3: СКРОЛЛ-ТРИГГЕР АНИМАЦИИ ===== */
@@ -205,19 +196,18 @@ header {
 }
 
 .offer-card {
-  background: rgba(26, 29, 36, 0.6);
+  background: rgba(255,255,255,0.6);
   backdrop-filter: blur(10px);
   border-radius: 1.5rem;
   padding: 1.5rem;
   text-align: center;
-  border: 1px solid rgba(139, 92, 246, 0.2);
+  border: 1px solid rgba(77,182,172,0.3);
   transition: all 0.3s;
 }
 
 .offer-card:hover {
   transform: translateY(-8px);
-  background: rgba(26, 29, 36, 0.9);
-  border-color: rgba(139, 92, 246, 0.5);
+  background: rgba(255,255,255,0.8);
 }
 
 /* ===== ФИШКА 4: ГОЛОСОВОЙ ПОИСК ===== */
@@ -225,10 +215,9 @@ header {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: rgba(26, 29, 36, 0.8);
+  background: rgba(255,255,255,0.8);
   border-radius: 2rem;
   padding: 0.3rem 0.8rem;
-  border: 1px solid rgba(139, 92, 246, 0.3);
 }
 
 .voice-btn {
@@ -237,12 +226,11 @@ header {
   font-size: 1.2rem;
   cursor: pointer;
   transition: all 0.3s;
-  color: #e1e3e6;
 }
 
 .voice-btn.listening {
   animation: voicePulse 1s infinite;
-  color: #8b5cf6;
+  color: #00897b;
 }
 
 @keyframes voicePulse {
@@ -259,45 +247,34 @@ header {
 }
 
 .product-card {
-  background: rgba(26, 29, 36, 0.7);
+  background: rgba(255,255,255,0.7);
   backdrop-filter: blur(10px);
   border-radius: 2rem;
   overflow: hidden;
   transition: all 0.4s;
   cursor: pointer;
-  border: 1px solid rgba(139, 92, 246, 0.2);
+  border: 1px solid rgba(77,182,172,0.2);
 }
 
 .product-card:hover {
   transform: translateY(-10px) scale(1.02);
-  box-shadow: 0 30px 40px rgba(99,102,241,0.2);
-  border-color: rgba(139, 92, 246, 0.6);
+  box-shadow: 0 30px 40px rgba(77,182,172,0.2);
 }
 
 .product-img {
   padding: 2rem;
   text-align: center;
   font-size: 4rem;
-  background: rgba(139, 92, 246, 0.05);
-}
-
-.product-info {
-  padding: 1.5rem;
-}
-
-.product-info h3 {
-  font-size: 1.25rem;
-  font-weight: 600;
+  background: rgba(77,182,172,0.1);
 }
 
 /* ===== ЛИД-МАГНИТЫ ===== */
 .lead-magnets {
-  background: rgba(26, 29, 36, 0.5);
+  background: rgba(77,182,172,0.15);
   border-radius: 3rem;
   padding: 3rem 2rem;
   margin: 3rem 0;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(139, 92, 246, 0.2);
 }
 
 .magnets-grid {
@@ -308,20 +285,18 @@ header {
 }
 
 .magnet-item {
-  background: rgba(26, 29, 36, 0.7);
+  background: rgba(255,255,255,0.7);
   backdrop-filter: blur(10px);
   border-radius: 1.5rem;
   padding: 1.5rem;
   text-align: center;
   transition: all 0.3s;
   cursor: pointer;
-  border: 1px solid rgba(139, 92, 246, 0.2);
 }
 
 .magnet-item:hover {
   transform: translateY(-5px);
-  background: rgba(26, 29, 36, 0.9);
-  border-color: rgba(139, 92, 246, 0.5);
+  background: white;
 }
 
 /* ===== ФИШКА 5: СНЕЙК-БАР АКЦИЙ ===== */
@@ -329,7 +304,7 @@ header {
   position: fixed;
   bottom: 2rem;
   right: 2rem;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  background: linear-gradient(135deg, #00897b, #4db6ac);
   color: white;
   padding: 0.75rem 1.5rem;
   border-radius: 0.5rem;
@@ -347,7 +322,7 @@ header {
 
 /* ===== КНОПКИ ===== */
 .btn-primary {
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  background: linear-gradient(135deg, #4db6ac, #00897b);
   border: none;
   padding: 0.75rem 1.5rem;
   border-radius: 9999px;
@@ -359,7 +334,7 @@ header {
 
 .btn-primary:hover {
   transform: scale(1.02);
-  box-shadow: 0 5px 15px rgba(99,102,241,0.4);
+  box-shadow: 0 5px 15px rgba(77,182,172,0.4);
 }
 
 /* ===== КОРЗИНА ===== */
@@ -370,12 +345,12 @@ header {
   width: 100%;
   max-width: 450px;
   height: 100vh;
-  background: rgba(26, 29, 36, 0.95);
+  background: rgba(255,255,255,0.95);
   backdrop-filter: blur(20px);
   z-index: 200;
   padding: 1.5rem;
   transition: right 0.3s;
-  border-left: 2px solid #8b5cf6;
+  border-left: 2px solid #4db6ac;
 }
 
 .cart-sidebar.open {
@@ -385,7 +360,7 @@ header {
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.3);
   backdrop-filter: blur(3px);
   opacity: 0;
   visibility: hidden;
@@ -403,7 +378,7 @@ header {
   position: fixed;
   bottom: 2rem;
   right: 2rem;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  background: linear-gradient(135deg, #4db6ac, #00897b);
   color: white;
   padding: 0.75rem 1.5rem;
   border-radius: 9999px;
@@ -433,9 +408,9 @@ header {
 
 /* ===== АДАПТИВНОСТЬ ===== */
 @media (max-width: 768px) {
-  .container { padding: 0 1rem; }
   .hero h1 { font-size: 2rem; }
   .mascot { display: none; }
+  .container { padding: 0 1rem; }
   .products-grid { gap: 1rem; }
   .offers { gap: 1rem; }
 }
