@@ -85,23 +85,31 @@
     <button class="btn-primary" id="contactBtn">Связаться</button>
 </div>
         
-        <!-- Кнопка для мобильного меню -->
-        <button class="mobile-menu-btn" id="mobileMenuBtn">
-            <span></span><span></span><span></span>
-        </button>
+       <!-- Кнопка для мобильного меню (гамбургер) -->
+<button class="mobile-menu-btn" id="mobileMenuBtn">
+    <span></span>
+    <span></span>
+    <span></span>
+</button>
+
+<!-- Мобильное меню (выплывающее) -->
+<div class="mobile-menu" id="mobileMenu">
+    <ul class="mobile-nav-list">
+        <li><a href="#">Главная</a></li>
+        <li><a href="#">Компания</a></li>
+        <li><a href="#">Доставка</a></li>
+        <li><a href="#">Оплата</a></li>
+        <li><a href="#">Контакты</a></li>
+    </ul>
+    <div class="mobile-social">
+        <p>Мы в соцсетях:</p>
+        <div class="social-links">
+            <a href="#" target="_blank"><i class="fab fa-instagram"></i> Instagram</a>
+            <a href="#" target="_blank"><i class="fab fa-telegram"></i> Telegram</a>
+            <a href="#" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+        </div>
     </div>
-    
-    <!-- Мобильное меню (скрыто по умолчанию) -->
-    <div class="mobile-menu" id="mobileMenu">
-        <ul>
-            <li><a href="#">Главная</a></li>
-            <li><a href="#">Компания</a></li>
-            <li><a href="#">Доставка</a></li>
-            <li><a href="#">Оплата</a></li>
-            <li><a href="#">Контакты</a></li>
-        </ul>
-    </div>
-</header>
+</div>
 
 <main>
     <div class="container">
