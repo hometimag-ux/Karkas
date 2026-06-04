@@ -1,184 +1,223 @@
-let allProducts = [];
-let categories = [];
-let currentCategory = 'all';
-let currentSearch = '';
 
-function escapeHtml(str) {
-    if (!str) return '';
-    return String(str).replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
+// ===== ТОВАРЫ =====
+const products = [
+  { id: 1, name: "Халат Aqua", price: 3490, wholesalePrice: 2610, emoji: "👩‍⚕️💙" },
+  { id: 2, name: "Костюм Wave", price: 5290, wholesalePrice: 3960, emoji: "👨‍⚕️💙" },
+  { id: 3, name: "Скраб Ocean", price: 4490, wholesalePrice: 3360, emoji: "🥼💙" },
+  { id: 4, name: "Брюки Breeze", price: 2290, wholesalePrice: 1710, emoji: "👖💙" },
+  { id: 5, name: "Туника Pearl", price: 2990, wholesalePrice: 2240, emoji: "👚💙" },
+  { id: 6, name: "Футболка Fresh", price: 1990, wholesalePrice: 1490, emoji: "👕💙" }
+];
+
+let cart = [];
+let userRole = "retail";
+let searchQuery = "";
+
+function getPrice(p) { return userRole === "wholesale" ? p.wholesalePrice : p.price; }
+function saveCart() { localStorage.setItem("medCart", JSON.stringify(cart)); updateCart(); }
+function loadCart() { const saved = localStorage.getItem("medCart"); if (saved) cart = JSON.parse(saved); updateCart(); }
+
+function updateCart() {
+  const counter = document.getElementById("cartCounter");
+  const totalItems = cart.reduce((s, i) => s + i.quantity, 0);
+  counter.innerText = totalItems;
+  const container = document.getElementById("cartItems");
+  const totalSpan = document.getElementById("cartTotal");
+  if (cart.length === 0) { container.innerHTML = "<p style='text-align:center;'>Корзина пуста</p>"; totalSpan.innerHTML = ""; return; }
+  let html = "", total = 0;
+  cart.forEach(item => {
+    const price = getPrice(item);
+    total += price * item.quantity;
+    html += `<div style="display:flex; justify-content:space-between; margin-bottom:0.5rem; padding:0.5rem; border-bottom:1px solid #4db6ac;"><div><strong>${item.name}</strong><br>${price} ₽</div><div><button onclick="updateQty(${item.id}, -1)" style="background:#4db6ac; border:none; width:28px; border-radius:50%; color:white;">-</button><span style="margin:0 0.5rem;">${item.quantity}</span><button onclick="updateQty(${item.id}, 1)" style="background:#4db6ac; border:none; width:28px; border-radius:50%; color:white;">+</button><button onclick="removeFromCart(${item.id})" style="background:none; border:none;">🗑️</button></div></div>`;
+  });
+  container.innerHTML = html;
+  totalSpan.innerHTML = `<strong>Итого: ${total.toLocaleString()} ₽</strong>`;
 }
 
-function showToast(message) {
-    const toast = document.createElement('div');
-    toast.className = 'toast';
-    toast.innerHTML = message;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 3000);
+window.updateQty = (id, delta) => {
+  const idx = cart.findIndex(i => i.id === id);
+  if (idx !== -1) { cart[idx].quantity += delta; if (cart[idx].quantity <= 0) cart.splice(idx, 1); saveCart(); }
+};
+window.removeFromCart = (id) => { cart = cart.filter(i => i.id !== id); saveCart(); };
+
+function addToCart(product) {
+  const existing = cart.find(i => i.id === product.id);
+  if (existing) existing.quantity++; else cart.push({ ...product, quantity: 1 });
+  saveCart();
+  showToast(`${product.name} добавлен в корзину! 💙`);
+  createDrops();
 }
 
-function getRandomRating() { return (3 + Math.random() * 2).toFixed(1); }
-
-function renderStars(rating) {
-    let starsHtml = '';
-    for (let i = 0; i < Math.floor(rating); i++) starsHtml += '<span class="star filled">★</span>';
-    if (rating % 1 >= 0.5) starsHtml += '<span class="star filled">½</span>';
-    for (let i = 0; i < 5 - Math.ceil(rating); i++) starsHtml += '<span class="star">★</span>';
-    return starsHtml;
-}
-
-function loadProductsFromCRM() {
-    const saved = localStorage.getItem('crm_data');
-    if (!saved) { allProducts = []; categories = []; renderProducts(); return; }
-    try { const data = JSON.parse(saved); allProducts = data.products || []; categories = data.categories || []; } catch(e) { console.error(e); }
-    renderFilters(); renderProducts();
-}
-
-function getFilteredProducts() {
-    let filtered = [...allProducts];
-    if (currentCategory !== 'all') filtered = filtered.filter(p => p.category_id == currentCategory);
-    if (currentSearch) filtered = filtered.filter(p => p.title.toLowerCase().includes(currentSearch.toLowerCase()));
-    return filtered;
-}
-
-function renderFilters() {
-    const container = document.getElementById('filterCategories');
-    if (!container || categories.length === 0) return;
-    let html = '<button class="filter-btn active" data-cat="all">Все</button>';
-    categories.forEach(cat => { html += `<button class="filter-btn" data-cat="${cat.id}">${escapeHtml(cat.title)}</button>`; });
-    container.innerHTML = html;
-    container.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            container.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            currentCategory = btn.dataset.cat;
-            renderProducts();
-        });
-    });
-    const searchInput = document.getElementById('catalogSearch');
-    if (searchInput) searchInput.addEventListener('input', (e) => { currentSearch = e.target.value; renderProducts(); });
+function checkout() {
+  if (cart.length === 0) { showToast("Корзина пуста"); return; }
+  showToast("✅ Заказ оформлен! Спасибо за покупку! 💙");
+  createDrops();
+  cart = []; saveCart(); closeCart();
 }
 
 function renderProducts() {
-    const grid = document.getElementById('productsGrid');
-    if (!grid) return;
-    if (allProducts.length === 0) { grid.innerHTML = '<div class="loading-message">Нет товаров в каталоге</div>'; return; }
-    const filtered = getFilteredProducts();
-    if (filtered.length === 0) { grid.innerHTML = '<div class="loading-message">Товары не найдены</div>'; return; }
-    grid.innerHTML = filtered.map((p, idx) => {
-        const category = categories.find(c => c.id == p.category_id);
-        const hasDiscount = p.discount_price && p.discount_price < p.price;
-        const discountPercent = hasDiscount ? Math.round((1 - p.discount_price / p.price) * 100) : 0;
-        const rating = p.rating || getRandomRating();
-        const productImage = p.images?.[0];
-        const sizesText = p.sizes ? p.sizes.join(', ') : (p.sizes_data?.map(s => s.size).join(', ') || '—');
-        return `
-            <div class="product-card" data-id="${p.id}">
-                ${hasDiscount ? `<div class="discount-badge">-${discountPercent}%</div>` : ''}
-                <div class="product-img">${productImage ? `<img src="${productImage}" alt="${escapeHtml(p.title)}">` : `<div style="font-size: 4rem;">👕</div>`}</div>
-                <div class="product-info">
-                    <div class="product-title">${escapeHtml(p.title)}</div>
-                    <div class="product-category">${category ? escapeHtml(category.title) : ''}</div>
-                    <div class="product-sizes">📏 Размеры: ${sizesText}</div>
-                    <div class="product-rating"><div class="stars">${renderStars(rating)}</div><span class="rating-value">${rating}</span></div>
-                    <div class="product-prices">${hasDiscount ? `<span class="current-price discounted">${p.discount_price.toLocaleString()} ₽</span><span class="old-price">${p.price.toLocaleString()} ₽</span><span class="discount-percent">-${discountPercent}%</span>` : `<span class="current-price">${p.price.toLocaleString()} ₽</span>`}</div>
-                    <div class="product-actions"><button class="action-icon quick-view" data-id="${p.id}" title="Быстрый просмотр">👁️</button><button class="action-icon add-to-cart" data-id="${p.id}" title="В корзину">🛒</button></div>
-                </div>
-            </div>
-        `;
-    }).join('');
-    attachProductEvents();
+  let filtered = products;
+  if (searchQuery) filtered = products.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
+  const grid = document.getElementById("productsGrid");
+  grid.innerHTML = filtered.map((p, idx) => `<div class="product-card"><div class="product-img">${p.emoji}</div><div class="product-info" style="padding:1.5rem;"><h3>${p.name}</h3><div style="font-size:1.5rem; font-weight:800; margin:0.5rem 0;">${getPrice(p).toLocaleString()} ₽</div><button class="btn-primary add-to-cart" data-id="${p.id}">В корзину</button></div></div>`).join('');
+  document.querySelectorAll('.add-to-cart').forEach(btn => btn.addEventListener('click', () => addToCart(products.find(p => p.id === parseInt(btn.dataset.id)))));
 }
 
-function attachProductEvents() {
-    document.body.addEventListener('click', (e) => {
-        const quickViewBtn = e.target.closest('.quick-view');
-        if (quickViewBtn) {
-            e.stopPropagation();
-            const id = parseInt(quickViewBtn.dataset.id);
-            if (id && !isNaN(id)) openQuickView(id);
-            return;
-        }
-        const cartBtn = e.target.closest('.add-to-cart');
-        if (cartBtn) {
-            e.stopPropagation();
-            const id = parseInt(cartBtn.dataset.id);
-            if (id && !isNaN(id)) addToCartById(id);
-        }
+function setRole(role) {
+  userRole = role;
+  document.querySelectorAll('.role-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.role === role));
+  renderProducts(); updateCart();
+  showToast(role === "wholesale" ? "📦 Оптовый режим! Цены снижены на 25%" : "🛍️ Розничный режим");
+}
+
+function showToast(msg) {
+  const toast = document.createElement("div"); toast.className = "toast"; toast.innerText = msg;
+  document.body.appendChild(toast); setTimeout(() => toast.remove(), 3000);
+}
+
+function createDrops() {
+  for (let i = 0; i < 40; i++) {
+    const drop = document.createElement('div');
+    drop.innerHTML = ['💧','💙','💚','🌊'][Math.floor(Math.random()*4)];
+    drop.style.position = 'fixed';
+    drop.style.left = Math.random() * 100 + '%';
+    drop.style.top = Math.random() * 100 + '%';
+    drop.style.fontSize = Math.random() * 20 + 15 + 'px';
+    drop.style.pointerEvents = 'none';
+    drop.style.zIndex = '999';
+    drop.style.animation = `floatDrop ${Math.random() * 2 + 1}s ease-out forwards`;
+    document.body.appendChild(drop);
+    setTimeout(() => drop.remove(), 2000);
+  }
+}
+
+// ===== СКРОЛЛ-ТРИГГЕР АНИМАЦИИ (ФИШКА 3) =====
+function initScrollTrigger() {
+  const elements = document.querySelectorAll('.fade-on-scroll');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+  }, { threshold: 0.2 });
+  elements.forEach(el => observer.observe(el));
+}
+
+// ===== ПАРАЛЛАКС ЭФФЕКТ (ФИШКА 2) =====
+function initParallax() {
+  const card = document.querySelector('.parallax-card');
+  if (!card) return;
+  document.addEventListener('mousemove', (e) => {
+    const x = (e.clientX / window.innerWidth - 0.5) * 20;
+    const y = (e.clientY / window.innerHeight - 0.5) * 20;
+    card.style.transform = `rotateY(${x}deg) rotateX(${-y}deg)`;
+  });
+}
+
+// ===== ГОЛОСОВОЙ ПОИСК (ФИШКА 4) =====
+let recognition = null;
+function initVoiceSearch() {
+  const voiceBtn = document.getElementById('voiceBtn');
+  const searchInput = document.getElementById('searchInput');
+  if ('webkitSpeechRecognition' in window) {
+    recognition = new webkitSpeechRecognition();
+    recognition.lang = 'ru-RU';
+    recognition.onresult = (event) => {
+      const text = event.results[0][0].transcript;
+      searchInput.value = text;
+      searchQuery = text;
+      renderProducts();
+      voiceBtn.classList.remove('listening');
+    };
+    recognition.onend = () => voiceBtn.classList.remove('listening');
+  }
+  voiceBtn.addEventListener('click', () => {
+    if (recognition) {
+      recognition.start();
+      voiceBtn.classList.add('listening');
+    } else alert('Голосовой поиск поддерживается в Chrome');
+  });
+  searchInput.addEventListener('input', (e) => { searchQuery = e.target.value; renderProducts(); });
+}
+
+// ===== СНЕЙК-БАР (ФИШКА 5) =====
+function initSnackbar() {
+  const snackbar = document.getElementById('snackbar');
+  const closeBtn = document.getElementById('closeSnackbar');
+  if (!localStorage.getItem('snackbarClosed')) {
+    setTimeout(() => snackbar.classList.add('show'), 2000);
+    setTimeout(() => snackbar.classList.remove('show'), 8000);
+  }
+  closeBtn.addEventListener('click', () => { snackbar.classList.remove('show'); localStorage.setItem('snackbarClosed', 'true'); });
+}
+
+// ===== МАСКОТ (ФИШКА 1) =====
+function initMascot() {
+  const mascot = document.getElementById('mascot');
+  const bubble = document.getElementById('mascotBubble');
+  const messages = ['💙 Привет! Я Капля!', '💚 Хотите скидку?', '🌊 Напишите нам!', '💙 У нас опт от 10 штук'];
+  let i = 0;
+  mascot.addEventListener('click', () => {
+    bubble.textContent = messages[i % messages.length];
+    i++;
+    setTimeout(() => { if (bubble.textContent !== 'Привет! Я Капля 💙') bubble.textContent = 'Привет! Я Капля 💙'; }, 2000);
+  });
+}
+
+// ===== КОРЗИНА =====
+function openCart() { document.getElementById("cartSidebar").classList.add("open"); document.getElementById("overlay").classList.add("active"); }
+function closeCart() { document.getElementById("cartSidebar").classList.remove("open"); document.getElementById("overlay").classList.remove("active"); }
+
+
+// Мобильное меню (гамбургер)
+const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+const mobileMenu = document.getElementById('mobileMenu');
+
+if (mobileMenuBtn) {
+    mobileMenuBtn.addEventListener('click', () => {
+        mobileMenu.classList.toggle('active');
+        mobileMenuBtn.classList.toggle('active');
+        document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
     });
 }
 
-function openQuickView(productId) {
-    const product = allProducts.find(p => p.id === productId);
-    if (!product) { console.error('Товар не найден'); return; }
-    const category = categories.find(c => c.id == product.category_id);
-    const hasDiscount = product.discount_price && product.discount_price < product.price;
-    const discountPercent = hasDiscount ? Math.round((1 - product.discount_price / product.price) * 100) : 0;
-    const rating = product.rating || getRandomRating();
-    const sizes = product.sizes ? product.sizes.join(', ') : (product.sizes_data?.map(s => s.size).join(', ') || '—');
-    const productImage = product.images?.[0];
-    const chars = product.characteristics || {};
-    const packaging = product.packaging || {};
-    const modalHtml = `
-        <div class="quick-view-modal active" id="quickViewModal">
-            <div class="quick-view-content">
-                <button class="quick-view-close" onclick="closeQuickView()">&times;</button>
-                <div class="quick-view-body">
-                    <div class="quick-view-left"><div class="quick-view-image">${productImage ? `<img src="${productImage}" alt="${escapeHtml(product.title)}">` : '<div style="font-size: 6rem;">👕</div>'}</div></div>
-                    <div class="quick-view-right">
-                        <h3>${escapeHtml(product.title)}</h3>
-                        <div class="category">${category ? escapeHtml(category.title) : 'Без категории'}</div>
-                        <div class="product-rating"><div class="stars">${renderStars(rating)}</div><span class="rating-value">${rating}</span></div>
-                        <div class="product-sizes-info"><strong>📏 Размеры:</strong> ${sizes}</div>
-                        <div class="product-prices quick">${hasDiscount ? `<span class="current-price discounted">${product.discount_price.toLocaleString()} ₽</span><span class="old-price">${product.price.toLocaleString()} ₽</span><span class="discount-percent">-${discountPercent}%</span>` : `<span class="current-price">${product.price.toLocaleString()} ₽</span>`}</div>
-                        <div class="product-description"><h4>📝 Описание</h4><p>${escapeHtml(product.description || 'Нет описания')}</p></div>
-                        ${chars.brand || chars.material ? `<div class="quick-view-characteristics"><h4>📋 Характеристики</h4><table class="chars-table">
-                            ${chars.brand ? `<tr><th>Бренд</th><td>${escapeHtml(chars.brand)}</td>` : ''}
-                            ${chars.material ? `<tr><th>Состав</th><td>${escapeHtml(chars.material)}</td>` : ''}
-                            ${chars.collar ? `<tr><th>Воротник</th><td>${escapeHtml(chars.collar)}</td>` : ''}
-                            ${chars.sleeves ? `<tr><th>Рукава</th><td>${escapeHtml(chars.sleeves)}</td>` : ''}
-                            ${chars.silhouette ? `<tr><th>Силуэт</th><td>${escapeHtml(chars.silhouette)}</td>` : ''}
-                            ${chars.country ? `</tr><th>Страна</th><td>${escapeHtml(chars.country)}</td>` : ''}
-                        </table></div>` : ''}
-                        ${packaging.length || packaging.width || packaging.height || packaging.weight ? `<div class="quick-view-packaging"><h4>📦 Габариты упаковки</h4><div>${packaging.length ? `Длина: ${packaging.length} см, ` : ''}${packaging.width ? `Ширина: ${packaging.width} см, ` : ''}${packaging.height ? `Высота: ${packaging.height} см, ` : ''}${packaging.weight ? `Вес: ${packaging.weight} кг` : ''}</div></div>` : ''}
-                        <button class="quick-view-add" onclick="addToCartById(${product.id}); closeQuickView();">🛒 Добавить в корзину</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
-    const oldModal = document.getElementById('quickViewModal');
-    if (oldModal) oldModal.remove();
-    document.body.insertAdjacentHTML('beforeend', modalHtml);
-    document.body.style.overflow = 'hidden';
-}
-
-function closeQuickView() {
-    const modal = document.getElementById('quickViewModal');
-    if (modal) modal.remove();
-    document.body.style.overflow = '';
-}
-
-function addToCartById(productId) {
-    const product = allProducts.find(p => p.id === productId);
-    if (!product) return;
-    let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    const existing = cart.find(item => item.id === productId);
-    if (existing) existing.quantity += 1;
-    else cart.push({ id: product.id, title: product.title, price: product.discount_price || product.price, quantity: 1, image: product.images?.[0] || null });
-    localStorage.setItem('cart', JSON.stringify(cart));
-    updateCartCount();
-    showToast(`✅ ${product.title} добавлен в корзину!`);
-}
-
-function updateCartCount() {
-    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-    const cartCounter = document.getElementById('cartCounter');
-    if (cartCounter) cartCounter.textContent = totalItems;
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    loadProductsFromCRM();
-    attachProductEvents();
-    updateCartCount();
+// Закрытие меню при клике на ссылку
+document.querySelectorAll('.mobile-nav-list a').forEach(link => {
+    link.addEventListener('click', () => {
+        mobileMenu.classList.remove('active');
+        mobileMenuBtn.classList.remove('active');
+        document.body.style.overflow = '';
+    });
 });
+
+// Голосовой поиск
+let recognition = null;
+const voiceBtn = document.getElementById('voiceBtn');
+const searchInput = document.getElementById('searchInput');
+
+if (voiceBtn && 'webkitSpeechRecognition' in window) {
+    recognition = new webkitSpeechRecognition();
+    recognition.lang = 'ru-RU';
+    recognition.onresult = (event) => {
+        const text = event.results[0][0].transcript;
+        if (searchInput) searchInput.value = text;
+        voiceBtn.classList.remove('listening');
+    };
+    recognition.onend = () => voiceBtn.classList.remove('listening');
+    
+    voiceBtn.addEventListener('click', () => {
+        if (recognition) {
+            recognition.start();
+            voiceBtn.classList.add('listening');
+        } else {
+            alert('Голосовой поиск поддерживается в Chrome');
+        }
+    });
+}
+// ===== ИНИЦИАЛИЗАЦИЯ =====
+document.querySelectorAll(".magnet-item").forEach(m => m.addEventListener("click", () => { showToast(`📩 "${m.querySelector('h4').innerText}" отправлен на email!`); createDrops(); }));
+document.getElementById("shopNowBtn")?.addEventListener("click", () => document.getElementById("productsGrid").scrollIntoView({ behavior: "smooth" }));
+document.getElementById("cartBtn").addEventListener("click", openCart);
+document.getElementById("closeCart").addEventListener("click", closeCart);
+document.getElementById("overlay").addEventListener("click", closeCart);
+document.getElementById("checkoutBtn").addEventListener("click", checkout);
+document.querySelectorAll(".role-btn").forEach(btn => btn.addEventListener("click", () => setRole(btn.dataset.role)));
+
+loadCart(); renderProducts(); initScrollTrigger(); initParallax(); initVoiceSearch(); initSnackbar(); initMascot();
