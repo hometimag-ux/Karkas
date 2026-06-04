@@ -164,6 +164,25 @@ function initMascot() {
 function openCart() { document.getElementById("cartSidebar").classList.add("open"); document.getElementById("overlay").classList.add("active"); }
 function closeCart() { document.getElementById("cartSidebar").classList.remove("open"); document.getElementById("overlay").classList.remove("active"); }
 
+
+// ===== Мобильное меню ===== 
+const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+const mobileMenu = document.getElementById('mobileMenu');
+
+if (mobileMenuBtn) {
+    mobileMenuBtn.addEventListener('click', () => {
+        mobileMenu.classList.toggle('active');
+    });
+}
+
+// Закрытие меню при клике вне его
+document.addEventListener('click', (e) => {
+    if (mobileMenu && mobileMenuBtn) {
+        if (!mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+            mobileMenu.classList.remove('active');
+        }
+    }
+});
 // ===== ИНИЦИАЛИЗАЦИЯ =====
 document.querySelectorAll(".magnet-item").forEach(m => m.addEventListener("click", () => { showToast(`📩 "${m.querySelector('h4').innerText}" отправлен на email!`); createDrops(); }));
 document.getElementById("shopNowBtn")?.addEventListener("click", () => document.getElementById("productsGrid").scrollIntoView({ behavior: "smooth" }));
