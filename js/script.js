@@ -463,4 +463,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Делаем функции глобальными
 window.closeQuickView = closeQuickView;
+    const modal = document.getElementById('quickViewModal');
+    if (modal) modal.remove();
+    document.body.style.overflow = '';
+}
 window.addToCartById = addToCartById;
