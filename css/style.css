@@ -414,3 +414,269 @@ header {
   .products-grid { gap: 1rem; }
   .offers { gap: 1rem; }
 }
+/* ===== НАВИГАЦИЯ ===== */
+.main-nav {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.nav-list {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-list li {
+    position: relative;
+}
+
+.nav-list a {
+    text-decoration: none;
+    color: #1a1a2e;
+    font-weight: 500;
+    transition: color 0.2s;
+    font-size: 1rem;
+}
+
+.nav-list a:hover {
+    color: #0066cc;
+}
+
+/* Выпадающее меню */
+.dropdown-trigger {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.dropdown-trigger i {
+    font-size: 0.7rem;
+    transition: transform 0.2s;
+}
+
+.dropdown:hover .dropdown-trigger i {
+    transform: rotate(180deg);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: white;
+    min-width: 180px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+    padding: 0.5rem 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.2s;
+    z-index: 100;
+    list-style: none;
+}
+
+.dropdown:hover .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-menu li {
+    padding: 0;
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    color: #333;
+}
+
+.dropdown-menu a:hover {
+    background: #f5f5f5;
+    color: #0066cc;
+}
+
+/* Кнопки в шапке */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.cart-btn {
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    cursor: pointer;
+    position: relative;
+    color: #1a1a2e;
+}
+
+.cart-btn span {
+    position: absolute;
+    top: -8px;
+    right: -12px;
+    background: #0066cc;
+    color: white;
+    font-size: 0.7rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 20px;
+}
+
+/* Мобильное меню */
+.mobile-menu-btn {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.mobile-menu-btn span {
+    width: 25px;
+    height: 2px;
+    background: #1a1a2e;
+    transition: all 0.2s;
+}
+
+.mobile-menu {
+    display: none;
+    position: fixed;
+    top: 70px;
+    left: 0;
+    right: 0;
+    background: white;
+    padding: 1rem;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    z-index: 200;
+}
+
+.mobile-menu.active {
+    display: block;
+}
+
+.mobile-menu ul {
+    list-style: none;
+    padding: 0;
+}
+
+.mobile-menu li a {
+    display: block;
+    padding: 0.75rem;
+    text-decoration: none;
+    color: #1a1a2e;
+    border-bottom: 1px solid #eee;
+}
+
+@media (max-width: 768px) {
+    .main-nav {
+        display: none;
+    }
+    .mobile-menu-btn {
+        display: flex;
+    }
+}
+
+/* ===== ПОДВАЛ ===== */
+footer {
+    background: #1a1a2e;
+    color: #e1e3e6;
+    padding: 3rem 0 1rem;
+    margin-top: 4rem;
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.footer-logo {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.footer-col h4 {
+    margin-bottom: 1rem;
+    font-size: 1rem;
+}
+
+.footer-col ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-col li {
+    margin-bottom: 0.5rem;
+}
+
+.footer-col a {
+    color: #cbd5e1;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.footer-col a:hover {
+    color: #0066cc;
+}
+
+.footer-contacts {
+    margin-top: 1rem;
+}
+
+.footer-contacts a {
+    color: #cbd5e1;
+    text-decoration: none;
+}
+
+.footer-subscribe {
+    display: flex;
+    margin-top: 0.5rem;
+}
+
+.footer-subscribe input {
+    flex: 1;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 8px 0 0 8px;
+}
+
+.footer-subscribe button {
+    background: #0066cc;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0 8px 8px 0;
+    color: white;
+    cursor: pointer;
+}
+
+.social-links {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.social-links a {
+    color: #cbd5e1;
+    font-size: 1.3rem;
+    transition: color 0.2s;
+}
+
+.social-links a:hover {
+    color: #0066cc;
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 1.5rem;
+    border-top: 1px solid #2a2a3e;
+    font-size: 0.8rem;
+    color: #94a3b8;
+}
