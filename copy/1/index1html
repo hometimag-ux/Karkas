@@ -1,0 +1,242 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>MedAqua | Медицинская одежда</title>
+    <!-- Подключение CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- ========== 1. АНИМИРОВАННЫЙ ФОН ========== -->
+<div class="animated-bg">
+    <div class="gradient-orb orb-1"></div>
+    <div class="gradient-orb orb-2"></div>
+    <div class="gradient-orb orb-3"></div>
+    <div class="gradient-orb orb-4"></div>
+</div>
+
+<!-- ========== 2. ФИШКА 1: МАСКОТ (ТАЛИСМАН) ========== -->
+<div class="mascot" id="mascot">
+    <div style="font-size: 3rem;">💧</div>
+    <div class="mascot-bubble" id="mascotBubble">Привет! Я Капля 💙</div>
+</div>
+
+<!-- ========== 3. ФИШКА 5: СНЕЙК-БАР АКЦИЙ ========== -->
+<div class="snackbar" id="snackbar">
+    <span>🎉 Скидка 15% на первый заказ!</span>
+    <button id="closeSnackbar" style="background:none; border:none; color:white; cursor:pointer;">✕</button>
+</div>
+
+<!-- ========== 4. ШАПКА (HEADER) ========== -->
+<header>
+    <div class="container header-inner">
+        <div class="logo">
+            <span class="logo-icon">🩺</span>
+            <h1>MURANO-APPAREL</h1>
+        </div>
+        
+        <!-- Основная навигация -->
+        <nav class="main-nav">
+            <ul class="nav-list">
+                <li><a href="#">Главная</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-trigger">Компания <i class="fas fa-chevron-down"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">О нас</a></li>
+                        <li><a href="#">Новости</a></li>
+                        <li><a href="#">Отзывы</a></li>
+                        <li><a href="#">Вакансии</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-trigger">Доставка <i class="fas fa-chevron-down"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">По России</a></li>
+                        <li><a href="#">Самовывоз</a></li>
+                        <li><a href="#">Курьером</a></li>
+                        <li><a href="#">СДЭК</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-trigger">Оплата <i class="fas fa-chevron-down"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Банковской картой</a></li>
+                        <li><a href="#">Наличными</a></li>
+                        <li><a href="#">Оплата по QR</a></li>
+                        <li><a href="#">Для юрлиц</a></li>
+                    </ul>
+                </li>
+                <li><a href="#">Контакты</a></li>
+            </ul>
+        </nav>
+        
+        <div class="header-actions">
+    <!-- Голосовой поиск -->
+    <div class="voice-search">
+        <input type="text" id="searchInput" placeholder="Поиск..." class="voice-search-input">
+        <button id="voiceBtn" class="voice-btn">🎤</button>
+    </div>
+    <button class="cart-btn" id="cartBtn">
+        🛒 <span id="cartCounter">0</span>
+    </button>
+    <button class="btn-primary" id="contactBtn">Связаться</button>
+</div>
+        
+       <!-- Кнопка для мобильного меню (гамбургер) -->
+<button class="mobile-menu-btn" id="mobileMenuBtn">
+    <span></span>
+    <span></span>
+    <span></span>
+</button>
+
+<!-- Мобильное меню (выплывающее) -->
+<div class="mobile-menu" id="mobileMenu">
+    <ul class="mobile-nav-list">
+        <li><a href="#">Главная</a></li>
+        <li><a href="#">Компания</a></li>
+        <li><a href="#">Доставка</a></li>
+        <li><a href="#">Оплата</a></li>
+        <li><a href="#">Контакты</a></li>
+    </ul>
+    <div class="mobile-social">
+        <p>Мы в соцсетях:</p>
+        <div class="social-links">
+            <a href="#" target="_blank"><i class="fab fa-instagram"></i> Instagram</a>
+            <a href="#" target="_blank"><i class="fab fa-telegram"></i> Telegram</a>
+            <a href="#" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+        </div>
+    </div>
+</div>
+
+<main>
+    <div class="container">
+        <!-- ========== 5. HERO-СЕКЦИЯ ========== -->
+        <div class="fade-on-scroll visible">
+            <div class="hero-content" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 2rem; padding: 3rem 0;">
+                <div style="flex:1; min-width:280px;">
+                    <div style="background: rgba(77,182,172,0.2); display: inline-block; padding: 0.3rem 1rem; border-radius: 9999px; margin-bottom: 1rem;">💙 АКВА-КОЛЛЕКЦИЯ 2025 💚</div>
+                    <h1 style="font-size: 3rem; font-weight: 800;">Медицинская одежда<br><span style="background: linear-gradient(135deg, #00897b, #4db6ac, #80cbc4); background-clip: text; -webkit-background-clip: text; color: transparent;">свежесть и комфорт</span></h1>
+                    <p style="margin: 1rem 0; color: #004d40;">Дышащие ткани, идеальная посадка, современный дизайн. Создано для вашего комфорта.</p>
+                    <button class="btn-primary" id="shopNowBtn">✨ В каталог →</button>
+                </div>
+                <div style="flex:1; min-width:280px; text-align:center;">
+                    <img src="https://placehold.co/400x400/4db6ac/white?text=%F0%9F%91%A9%E2%80%8D%E2%9A%95%EF%B8%8F%F0%9F%92%99" style="width:100%; max-width:350px; filter: drop-shadow(0 20px 30px rgba(0,0,0,0.1)); animation: floatHero 4s ease-in-out infinite;">
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== 6. ФИШКА 2: ПАРАЛЛАКС-КАРТОЧКИ ========== -->
+        <div class="parallax-section" id="parallaxSection">
+            <div class="parallax-card" style="margin-bottom: 2rem;">
+                <h2>🌊 Почему выбирают MedAqua?</h2>
+                <p style="margin-top: 1rem;">100% хлопок ✦ Гипоаллергенно ✦ Дышащие ткани ✦ Экологичная упаковка</p>
+            </div>
+        </div>
+
+        <!-- ========== 7. ОФФЕРТЫ ========== -->
+        <div class="offers">
+            <div class="offer-card"><div style="font-size: 2.5rem;">💧</div><h3>Увлажняющая ткань</h3><p>Технология Cool&amp;Dry</p><div style="font-size: 1.5rem; font-weight: 800;">-25%</div></div>
+            <div class="offer-card"><div style="font-size: 2.5rem;">🌊</div><h3>Бесплатная доставка</h3><p>При заказе от 5000₽</p><div style="font-size: 1.5rem; font-weight: 800;">0 ₽</div></div>
+            <div class="offer-card"><div style="font-size: 2.5rem;">💎</div><h3>Подарочный набор</h3><p>При первом заказе</p><div style="font-size: 1.5rem; font-weight: 800;">Бесплатно</div></div>
+        </div>
+
+        <!-- ========== 8. ЛИД-МАГНИТЫ ========== -->
+        <div class="lead-magnets">
+            <h2 style="text-align: center;">📚 Бесплатные материалы</h2>
+            <div class="magnets-grid">
+                <div class="magnet-item" data-magnet="catalog"><div style="font-size: 2rem;">📖💙</div><h4>Каталог 2025</h4><p>150+ моделей</p></div>
+                <div class="magnet-item" data-magnet="size"><div style="font-size: 2rem;">📏💙</div><h4>Таблица размеров</h4><p>Идеальная посадка</p></div>
+                <div class="magnet-item" data-magnet="care"><div style="font-size: 2rem;">🧼💙</div><h4>Гайд по уходу</h4><p>Как сохранить цвет</p></div>
+                <div class="magnet-item" data-magnet="consult"><div style="font-size: 2rem;">💬💙</div><h4>Консультация</h4><p>Индивидуально</p></div>
+            </div>
+        </div>
+
+        <!-- ========== 9. ТОВАРЫ ========== -->
+        <h2 style="text-align: center; font-size: 2rem; margin: 2rem 0;">🌟 Аква-коллекция 🌟</h2>
+        <div id="productsGrid" class="products-grid"></div>
+
+        <!-- ========== 10. ПРЕИМУЩЕСТВА (СКРОЛЛ-ТРИГГЕР) ========== -->
+        <div class="fade-on-scroll" style="text-align: center; padding: 3rem; background: rgba(77,182,172,0.1); border-radius: 2rem; margin-bottom: 3rem;">
+            <h3>💙 Преимущества работы с нами</h3>
+            <div style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; margin-top: 1rem;">
+                <div>✅ Сертифицированная продукция</div>
+                <div>✅ Доставка по всей России</div>
+                <div>✅ Опт от 10 штук</div>
+                <div>✅ 24/7 поддержка</div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- ========== 11. КОРЗИНА (САЙДБАР) ========== -->
+<div class="cart-sidebar" id="cartSidebar">
+    <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+        <h3>🛒 Корзина</h3>
+        <button id="closeCart" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">✕</button>
+    </div>
+    <div id="cartItems"><p style="text-align:center;">Корзина пуста</p></div>
+    <div id="cartTotal" style="font-weight:bold; margin:1rem 0;"></div>
+    <button id="checkoutBtn" class="btn-primary" style="width:100%;">💳 Оформить заказ</button>
+</div>
+<div class="overlay" id="overlay"></div>
+<footer>
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <div class="footer-logo">🩺 MURANO-APPAREL</div>
+                <p>Медицинская одежда для тех, кто спасает жизни.</p>
+                <div class="footer-contacts">
+                    <p>✉️ <a href="mailto:murano-apparel.@bk.ru">murano-apparel.@bk.ru</a></p>
+                    <p>📞 <a href="tel:+79063771985">+7 (906) 377-19-85</a></p>
+                </div>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Документы</h4>
+                <ul>
+                    <li><a href="/docs/offer.html">Оферта</a></li>
+                    <li><a href="/docs/privacy.html">Политика конфиденциальности</a></li>
+                    <li><a href="/docs/agreement.html">Пользовательское соглашение</a></li>
+                    <li><a href="/docs/return.html">Условия обмена и возврата</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Информация</h4>
+                <ul>
+                    <li><a href="#">О компании</a></li>
+                    <li><a href="#">Доставка и оплата</a></li>
+                    <li><a href="#">Контакты</a></li>
+                    <li><a href="#">Оптовым клиентам</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Подпишитесь</h4>
+                <p>Будьте в курсе новостей и акций</p>
+                <form class="footer-subscribe">
+                    <input type="email" placeholder="Ваш email">
+                    <button type="submit">→</button>
+                </form>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-vk"></i></a>
+                    <a href="#"><i class="fab fa-telegram"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 Murano Apparel — медицинская одежда для тех, кто спасает жизни.</p>
+        </div>
+    </div>
+</footer>
+
+    
+    <!-- Подключение JavaScript -->
+<script src="js/script.js"></script>
+</body>
+</html>
