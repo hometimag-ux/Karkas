@@ -346,7 +346,7 @@ function openQuickView(id) {
         </div>
     `;
     
-    const oldModal = document.getElementById('quickViewModal');
+     const oldModal = document.getElementById('quickViewModal');
     if (oldModal) oldModal.remove();
     document.body.insertAdjacentHTML('beforeend', modalHtml);
     document.body.style.overflow = 'hidden';
