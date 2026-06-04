@@ -175,7 +175,7 @@ function attachProductEvents() {
     });
 }
 
-// ===== БЫСТРЫЙ ПРОСМОТР (с табами, цветами, размерами) =====
+// ===== БЫСТРЫЙ ПРОСМОТР =====
 function openQuickView(id) {
     const product = allProducts.find(p => p.id === id);
     if (!product) return;
@@ -184,8 +184,11 @@ function openQuickView(id) {
     const hasDiscount = product.discount_price && product.discount_price < product.price;
     const discountPercent = hasDiscount ? Math.round((1 - product.discount_price / product.price) * 100) : 0;
     const rating = product.rating || getRandomRating();
+    const stars = '★'.repeat(Math.floor(rating)) + '☆'.repeat(5 - Math.floor(rating));
+    const img = product.images && product.images.length > 0 ? product.images[0] : null;
+    const chars = product.characteristics || {};
+    const pack = product.packaging || {};
     
-    // Размеры
     let sizesList = [];
     if (product.sizes_data && product.sizes_data.length > 0) {
         sizesList = product.sizes_data.map(s => s.size);
@@ -193,141 +196,35 @@ function openQuickView(id) {
         sizesList = product.sizes;
     }
     
-    // Цвета (если есть)
-    const colors = product.colors || ['#8F9E6B', '#ffffff', '#2F5D50', '#4a708b'];
-    const colorNames = product.color_names || ['оливковый', 'белый', 'тёмно-зелёный', 'синий'];
-    
-    // Характеристики
-    const chars = product.characteristics || {};
-    const pack = product.packaging || {};
-    const img = product.images && product.images.length > 0 ? product.images[0] : null;
-    
-    // Рейтинг звёздами
-    const stars = '★'.repeat(Math.floor(rating)) + '☆'.repeat(5 - Math.floor(rating));
-    
-    // Формируем HTML
     const modalHtml = `
         <div class="quick-view-modal" id="quickViewModal">
             <div class="quick-view-content">
-                <button class="quick-view-close" onclick="closeQuickView()">&times;</button>
+                <button class="quick-view-close">&times;</button>
                 <div class="quick-view-body">
-                    <!-- Левая колонка -->
                     <div class="quick-view-left">
-                        <div class="quick-view-image">
-                            ${img ? `<img src="${img}" alt="${escapeHtml(product.title)}">` : `<div>${product.emoji || '👕'}</div>`}
-                        </div>
-                        <div class="status-badge">✓ в наличии | профессиональная серия</div>
-                        <div class="color-swatches" id="modalColorSwatches">
-                            ${colors.map((color, idx) => `
-                                <div class="swatch ${idx === 0 ? 'active' : ''}" style="background: ${color}; ${color === '#ffffff' ? 'border:1px solid #ccc;' : ''}" data-color="${colorNames[idx]}"></div>
-                            `).join('')}
-                        </div>
-                        <div style="font-size:0.7rem; margin-top:12px; color:#5b7f6a;">★ ${rating} на основе отзывов</div>
+                        <div class="quick-view-image">${img ? `<img src="${img}" alt="${escapeHtml(product.title)}">` : `<div>${product.emoji || '👕'}</div>`}</div>
+                        <div class="status-badge">✓ в наличии</div>
                     </div>
-                    
-                    <!-- Правая колонка -->
                     <div class="quick-view-right">
-                        <div class="brand">MURANO APPAREL — медицинская коллекция</div>
                         <h2>${escapeHtml(product.title)}</h2>
-                        ${product.article ? `<div class="article">Артикул: ${escapeHtml(product.article)}</div>` : ''}
-                        
                         <div class="rating-row">
                             <div class="stars">${stars}</div>
-                            <span style="font-size:0.8rem;">${rating} · отзывы</span>
-                            <span style="background:#EFF6F0; padding:2px 8px; border-radius:20px; font-size:0.7rem;">98% рекомендуют</span>
+                            <span>${rating}</span>
                         </div>
-                        
                         <div class="price-card">
-                            <div>
-                                <span class="current-price">${hasDiscount ? product.discount_price.toLocaleString() : product.price.toLocaleString()} ₽</span>
-                                ${hasDiscount ? `<span class="old-price">${product.price.toLocaleString()} ₽</span>` : ''}
-                            </div>
-                            <div class="installment">Бесплатная доставка от 3 500 ₽ / рассрочка без переплаты</div>
+                            <span class="current-price">${hasDiscount ? product.discount_price.toLocaleString() : product.price.toLocaleString()} ₽</span>
+                            ${hasDiscount ? `<span class="old-price">${product.price.toLocaleString()} ₽</span>` : ''}
                         </div>
-                        
-                        <div class="specs-grid">
-                            ${chars.material ? `<span class="spec-item">🧵 ${escapeHtml(chars.material)}</span>` : ''}
-                            ${chars.features ? `<span class="spec-item">💧 ${escapeHtml(chars.features)}</span>` : ''}
-                            <span class="spec-item">🔄 100+ стирок</span>
-                            <span class="spec-item">🧼 антибактерия</span>
-                        </div>
-                        
-                        <!-- Размеры -->
                         ${sizesList.length > 0 ? `
                         <div class="size-selector">
-                            <h4>Выберите размер</h4>
-                            <div class="size-buttons" id="modalSizeButtons">
-                                ${sizesList.map((size, idx) => `
-                                    <span data-size="${escapeHtml(size)}" class="size-btn ${idx === 2 ? 'active' : ''}">${escapeHtml(size)}</span>
-                                `).join('')}
+                            <div class="size-buttons">
+                                ${sizesList.map(size => `<span class="size-btn">${escapeHtml(size)}</span>`).join('')}
                             </div>
                         </div>
                         ` : ''}
-                        
-                        <div class="action-group">
-                            <button class="btn-primary" id="modalBuyBtn">Добавить в корзину — ${hasDiscount ? product.discount_price.toLocaleString() : product.price.toLocaleString()} ₽</button>
-                            <button class="btn-secondary" id="modalOneClickBtn">Быстрый заказ</button>
-                        </div>
-                        
-                        <div class="usp-row">
-                            <span>🚚 доставка 1–3 дня</span>
-                            <span>🔄 обмен 14 дней</span>
-                            <span>🏷️ опт от 5 шт — скидка</span>
-                            <span>🧵 логотип за 48ч</span>
-                        </div>
-                        
-                        <!-- Табы -->
-                        <div class="tabs">
-                            <button class="tab-btn active" data-tab="desc">описание</button>
-                            <button class="tab-btn" data-tab="specs">характеристики</button>
-                            <button class="tab-btn" data-tab="packaging">упаковка</button>
-                        </div>
-                        
-                        <div class="tab-content">
-                            <div class="tab-pane active" id="desc">
-                                <p>${escapeHtml(product.description || 'Профессиональная медицинская одежда, разработанная с учётом пожеланий медицинских работников. Эргономичный крой, эластичная ткань и продуманные детали.')}</p>
-                                <ul class="feature-list">
-                                    <li>Анатомическая посадка: не стесняет движений</li>
-                                    <li>Материал «дышит», отводит влагу в течение смены</li>
-                                    <li>Сохраняет форму и цвет после частых стирок (до 95°C)</li>
-                                    <li>Гипоаллергенно, одобрено дерматологами</li>
-                                </ul>
-                            </div>
-                            <div class="tab-pane" id="specs">
-                                <table class="chars-table">
-                                    ${chars.brand ? `<tr><th>Бренд</th><td>${escapeHtml(chars.brand)}</td></tr>` : ''}
-                                    ${chars.material ? `<tr><th>Состав</th><td>${escapeHtml(chars.material)}</td></tr>` : ''}
-                                    ${chars.collar ? `<tr><th>Воротник</th><td>${escapeHtml(chars.collar)}</td></tr>` : ''}
-                                    ${chars.sleeves ? `<tr><th>Рукава</th><td>${escapeHtml(chars.sleeves)}</td></tr>` : ''}
-                                    ${chars.pockets ? `<tr><th>Карманы</th><td>${escapeHtml(chars.pockets)}</td></tr>` : ''}
-                                    ${chars.clasp ? `<tr><th>Застёжка</th><td>${escapeHtml(chars.clasp)}</td></tr>` : ''}
-                                    ${chars.length ? `<tr><th>Длина</th><td>${escapeHtml(chars.length)}</td></tr>` : ''}
-                                    ${chars.silhouette ? `<tr><th>Силуэт</th><td>${escapeHtml(chars.silhouette)}</td></tr>` : ''}
-                                    ${chars.country ? `<tr><th>Страна</th><td>${escapeHtml(chars.country)}</td></tr>` : ''}
-                                </table>
-                            </div>
-                            <div class="tab-pane" id="packaging">
-                                <div class="packaging-grid">
-                                    ${pack.length ? `<div>📏 Длина: ${pack.length} см</div>` : ''}
-                                    ${pack.width ? `<div>📐 Ширина: ${pack.width} см</div>` : ''}
-                                    ${pack.height ? `<div>📦 Высота: ${pack.height} см</div>` : ''}
-                                    ${pack.weight ? `<div>⚖️ Вес: ${pack.weight} кг</div>` : ''}
-                                </div>
-                                ${!pack.length && !pack.width && !pack.height && !pack.weight ? '<p>Информация о габаритах упаковки отсутствует</p>' : ''}
-                            </div>
-                        </div>
-                        
-                        <div class="lead-magnet">
-                            <div><span style="font-weight:700;">📏 Как точно подобрать размер?</span> Скачайте чек-лист примерки.</div>
-                            <button class="small-outline" id="modalLeadMagnetBtn">Получить PDF</button>
-                        </div>
-                        
-                        <div class="b2b-note">
-                            <span>🏥 Корпоративным клиентам: скидка от объёма, образцы ткани бесплатно.</span>
-                            <button class="small-outline" id="modalCorpBtn">Связаться с менеджером</button>
-                        </div>
-                        
-                        <div style="font-size:0.7rem; text-align:center; color:#7f9a8a;">✓ гарантия 12 месяцев ✓ помощь с выбором размера ✓ возврат по стандартам РФ</div>
+                        <button class="btn-primary add-to-cart-modal" data-id="${product.id}">В корзину</button>
+                        <div class="description">${escapeHtml(product.description || 'Нет описания')}</div>
+                        ${chars.material ? `<div><strong>Состав:</strong> ${escapeHtml(chars.material)}</div>` : ''}
                     </div>
                 </div>
             </div>
@@ -339,15 +236,36 @@ function openQuickView(id) {
     document.body.insertAdjacentHTML('beforeend', modalHtml);
     document.body.style.overflow = 'hidden';
     
-    function initModalEvents(product, hasDiscount) {
-    // ===== КНОПКА ЗАКРЫТИЯ =====
+    // Обработчик закрытия
     const closeBtn = document.querySelector('#quickViewModal .quick-view-close');
     if (closeBtn) {
-        closeBtn.onclick = (e) => {
-            e.preventDefault();
+        closeBtn.onclick = () => closeQuickView();
+    }
+    
+    // Обработчики размеров
+    document.querySelectorAll('#quickViewModal .size-btn').forEach(btn => {
+        btn.onclick = function() {
+            document.querySelectorAll('#quickViewModal .size-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+        };
+    });
+    
+    // Кнопка "В корзину" в модалке
+    const modalCartBtn = document.querySelector('#quickViewModal .add-to-cart-modal');
+    if (modalCartBtn) {
+        modalCartBtn.onclick = () => {
+            addToCartById(product.id);
             closeQuickView();
         };
     }
+}
+
+function closeQuickView() {
+    const modal = document.getElementById('quickViewModal');
+    if (modal) modal.remove();
+    document.body.style.overflow = '';
+}
+
     
     // Размеры
     const sizeBtns = document.querySelectorAll('#modalSizeButtons .size-btn');
