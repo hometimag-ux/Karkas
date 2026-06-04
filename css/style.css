@@ -1055,3 +1055,255 @@ body.mobile-preview .footer-col h4:after {
     --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
     --bg-tertiary: #f1f5f9;
 }
+/* ===== НОВЫЕ ЭЛЕМЕНТЫ КАРТОЧКИ ТОВАРА ===== */
+
+/* Рейтинг звёздами */
+.product-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin: 0.5rem 0;
+}
+
+.stars {
+    display: flex;
+    gap: 0.125rem;
+}
+
+.star {
+    color: #cbd5e1;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.star.filled {
+    color: #fbbf24;
+}
+
+.rating-value {
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-left: 0.25rem;
+}
+
+/* Бейдж скидки */
+.discount-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: linear-gradient(135deg, #f43f5e, #e11d48);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    z-index: 10;
+}
+
+/* Цены */
+.product-prices {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin: 0.5rem 0;
+    flex-wrap: wrap;
+}
+
+.current-price {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #1f6e8c;
+}
+
+.current-price.discounted {
+    color: #f43f5e;
+}
+
+.old-price {
+    font-size: 0.9rem;
+    color: #94a3b8;
+    text-decoration: line-through;
+}
+
+.discount-percent {
+    font-size: 0.7rem;
+    background: #e8f5e9;
+    color: #4caf50;
+    padding: 0.125rem 0.5rem;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+/* Кнопки действий (глазик, корзина) */
+.product-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.action-icon {
+    flex: 1;
+    background: #f1f5f9;
+    border: none;
+    padding: 0.5rem;
+    border-radius: 40px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    color: #334155;
+}
+
+.action-icon:hover {
+    background: #e2e8f0;
+    transform: translateY(-2px);
+}
+
+.action-icon.quick-view:hover {
+    background: #1f6e8c;
+    color: white;
+}
+
+.action-icon.add-to-cart {
+    background: linear-gradient(135deg, #1f6e8c, #0a5a75);
+    color: white;
+}
+
+.action-icon.add-to-cart:hover {
+    transform: scale(1.02);
+    filter: brightness(1.05);
+}
+
+/* ===== МОДАЛЬНОЕ ОКНО БЫСТРОГО ПРОСМОТРА ===== */
+.quick-view-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(8px);
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.quick-view-modal.active {
+    display: flex;
+}
+
+.quick-view-content {
+    background: white;
+    border-radius: 2rem;
+    width: 90%;
+    max-width: 900px;
+    max-height: 85vh;
+    overflow-y: auto;
+    position: relative;
+    animation: modalFadeIn 0.3s ease;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.quick-view-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: white;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    z-index: 10;
+}
+
+.quick-view-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 2rem;
+}
+
+@media (min-width: 768px) {
+    .quick-view-body {
+        flex-direction: row;
+    }
+}
+
+.quick-view-image {
+    flex: 1;
+    text-align: center;
+    background: #f8fafc;
+    border-radius: 1.5rem;
+    padding: 2rem;
+}
+
+.quick-view-image img {
+    max-width: 100%;
+    font-size: 8rem;
+}
+
+.quick-view-info {
+    flex: 1;
+}
+
+.quick-view-info h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.quick-view-info .category {
+    color: #64748b;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+}
+
+.quick-view-info .prices {
+    margin: 1rem 0;
+}
+
+.quick-view-info .current-price {
+    font-size: 2rem;
+}
+
+.quick-view-info .sizes {
+    margin: 1rem 0;
+}
+
+.size-badge {
+    display: inline-block;
+    background: #f1f5f9;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    margin: 0.25rem;
+}
+
+.quick-view-add {
+    width: 100%;
+    background: linear-gradient(135deg, #1f6e8c, #0a5a75);
+    color: white;
+    border: none;
+    padding: 0.75rem;
+    border-radius: 40px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 1rem;
+}
