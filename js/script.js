@@ -317,11 +317,30 @@ function updateCartCount() {
     if (counter) counter.textContent = total;
 }
 
-// ===== ЗАПУСК =====
+// ===== ИНИЦИАЛИЗАЦИЯ десктоп/мобильный =====
 document.addEventListener('DOMContentLoaded', () => {
     loadProductsFromCRM();
     updateCartCount();
+    
+    // Переключение вида (десктоп/мобильный)
+    const desktopBtn = document.getElementById('desktopViewBtn');
+    const mobileBtn = document.getElementById('mobileViewBtn');
+    
+    if (desktopBtn && mobileBtn) {
+        desktopBtn.addEventListener('click', () => {
+            document.body.classList.remove('mobile-preview');
+            desktopBtn.classList.add('active');
+            mobileBtn.classList.remove('active');
+        });
+        
+        mobileBtn.addEventListener('click', () => {
+            document.body.classList.add('mobile-preview');
+            mobileBtn.classList.add('active');
+            desktopBtn.classList.remove('active');
+        });
+    }
 });
 
+// Делаем функции глобальными
 window.closeQuickView = closeQuickView;
 window.addToCartById = addToCartById;
