@@ -191,12 +191,7 @@ function openQuickView(id) {
     const chars = product.characteristics || {};
     const pack = product.packaging || {};
 
-    // Обработчик закрытия
-    const closeBtn = document.querySelector('#quickViewModal .quick-view-close');
-    if (closeBtn) {
-        closeBtn.onclick = () => closeQuickView();
-    }
-    
+       
     // Размеры
     let sizesList = [];
     if (product.sizes_data && product.sizes_data.length > 0) {
