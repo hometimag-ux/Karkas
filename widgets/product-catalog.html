@@ -1,0 +1,449 @@
+<!-- Виджет: Каталог товаров -->
+<div class="product-catalog-widget" id="productCatalogWidget">
+    <!-- Заголовок -->
+    <h2 class="catalog-title" id="catalogTitle">Наши товары</h2>
+    
+    <!-- Фильтры -->
+    <div class="catalog-filters">
+        <div class="filter-categories" id="filterCategories">
+            <button class="filter-btn active" data-cat="all">Все</button>
+        </div>
+        <div class="filter-search">
+            <input type="text" id="catalogSearch" placeholder="🔍 Поиск по названию...">
+        </div>
+        <div class="filter-view">
+            <button class="view-btn active" data-view="grid">📦 Сетка</button>
+            <button class="view-btn" data-view="list">📋 Список</button>
+        </div>
+    </div>
+    
+    <!-- Товары (сетка/список) -->
+    <div class="catalog-products" id="catalogProducts">
+        <div class="loading">Загрузка товаров...</div>
+    </div>
+    
+    <!-- Пагинация -->
+    <div class="catalog-pagination" id="catalogPagination"></div>
+</div>
+
+<style>
+.product-catalog-widget {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.catalog-title {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    color: #1a2c3e;
+}
+
+.catalog-filters {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e2edf4;
+}
+
+.filter-categories {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    background: none;
+    border: 1px solid #cbdde9;
+    padding: 0.4rem 1rem;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.85rem;
+    color: #405d77;
+}
+
+.filter-btn:hover {
+    border-color: #1f6e8c;
+}
+
+.filter-btn.active {
+    background: #1f6e8c;
+    color: white;
+    border-color: #1f6e8c;
+}
+
+.filter-search input {
+    padding: 0.5rem 1rem;
+    border: 1px solid #cbdde9;
+    border-radius: 30px;
+    width: 220px;
+    font-size: 0.85rem;
+}
+
+.filter-view {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.view-btn {
+    background: none;
+    border: 1px solid #cbdde9;
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.view-btn.active {
+    background: #1f6e8c;
+    color: white;
+    border-color: #1f6e8c;
+}
+
+/* Сетка товаров */
+.catalog-products.grid-view {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 2rem;
+}
+
+/* Список товаров */
+.catalog-products.list-view {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.list-view .product-card {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.list-view .product-img {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+}
+
+.list-view .product-info {
+    flex: 1;
+}
+
+.list-view .product-actions {
+    min-width: 120px;
+    text-align: right;
+}
+
+.product-card {
+    background: white;
+    border-radius: 1.5rem;
+    overflow: hidden;
+    border: 1px solid #eef2f8;
+    transition: all 0.3s;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 28px -12px rgba(0,0,0,0.1);
+}
+
+.product-img {
+    padding: 1.5rem;
+    text-align: center;
+    font-size: 3rem;
+    background: #f4f9fe;
+}
+
+.product-info {
+    padding: 1rem 1.5rem 1.5rem;
+}
+
+.product-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #1a2c3e;
+}
+
+.product-category {
+    font-size: 0.75rem;
+    color: #5e7f97;
+    margin-bottom: 0.5rem;
+}
+
+.product-price {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #1f6e8c;
+    margin-bottom: 0.5rem;
+}
+
+.product-price-old {
+    font-size: 0.85rem;
+    color: #999;
+    text-decoration: line-through;
+    margin-left: 0.5rem;
+    font-weight: normal;
+}
+
+.product-sizes {
+    font-size: 0.75rem;
+    color: #5e7f97;
+    margin-bottom: 1rem;
+}
+
+.add-to-cart-btn {
+    width: 100%;
+    background: #eef3fa;
+    border: none;
+    padding: 0.6rem;
+    border-radius: 9999px;
+    color: #1a2c3e;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.add-to-cart-btn:hover {
+    background: #1f6e8c;
+    color: white;
+}
+
+/* Пагинация */
+.catalog-pagination {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+}
+
+.page-btn {
+    background: white;
+    border: 1px solid #cbdde9;
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.page-btn.active {
+    background: #1f6e8c;
+    color: white;
+    border-color: #1f6e8c;
+}
+
+.loading {
+    text-align: center;
+    padding: 3rem;
+    color: #5e7f97;
+}
+
+@media (max-width: 768px) {
+    .catalog-filters {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .filter-search input {
+        width: 100%;
+    }
+    .catalog-products.grid-view {
+        grid-template-columns: 1fr;
+    }
+    .list-view .product-card {
+        flex-direction: column;
+        text-align: center;
+    }
+    .list-view .product-actions {
+        text-align: center;
+    }
+}
+</style>
+
+<script>
+(function() {
+    // ===== НАСТРОЙКИ =====
+    let currentCategory = 'all';
+    let currentSearch = '';
+    let currentView = 'grid';
+    let currentPage = 1;
+    let itemsPerPage = 9;
+    let allProducts = [];
+    let categories = [];
+    
+    // ===== ЗАГРУЗКА ДАННЫХ ИЗ CRM =====
+    function loadFromCRM() {
+        try {
+            const saved = localStorage.getItem('crm_data');
+            if (saved) {
+                const data = JSON.parse(saved);
+                allProducts = data.products || [];
+                categories = data.categories || [];
+            }
+        } catch(e) {
+            console.error('Ошибка загрузки товаров', e);
+        }
+        
+        // Если товаров нет — добавляем демо
+        if (allProducts.length === 0) {
+            allProducts = [
+                { id: 1, title: 'Халат Aqua', price: 3490, discount_price: null, category_id: 1, sizes: ['S','M','L'], images: [] },
+                { id: 2, title: 'Костюм Wave', price: 5290, discount_price: 3990, category_id: 1, sizes: ['XS','S','M','L','XL'], images: [] },
+                { id: 3, title: 'Скраб Ocean', price: 4490, discount_price: null, category_id: 1, sizes: ['S','M','L'], images: [] },
+                { id: 4, title: 'Брюки Breeze', price: 2290, discount_price: null, category_id: 1, sizes: ['28','30','32','34'], images: [] },
+                { id: 5, title: 'Туника Pearl', price: 2990, discount_price: 2490, category_id: 1, sizes: ['S','M','L'], images: [] },
+                { id: 6, title: 'Футболка Fresh', price: 1990, discount_price: null, category_id: 1, sizes: ['S','M','L','XL'], images: [] }
+            ];
+            categories = [{ id: 1, title: 'Одежда' }];
+        }
+        
+        renderFilters();
+        renderProducts();
+    }
+    
+    // ===== ФИЛЬТРЫ =====
+    function renderFilters() {
+        const container = document.getElementById('filterCategories');
+        if (!container) return;
+        
+        let html = '<button class="filter-btn active" data-cat="all">Все</button>';
+        categories.forEach(cat => {
+            html += `<button class="filter-btn" data-cat="${cat.id}">${escapeHtml(cat.title)}</button>`;
+        });
+        container.innerHTML = html;
+        
+        // Обработчики фильтров
+        container.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                container.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentCategory = btn.dataset.cat;
+                currentPage = 1;
+                renderProducts();
+            });
+        });
+        
+        // Поиск
+        const searchInput = document.getElementById('catalogSearch');
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                currentSearch = e.target.value;
+                currentPage = 1;
+                renderProducts();
+            });
+        }
+        
+        // Переключение вида
+        const viewBtns = document.querySelectorAll('.view-btn');
+        viewBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                viewBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentView = btn.dataset.view;
+                renderProducts();
+            });
+        });
+    }
+    
+    // ===== ОТРИСОВКА ТОВАРОВ =====
+    function renderProducts() {
+        let filtered = [...allProducts];
+        
+        // Фильтр по категории
+        if (currentCategory !== 'all') {
+            filtered = filtered.filter(p => p.category_id == currentCategory);
+        }
+        
+        // Поиск
+        if (currentSearch) {
+            filtered = filtered.filter(p => 
+                p.title.toLowerCase().includes(currentSearch.toLowerCase())
+            );
+        }
+        
+        // Пагинация
+        const totalPages = Math.ceil(filtered.length / itemsPerPage);
+        const start = (currentPage - 1) * itemsPerPage;
+        const paginated = filtered.slice(start, start + itemsPerPage);
+        
+        // Отрисовка
+        const container = document.getElementById('catalogProducts');
+        if (!container) return;
+        
+        container.className = `catalog-products ${currentView}-view`;
+        
+        if (paginated.length === 0) {
+            container.innerHTML = '<div class="loading">😔 Товары не найдены</div>';
+        } else {
+            container.innerHTML = paginated.map(product => {
+                const category = categories.find(c => c.id == product.category_id);
+                const hasDiscount = product.discount_price && product.discount_price < product.price;
+                const sizesText = product.sizes ? product.sizes.join(', ') : '—';
+                const imageHtml = product.images && product.images[0] 
+                    ? `<img src="${product.images[0]}" style="width:100%; height:100%; object-fit:cover;">` 
+                    : (product.emoji || '👕');
+                
+                return `
+                    <div class="product-card" data-id="${product.id}">
+                        <div class="product-img">${imageHtml}</div>
+                        <div class="product-info">
+                            <div class="product-title">${escapeHtml(product.title)}</div>
+                            <div class="product-category">${category ? escapeHtml(category.title) : 'Без категории'}</div>
+                            <div class="product-sizes">📏 Размеры: ${sizesText}</div>
+                            <div class="product-price">
+                                ${hasDiscount ? 
+                                    `<span>${product.discount_price.toLocaleString()} ₽</span>
+                                     <span class="product-price-old">${product.price.toLocaleString()} ₽</span>` :
+                                    `<span>${product.price.toLocaleString()} ₽</span>`
+                                }
+                            </div>
+                            <button class="add-to-cart-btn" data-id="${product.id}">В корзину</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Пагинация
+        renderPagination(totalPages);
+    }
+    
+    function renderPagination(totalPages) {
+        const container = document.getElementById('catalogPagination');
+        if (!container) return;
+        
+        if (totalPages <= 1) {
+            container.innerHTML = '';
+            return;
+        }
+        
+        let html = '';
+        for (let i = 1; i <= totalPages; i++) {
+            html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+        }
+        container.innerHTML = html;
+        
+        container.querySelectorAll('.page-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                currentPage = parseInt(btn.dataset.page);
+                renderProducts();
+            });
+        });
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return String(str).replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
+    }
+    
+    // ===== ЗАПУСК =====
+    loadFromCRM();
+})();
+</script>
