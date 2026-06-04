@@ -339,20 +339,16 @@ function openQuickView(id) {
     document.body.insertAdjacentHTML('beforeend', modalHtml);
     document.body.style.overflow = 'hidden';
     
-    // Инициализация событий в модальном окне
-    initModalEvents(product, hasDiscount);
-}
+    function initModalEvents(product, hasDiscount) {
+    // ===== КНОПКА ЗАКРЫТИЯ =====
+    const closeBtn = document.querySelector('#quickViewModal .quick-view-close');
+    if (closeBtn) {
+        closeBtn.onclick = (e) => {
+            e.preventDefault();
+            closeQuickView();
+        };
+    }
     
-// В функции initModalEvents добавьте этот код:
-const closeBtn = document.querySelector('#quickViewModal .quick-view-close');
-if (closeBtn) {
-    closeBtn.onclick = (e) => {
-        e.preventDefault();
-        closeQuickView();
-    };
-}
-    
-function initModalEvents(product, hasDiscount) {
     // Размеры
     const sizeBtns = document.querySelectorAll('#modalSizeButtons .size-btn');
     sizeBtns.forEach(btn => {
@@ -389,8 +385,6 @@ function initModalEvents(product, hasDiscount) {
     const buyBtn = document.getElementById('modalBuyBtn');
     if (buyBtn) {
         buyBtn.onclick = () => {
-            const size = document.querySelector('#modalSizeButtons .size-btn.active')?.innerText || 'M';
-            const color = document.querySelector('#modalColorSwatches .swatch.active')?.getAttribute('data-color') || 'оливковый';
             addToCartById(product.id);
             closeQuickView();
         };
@@ -414,7 +408,10 @@ function initModalEvents(product, hasDiscount) {
         corpBtn.onclick = () => showToast('📩 Свяжитесь с B2B-отделом: b2b@murano-apparel.ru');
     }
 }
-// ===== КОРЗИНА =====
+
+    
+    
+    // ===== КОРЗИНА =====
 function addToCartById(id) {
     const product = allProducts.find(p => p.id === id);
     if (!product) return;
