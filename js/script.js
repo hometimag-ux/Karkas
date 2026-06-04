@@ -165,24 +165,51 @@ function openCart() { document.getElementById("cartSidebar").classList.add("open
 function closeCart() { document.getElementById("cartSidebar").classList.remove("open"); document.getElementById("overlay").classList.remove("active"); }
 
 
-// ===== Мобильное меню ===== 
+// Мобильное меню (гамбургер)
 const mobileMenuBtn = document.getElementById('mobileMenuBtn');
 const mobileMenu = document.getElementById('mobileMenu');
 
 if (mobileMenuBtn) {
     mobileMenuBtn.addEventListener('click', () => {
         mobileMenu.classList.toggle('active');
+        mobileMenuBtn.classList.toggle('active');
+        document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
     });
 }
 
-// Закрытие меню при клике вне его
-document.addEventListener('click', (e) => {
-    if (mobileMenu && mobileMenuBtn) {
-        if (!mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
-            mobileMenu.classList.remove('active');
-        }
-    }
+// Закрытие меню при клике на ссылку
+document.querySelectorAll('.mobile-nav-list a').forEach(link => {
+    link.addEventListener('click', () => {
+        mobileMenu.classList.remove('active');
+        mobileMenuBtn.classList.remove('active');
+        document.body.style.overflow = '';
+    });
 });
+
+// Голосовой поиск
+let recognition = null;
+const voiceBtn = document.getElementById('voiceBtn');
+const searchInput = document.getElementById('searchInput');
+
+if (voiceBtn && 'webkitSpeechRecognition' in window) {
+    recognition = new webkitSpeechRecognition();
+    recognition.lang = 'ru-RU';
+    recognition.onresult = (event) => {
+        const text = event.results[0][0].transcript;
+        if (searchInput) searchInput.value = text;
+        voiceBtn.classList.remove('listening');
+    };
+    recognition.onend = () => voiceBtn.classList.remove('listening');
+    
+    voiceBtn.addEventListener('click', () => {
+        if (recognition) {
+            recognition.start();
+            voiceBtn.classList.add('listening');
+        } else {
+            alert('Голосовой поиск поддерживается в Chrome');
+        }
+    });
+}
 // ===== ИНИЦИАЛИЗАЦИЯ =====
 document.querySelectorAll(".magnet-item").forEach(m => m.addEventListener("click", () => { showToast(`📩 "${m.querySelector('h4').innerText}" отправлен на email!`); createDrops(); }));
 document.getElementById("shopNowBtn")?.addEventListener("click", () => document.getElementById("productsGrid").scrollIntoView({ behavior: "smooth" }));
