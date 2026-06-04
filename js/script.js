@@ -95,3 +95,43 @@ document.getElementById('contactBtn')?.addEventListener('click', () => {
 });
 
 renderProducts();
+
+// ===== ВИДЖЕТ: МАСКОТ (КАПЕЛЬКА) =====
+const mascot = document.getElementById('mascot');
+const mascotBubble = document.getElementById('mascotBubble');
+
+if (mascot) {
+    const messages = ['💙 Привет! Я Капля!', '💚 Хотите скидку 15%?', '🌊 Напишите нам!', '💙 У нас опт от 10 штук'];
+    let messageIndex = 0;
+    
+    mascot.addEventListener('click', () => {
+        mascotBubble.textContent = messages[messageIndex % messages.length];
+        messageIndex++;
+        setTimeout(() => {
+            if (mascotBubble.textContent !== 'Привет! Я Капля 💙') {
+                mascotBubble.textContent = 'Привет! Я Капля 💙';
+            }
+        }, 2500);
+    });
+}
+
+// ===== ВИДЖЕТ: СНЕЙК-БАР АКЦИЙ =====
+const snackbar = document.getElementById('snackbar');
+const closeSnackbar = document.getElementById('closeSnackbar');
+
+if (snackbar && !localStorage.getItem('snackbarClosed')) {
+    setTimeout(() => {
+        snackbar.classList.add('show');
+    }, 2000);
+    
+    setTimeout(() => {
+        snackbar.classList.remove('show');
+    }, 8000);
+}
+
+if (closeSnackbar) {
+    closeSnackbar.addEventListener('click', () => {
+        snackbar.classList.remove('show');
+        localStorage.setItem('snackbarClosed', 'true');
+    });
+}
