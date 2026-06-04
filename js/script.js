@@ -32,9 +32,11 @@ function renderStars(rating) {
 
 // ===== ЗАГРУЗКА ТОВАРОВ =====
 function loadProductsFromCRM() {
+    console.log('loadProductsFromCRM вызвана');
     const saved = localStorage.getItem('crm_data');
     
     if (!saved) {
+        console.log('Нет данных в localStorage');
         allProducts = [];
         categories = [];
         renderProducts();
@@ -266,70 +268,7 @@ function closeQuickView() {
     document.body.style.overflow = '';
 }
 
-    
-    // Размеры
-    const sizeBtns = document.querySelectorAll('#modalSizeButtons .size-btn');
-    sizeBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-            sizeBtns.forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-        });
-    });
-    
-    // Цвета
-    const swatches = document.querySelectorAll('#modalColorSwatches .swatch');
-    swatches.forEach(sw => {
-        sw.addEventListener('click', function() {
-            swatches.forEach(s => s.classList.remove('active'));
-            this.classList.add('active');
-        });
-    });
-    
-    // Табы
-    const tabBtns = document.querySelectorAll('.tab-btn');
-    const panes = document.querySelectorAll('.tab-pane');
-    tabBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const tabId = btn.getAttribute('data-tab');
-            tabBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            panes.forEach(p => p.classList.remove('active'));
-            const activePane = document.getElementById(tabId);
-            if (activePane) activePane.classList.add('active');
-        });
-    });
-    
-    // Кнопка "В корзину"
-    const buyBtn = document.getElementById('modalBuyBtn');
-    if (buyBtn) {
-        buyBtn.onclick = () => {
-            addToCartById(product.id);
-            closeQuickView();
-        };
-    }
-    
-    // Кнопка "Быстрый заказ"
-    const oneClickBtn = document.getElementById('modalOneClickBtn');
-    if (oneClickBtn) {
-        oneClickBtn.onclick = () => showToast('📞 Оставьте номер телефона — менеджер перезвонит через 5 минут');
-    }
-    
-    // Лид-магнит
-    const leadBtn = document.getElementById('modalLeadMagnetBtn');
-    if (leadBtn) {
-        leadBtn.onclick = () => showToast('📧 Чек-лист примерки отправлен на ваш email');
-    }
-    
-    // Корпоративная кнопка
-    const corpBtn = document.getElementById('modalCorpBtn');
-    if (corpBtn) {
-        corpBtn.onclick = () => showToast('📩 Свяжитесь с B2B-отделом: b2b@murano-apparel.ru');
-    }
-}
-
-    
-    
-    // ===== КОРЗИНА =====
+// ===== КОРЗИНА =====
 function addToCartById(id) {
     const product = allProducts.find(p => p.id === id);
     if (!product) return;
@@ -361,12 +300,12 @@ function updateCartCount() {
     if (counter) counter.textContent = total;
 }
 
-// ===== ИНИЦИАЛИЗАЦИЯ десктоп/мобильный =====
+// ===== ПЕРЕКЛЮЧЕНИЕ ДЕСКТОП/МОБИЛЬНЫЙ =====
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM загружен');
     loadProductsFromCRM();
     updateCartCount();
     
-    // Переключение вида (десктоп/мобильный)
     const desktopBtn = document.getElementById('desktopViewBtn');
     const mobileBtn = document.getElementById('mobileViewBtn');
     
@@ -376,7 +315,6 @@ document.addEventListener('DOMContentLoaded', () => {
             desktopBtn.classList.add('active');
             mobileBtn.classList.remove('active');
         });
-        
         mobileBtn.addEventListener('click', () => {
             document.body.classList.add('mobile-preview');
             mobileBtn.classList.add('active');
@@ -385,6 +323,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Делаем функции глобальными
 window.closeQuickView = closeQuickView;
 window.addToCartById = addToCartById;
