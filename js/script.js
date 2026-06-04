@@ -25,15 +25,29 @@ function renderProducts() {
 
 // ===== ПАНЕЛЬ ПЕРЕКЛЮЧЕНИЯ ВИДА (ВРЕМЕННАЯ) =====
 function setView(view) {
+    const body = document.body;
+    const container = document.querySelector('.container');
+    const heroImage = document.querySelector('.hero-image img');
+    
     if (view === 'mobile') {
-        document.body.classList.add('mobile-view');
-        document.querySelector('.preview-frame')?.classList.add('mobile');
+        // Добавляем класс для мобильного вида
+        body.classList.add('mobile-preview');
+        // Ограничиваем ширину контейнера
+        if (container) container.style.maxWidth = '375px';
+        if (heroImage) heroImage.style.maxWidth = '100%';
     } else {
-        document.body.classList.remove('mobile-view');
-        document.querySelector('.preview-frame')?.classList.remove('mobile');
+        // Убираем класс для десктопного вида
+        body.classList.remove('mobile-preview');
+        // Возвращаем нормальную ширину
+        if (container) container.style.maxWidth = '';
+        if (heroImage) heroImage.style.maxWidth = '';
     }
-    document.getElementById('desktopViewBtn').classList.toggle('active', view === 'desktop');
-    document.getElementById('mobileViewBtn').classList.toggle('active', view === 'mobile');
+    
+    // Обновляем активную кнопку
+    const desktopBtn = document.getElementById('desktopViewBtn');
+    const mobileBtn = document.getElementById('mobileViewBtn');
+    if (desktopBtn) desktopBtn.classList.toggle('active', view === 'desktop');
+    if (mobileBtn) mobileBtn.classList.toggle('active', view === 'mobile');
 }
 
 // ===== МОБИЛЬНОЕ МЕНЮ =====
