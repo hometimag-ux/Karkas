@@ -1049,3 +1049,9 @@ body.mobile-preview .footer-col h4:after {
 .product-card-3d:hover {
     transform: perspective(1000px) rotateX(2deg) rotateY(2deg) translateY(-8px);
 }
+
+:root {
+    --accent-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    --bg-tertiary: #f1f5f9;
+}
