@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Murano Apparel — Медицинская одежда</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ===== RESET & БАЗА ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            color: #1a2c3e;
+            overflow-x: hidden;
+        }
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 1.5rem; position: relative; z-index: 2; }
+
+        /* ===== ШАПКА ===== */
+        header {
+            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.9);
+            border-bottom: 1px solid rgba(77, 182, 172, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 0;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .logo { display: flex; align-items: center; gap: 0.5rem; }
+        .logo-icon { font-size: 2rem; animation: dropBounce 2s ease-in-out infinite; }
+        @keyframes dropBounce { 0%,100%{transform:translateY(0)rotate(0deg)}50%{transform:translateY(-5px)rotate(5deg)} }
+        .logo h1 { font-size: 1.4rem; background: linear-gradient(135deg, #00897b, #4db6ac); background-clip: text; -webkit-background-clip: text; color: transparent; font-weight: 700; }
+
+        /* НАВИГАЦИЯ */
+        .main-nav { flex: 1; display: flex; justify-content: center; }
+        .nav-list { display: flex; list-style: none; gap: 2rem; }
+        .nav-list a { text-decoration: none; color: #2c3e50; font-weight: 500; transition: color 0.2s; font-size: 0.95rem; }
+        .nav-list a:hover { color: #2a9d8f; }
+        .dropdown { position: relative; }
+        .dropdown-trigger { display: flex; align-items: center; gap: 0.3rem; }
+        .dropdown-trigger i { font-size: 0.7rem; transition: transform 0.2s; }
+        .dropdown:hover .dropdown-trigger i { transform: rotate(180deg); }
+        .dropdown-menu {
+            position: absolute; top: 100%; left: 0; background: white; min-width: 180px; border-radius: 12px;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); padding: 0.5rem 0; opacity: 0; visibility: hidden;
+            transform: translateY(-10px); transition: all 0.2s; z-index: 100; list-style: none; border: 1px solid #e2edf4;
+        }
+        .dropdown:hover .dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+        .dropdown-menu a { display: block; padding: 0.5rem 1rem; font-size: 0.85rem; color: #405d77; }
+        .dropdown-menu a:hover { background: #f0f9f7; color: #2a9d8f; }
+
+        /* ГОЛОСОВОЙ ПОИСК И КНОПКИ */
+        .voice-search { display: flex; align-items: center; gap: 0.5rem; background: white; border-radius: 2rem; padding: 0.3rem 0.8rem; border: 1px solid #cbdde9; }
+        .voice-search-input { background: transparent; border: none; padding: 0.5rem; width: 150px; }
+        .voice-btn { background: none; border: none; font-size: 1.1rem; cursor: pointer; color: #666; }
+        .voice-btn.listening { animation: voicePulse 1s infinite; color: #2a9d8f; }
+        @keyframes voicePulse { 0%,100%{transform:scale(1)}50%{transform:scale(1.1);opacity:0.7} }
+        .header-actions { display: flex; align-items: center; gap: 1rem; }
+        .cart-btn { background: none; border: none; font-size: 1.3rem; cursor: pointer; position: relative; color: #1a2c3e; }
+        .cart-btn span { position: absolute; top: -8px; right: -12px; background: #2a9d8f; color: white; font-size: 0.7rem; padding: 0.1rem 0.4rem; border-radius: 20px; }
+        .btn-primary { background: #1f6e8c; color: white; border: none; padding: 0.5rem 1.2rem; border-radius: 9999px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+        .btn-primary:hover { background: #0a5a75; transform: scale(1.02); }
+
+        /* МОБИЛЬНОЕ МЕНЮ */
+        .mobile-menu-btn { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 10px; }
+        .mobile-menu-btn span { width: 25px; height: 2px; background: #1a2c3e; transition: all 0.3s; border-radius: 2px; }
+        .mobile-menu-btn.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+        .mobile-menu-btn.active span:nth-child(2) { opacity: 0; }
+        .mobile-menu-btn.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+        .mobile-menu { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: white; padding: 80px 24px 24px; z-index: 200; flex-direction: column; justify-content: space-between; }
+        .mobile-menu.active { display: flex; }
+        .mobile-nav-list { list-style: none; }
+        .mobile-nav-list li { margin-bottom: 1rem; }
+        .mobile-nav-list a { display: block; padding: 0.75rem; text-decoration: none; color: #1a2c3e; font-size: 1.2rem; font-weight: 500; text-align: center; border-bottom: 1px solid #e2edf4; }
+        .mobile-social { text-align: center; padding: 1rem; }
+        .mobile-social p { color: #5e7f97; margin-bottom: 1rem; }
+        .social-links { display: flex; justify-content: center; gap: 1.5rem; }
+        .social-links a { color: #5e7f97; font-size: 1.3rem; transition: color 0.2s; }
+        .social-links a:hover { color: #2a9d8f; }
+
+        /* ГЕРОЙ-СЕКЦИЯ */
+        .hero { padding: 3rem 0; display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; }
+        .hero-content { flex: 1; }
+        .hero-badge { background: #e1f0f5; color: #1f6e8c; display: inline-block; padding: 0.3rem 1rem; border-radius: 9999px; margin-bottom: 1rem; font-size: 0.8rem; font-weight: 600; }
+        .hero h1 { font-size: 2.5rem; font-weight: 800; line-height: 1.2; margin-bottom: 1rem; color: #1a2c3e; }
+        .hero h1 span { color: #2a9d8f; }
+        .hero p { color: #405d77; margin-bottom: 1.5rem; }
+        .hero-image { flex: 1; text-align: center; }
+        .hero-image img { max-width: 100%; filter: drop-shadow(0 20px 30px rgba(0,0,0,0.1)); animation: floatHero 4s ease-in-out infinite; }
+        @keyframes floatHero { 0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)} }
+
+        /* КАРТОЧКИ ПРЕИМУЩЕСТВ */
+        .offers { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 3rem 0; }
+        .offer-card { background: white; border-radius: 1.5rem; padding: 1.5rem; text-align: center; border: 1px solid #eef2f8; transition: all 0.3s; }
+        .offer-card:hover { transform: translateY(-5px); box-shadow: 0 20px 28px -12px rgba(0,0,0,0.1); }
+        .offer-card .icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .offer-card h3 { font-size: 1.2rem; margin-bottom: 0.5rem; color: #1a2c3e; }
+        .offer-card p { color: #5e7f97; font-size: 0.85rem; }
+        .offer-card .price { font-size: 1.3rem; font-weight: 700; color: #1f6e8c; margin-top: 0.5rem; }
+
+        /* ТОВАРЫ И ФИЛЬТРЫ */
+        .section-title { text-align: center; font-size: 2rem; margin: 3rem 0 2rem; color: #1a2c3e; }
+        .filter-categories { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2rem; justify-content: center; }
+        .filter-btn { background: none; border: 1px solid #cbdde9; padding: 0.4rem 1rem; border-radius: 30px; cursor: pointer; font-size: 0.85rem; color: #405d77; transition: all 0.2s; }
+        .filter-btn.active { background: #1f6e8c; color: white; border-color: #1f6e8c; }
+        .filter-search { text-align: center; margin-bottom: 2rem; }
+        .filter-search input { padding: 0.6rem 1rem; border: 1px solid #cbdde9; border-radius: 30px; width: 100%; max-width: 300px; }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 2rem; margin-bottom: 3rem; }
+        .product-card { background: white; border-radius: 1.5rem; overflow: hidden; border: 1px solid #eef2f8; transition: all 0.3s; }
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 20px 28px -12px rgba(0,0,0,0.1); }
+        .product-img { padding: 1.5rem; text-align: center; font-size: 3rem; background: #f4f9fe; }
+        .product-info { padding: 1rem 1.5rem 1.5rem; }
+        .product-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; color: #1a2c3e; }
+        .product-category { font-size: 0.75rem; color: #5e7f97; margin-bottom: 0.5rem; }
+        .product-sizes { font-size: 0.75rem; color: #5e7f97; margin: 0.5rem 0; }
+        .product-price { font-size: 1.3rem; font-weight: 700; color: #1f6e8c; margin-bottom: 1rem; }
+        .product-price-old { text-decoration: line-through; color: #999; font-size: 0.85rem; margin-left: 0.5rem; font-weight: normal; }
+        .add-to-cart { width: 100%; background: #eef3fa; border: none; padding: 0.6rem; border-radius: 9999px; color: #1a2c3e; font-weight: 600; cursor: pointer; }
+        .add-to-cart:hover { background: #1f6e8c; color: white; }
+        .loading-message { text-align: center; padding: 3rem; color: #999; grid-column: 1/-1; }
+
+        /* ПРЕИМУЩЕСТВА */
+        .benefits { background: white; border-radius: 2rem; padding: 2rem; margin: 3rem 0; text-align: center; border: 1px solid #eef2f8; }
+        .benefits h3 { font-size: 1.5rem; margin-bottom: 1rem; color: #1a2c3e; }
+        .benefits-grid { display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; margin-top: 1.5rem; }
+        .benefit-item { color: #405d77; }
+
+        /* ПОДВАЛ */
+        footer { background: #1a2c3e; color: #e1e3e6; padding: 3rem 0 1rem; margin-top: 4rem; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2rem; margin-bottom: 2rem; }
+        .footer-logo { font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem; color: white; }
+        .footer-col h4 { margin-bottom: 1rem; font-size: 1rem; color: white; position: relative; display: inline-block; }
+        .footer-col h4:after { content: ''; position: absolute; bottom: -6px; left: 0; width: 30px; height: 2px; background: #4db6ac; }
+        .footer-col ul { list-style: none; }
+        .footer-col li { margin-bottom: 0.5rem; }
+        .footer-col a { color: #cbd5e1; text-decoration: none; font-size: 0.85rem; transition: all 0.2s; }
+        .footer-col a:hover { color: #4db6ac; padding-left: 4px; }
+        .footer-contacts { margin-top: 1rem; }
+        .footer-contacts p { margin-bottom: 0.5rem; font-size: 0.85rem; }
+        .footer-bottom { text-align: center; padding-top: 1.5rem; border-top: 1px solid #2a3a4e; font-size: 0.75rem; color: #94a3b8; }
+
+        /* ВИДЖЕТЫ И ПАНЕЛЬ ПЕРЕКЛЮЧЕНИЯ */
+        .view-switcher-top {
+            position: fixed; top: 10px; right: 10px; background: white; border-radius: 40px; padding: 6px 12px;
+            display: flex; align-items: center; gap: 8px; z-index: 1001; border: 1px solid #cbdde9;
+            font-size: 12px; backdrop-filter: blur(10px); background: rgba(255,255,255,0.95);
+        }
+        .view-switcher-top button { background: none; border: none; padding: 4px 12px; border-radius: 30px; cursor: pointer; font-size: 12px; font-weight: 500; color: #666; }
+        .view-switcher-top button.active { background: #1f6e8c; color: white; }
+        .mascot { position: fixed; bottom: 2rem; left: 2rem; cursor: pointer; z-index: 150; background: white; border-radius: 50%; padding: 0.5rem; box-shadow: 0 5px 15px rgba(0,0,0,0.1); animation: mascotFloat 3s ease-in-out infinite; }
+        @keyframes mascotFloat { 0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)} }
+        .mascot-icon { font-size: 2rem; }
+        .mascot-bubble { position: absolute; bottom: 60px; left: 50px; background: white; padding: 0.5rem 1rem; border-radius: 1.5rem; font-size: 0.8rem; font-weight: 600; color: #1f6e8c; white-space: nowrap; box-shadow: 0 5px 15px rgba(0,0,0,0.1); opacity: 0; transition: opacity 0.3s; pointer-events: none; border: 1px solid #cbdde9; }
+        .mascot:hover .mascot-bubble { opacity: 1; }
+        .snackbar { position: fixed; bottom: 2rem; right: 2rem; background: linear-gradient(135deg, #1f6e8c, #0a5a75); color: white; padding: 0.75rem 1.5rem; border-radius: 0.5rem; z-index: 300; transform: translateX(120%); transition: transform 0.3s; display: flex; align-items: center; gap: 1rem; font-size: 0.9rem; }
+        .snackbar.show { transform: translateX(0); }
+        .snackbar button { background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; opacity: 0.8; }
+
+        /* АДАПТИВНОСТЬ */
+        @media (max-width: 768px) {
+            .main-nav { display: none; }
+            .mobile-menu-btn { display: flex; }
+            .hero h1 { font-size: 1.8rem; }
+            .products-grid { gap: 1rem; }
+        }
+        body.mobile-preview .container { max-width: 375px; margin: 0 auto; }
+        body.mobile-preview .hero { flex-direction: column; text-align: center; }
+        body.mobile-preview .products-grid { grid-template-columns: 1fr; }
+    </style>
+</head>
+<body>
+
+<div class="view-switcher-top">
+    <span>🔍 Режим просмотра:</span>
+    <button id="desktopViewBtn" class="active">💻 Десктоп</button>
+    <button id="mobileViewBtn">📱 Мобильный</button>
+    <span class="info-badge">⚡ Временно, будет удалено</span>
+</div>
+
+<div class="mascot" id="mascot">
+    <div class="mascot-icon">💧</div>
+    <div class="mascot-bubble" id="mascotBubble">Привет! Я Капля 💙</div>
+</div>
+
+<div class="snackbar" id="snackbar">
+    <span>🎉 Скидка 15% на первый заказ!</span>
+    <button id="closeSnackbar">✕</button>
+</div>
+
+<header>
+    <div class="container header-inner">
+        <div class="logo"><span class="logo-icon">🩺</span><h1>MURANO-APPAREL</h1></div>
+        <nav class="main-nav">
+            <ul class="nav-list">
+                <li class="dropdown"><a href="#" class="dropdown-trigger">Компания <i class="fas fa-chevron-down"></i></a><ul class="dropdown-menu"><li><a href="#">О нас</a></li><li><a href="#">Новости</a></li><li><a href="#">Отзывы</a></li></ul></li>
+                <li class="dropdown"><a href="#" class="dropdown-trigger">Доставка <i class="fas fa-chevron-down"></i></a><ul class="dropdown-menu"><li><a href="#">По России</a></li><li><a href="#">Самовывоз</a></li><li><a href="#">Курьером</a></li></ul></li>
+                <li class="dropdown"><a href="#" class="dropdown-trigger">Оплата <i class="fas fa-chevron-down"></i></a><ul class="dropdown-menu"><li><a href="#">Картой</a></li><li><a href="#">Наличными</a></li><li><a href="#">QR-код</a></li></ul></li>
+                <li><a href="#">Контакты</a></li>
+            </ul>
+        </nav>
+        <div class="header-actions">
+            <div class="voice-search"><input type="text" id="searchInput" placeholder="Поиск..." class="voice-search-input"><button id="voiceBtn" class="voice-btn">🎤</button></div>
+            <button class="cart-btn" id="cartBtn">🛒 <span id="cartCounter">0</span></button>
+            <button class="btn-primary" id="contactBtn">Связаться</button>
+        </div>
+        <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+    </div>
+    <div class="mobile-menu" id="mobileMenu">
+        <ul class="mobile-nav-list"><li><a href="#">Компания</a></li><li><a href="#">Доставка</a></li><li><a href="#">Оплата</a></li><li><a href="#">Контакты</a></li></ul>
+        <div class="mobile-social"><p>Мы в соцсетях:</p><div class="social-links"><a href="#"><i class="fab fa-instagram"></i></a><a href="#"><i class="fab fa-telegram"></i></a><a href="#"><i class="fab fa-whatsapp"></i></a></div></div>
+    </div>
+</header>
+
+<main>
+    <div class="container">
+        <div class="hero">
+            <div class="hero-content">
+                <div class="hero-badge">💙 АКВА-КОЛЛЕКЦИЯ 2025 💚</div>
+                <h1>Медицинская одежда<br><span>свежесть и комфорт</span></h1>
+                <p>Дышащие ткани, идеальная посадка, современный дизайн. Создано для вашего комфорта.</p>
+                <button class="btn-primary" id="shopNowBtn">✨ В каталог →</button>
+            </div>
+            <div class="hero-image"><img src="https://placehold.co/400x400/4db6ac/white?text=%F0%9F%91%A9%E2%80%8D%E2%9A%95%EF%B8%8F" alt="Медицинская одежда"></div>
+        </div>
+
+        <div class="offers">
+            <div class="offer-card"><div class="icon">💧</div><h3>Увлажняющая ткань</h3><p>Технология Cool&amp;Dry</p><div class="price">-25%</div></div>
+            <div class="offer-card"><div class="icon">🌊</div><h3>Бесплатная доставка</h3><p>При заказе от 5000₽</p><div class="price">0 ₽</div></div>
+            <div class="offer-card"><div class="icon">💎</div><h3>Подарочный набор</h3><p>При первом заказе</p><div class="price">Бесплатно</div></div>
+        </div>
+
+        <h2 class="section-title">🌟 Аква-коллекция 🌟</h2>
+        <div class="filter-categories" id="filterCategories"></div>
+        <div class="filter-search"><input type="text" id="catalogSearch" placeholder="🔍 Поиск по названию..."></div>
+        <div class="products-grid" id="productsGrid"></div>
+
+        <div class="benefits"><h3>💙 Преимущества работы с нами</h3><div class="benefits-grid"><div class="benefit-item">✅ Сертифицированная продукция</div><div class="benefit-item">✅ Доставка по всей России</div><div class="benefit-item">✅ Опт от 10 штук</div><div class="benefit-item">✅ 24/7 поддержка</div></div></div>
+    </div>
+</main>
+
+<footer>
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-col"><div class="footer-logo">🩺 MURANO-APPAREL</div><p>Медицинская одежда для тех, кто спасает жизни.</p><div class="footer-contacts"><p>✉️ <a href="mailto:murano-apparel.@bk.ru">murano-apparel.@bk.ru</a></p><p>📞 <a href="tel:+79063771985">+7 (906) 377-19-85</a></p></div></div>
+            <div class="footer-col"><h4>Документы</h4><ul><li><a href="#">Оферта</a></li><li><a href="#">Политика конфиденциальности</a></li><li><a href="#">Пользовательское соглашение</a></li><li><a href="#">Условия обмена и возврата</a></li></ul></div>
+            <div class="footer-col"><h4>Информация</h4><ul><li><a href="#">О компании</a></li><li><a href="#">Доставка и оплата</a></li><li><a href="#">Контакты</a></li><li><a href="#">Оптовым клиентам</a></li></ul></div>
+            <div class="footer-col"><h4>Подпишитесь</h4><p>Будьте в курсе новостей и акций</p><div class="social-links"><a href="#"><i class="fab fa-instagram"></i></a><a href="#"><i class="fab fa-telegram"></i></a><a href="#"><i class="fab fa-whatsapp"></i></a></div></div>
+        </div>
+        <div class="footer-bottom"><p>© 2026 Murano Apparel — медицинская одежда для тех, кто спасает жизни.</p></div>
+    </div>
+</footer>
+
+<script>
+    // ===== ТОВАРЫ =====
+    let allProducts = [], categories = [], currentCategory = 'all', currentSearch = '';
+
+    function loadProductsFromCRM() {
+        const saved = localStorage.getItem('crm_data');
+        if (saved) { try { const data = JSON.parse(saved); allProducts = data.products || []; categories = data.categories || []; } catch(e) {} }
+        if (allProducts.length === 0) {
+            allProducts = [
+                { id: 1, title: 'Халат Aqua', price: 3490, discount_price: null, category_id: 1, sizes: ['S','M','L'], emoji: '👩‍⚕️💙' },
+                { id: 2, title: 'Костюм Wave', price: 5290, discount_price: 3990, category_id: 1, sizes: ['XS','S','M','L','XL'], emoji: '👨‍⚕️💙' },
+                { id: 3, title: 'Скраб Ocean', price: 4490, discount_price: null, category_id: 1, sizes: ['S','M','L'], emoji: '🥼💙' },
+                { id: 4, title: 'Брюки Breeze', price: 2290, discount_price: null, category_id: 1, sizes: ['28','30','32','34'], emoji: '👖💙' }
+            ];
+            categories = [{ id: 1, title: 'Одежда' }];
+        }
+        renderFilters(); renderProducts();
+    }
+
+    function getFilteredProducts() {
+        let filtered = [...allProducts];
+        if (currentCategory !== 'all') filtered = filtered.filter(p => p.category_id == currentCategory);
+        if (currentSearch) filtered = filtered.filter(p => p.title.toLowerCase().includes(currentSearch.toLowerCase()));
+        return filtered;
+    }
+
+    function renderProducts() {
+        const grid = document.getElementById('productsGrid');
+        if (!grid) return;
+        const filtered = getFilteredProducts();
+        if (filtered.length === 0) { grid.innerHTML = '<div class="loading-message">😔 Товары не найдены</div>'; return; }
+        grid.innerHTML = filtered.map(p => {
+            const cat = categories.find(c => c.id == p.category_id);
+            const hasDiscount = p.discount_price && p.discount_price < p.price;
+            return `
+                <div class="product-card">
+                    <div class="product-img">${p.emoji || '👕'}</div>
+                    <div class="product-info">
+                        <div class="product-title">${escapeHtml(p.title)}</div>
+                        <div class="product-category">${cat ? escapeHtml(cat.title) : ''}</div>
+                        <div class="product-sizes">📏 Размеры: ${p.sizes ? p.sizes.join(', ') : '—'}</div>
+                        <div class="product-price">${hasDiscount ? `<span>${p.discount_price.toLocaleString()} ₽</span><span class="product-price-old">${p.price.toLocaleString()} ₽</span>` : `<span>${p.price.toLocaleString()} ₽</span>`}</div>
+                        <button class="add-to-cart" data-id="${p.id}">В корзину</button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function renderFilters() {
+        const container = document.getElementById('filterCategories');
+        if (!container) return;
+        let html = '<button class="filter-btn active" data-cat="all">Все</button>';
+        categories.forEach(cat => { html += `<button class="filter-btn" data-cat="${cat.id}">${escapeHtml(cat.title)}</button>`; });
+        container.innerHTML = html;
+        container.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                container.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentCategory = btn.dataset.cat;
+                renderProducts();
+            });
+        });
+        const searchInput = document.getElementById('catalogSearch');
+        if (searchInput) searchInput.addEventListener('input', (e) => { currentSearch = e.target.value; renderProducts(); });
+    }
+
+    function escapeHtml(str) { if (!str) return ''; return String(str).replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'); }
+
+    // ===== ИНИЦИАЛИЗАЦИЯ ВСЕГО =====
+    function init() {
+        loadProductsFromCRM();
+        // Мобильное меню
+        const menuBtn = document.getElementById('mobileMenuBtn'), mobileMenu = document.getElementById('mobileMenu');
+        if (menuBtn && mobileMenu) {
+            menuBtn.addEventListener('click', () => { mobileMenu.classList.toggle('active'); menuBtn.classList.toggle('active'); document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : ''; });
+            document.querySelectorAll('.mobile-nav-list a').forEach(link => { link.addEventListener('click', () => { mobileMenu.classList.remove('active'); menuBtn.classList.remove('active'); document.body.style.overflow = ''; }); });
+        }
+        // Голосовой поиск
+        const voiceBtn = document.getElementById('voiceBtn');
+        if (voiceBtn && 'webkitSpeechRecognition' in window) {
+            const recognition = new webkitSpeechRecognition(); recognition.lang = 'ru-RU';
+            recognition.onresult = (event) => { const text = event.results[0][0].transcript; document.getElementById('searchInput').value = text; currentSearch = text; renderProducts(); voiceBtn.classList.remove('listening'); };
+            recognition.onend = () => voiceBtn.classList.remove('listening');
+            voiceBtn.addEventListener('click', () => { recognition.start(); voiceBtn.classList.add('listening'); });
+        }
+        // Панель вида
+        document.getElementById('desktopViewBtn')?.addEventListener('click', () => { document.body.classList.remove('mobile-preview'); document.getElementById('desktopViewBtn').classList.add('active'); document.getElementById('mobileViewBtn').classList.remove('active'); });
+        document.getElementById('mobileViewBtn')?.addEventListener('click', () => { document.body.classList.add('mobile-preview'); document.getElementById('mobileViewBtn').classList.add('active'); document.getElementById('desktopViewBtn').classList.remove('active'); });
+        // Кнопки
+        document.getElementById('shopNowBtn')?.addEventListener('click', () => document.querySelector('.products-grid')?.scrollIntoView({ behavior: 'smooth' }));
+        document.getElementById('contactBtn')?.addEventListener('click', () => alert('Форма обратной связи будет здесь'));
+        // Маскот
+        const mascot = document.getElementById('mascot'), bubble = document.getElementById('mascotBubble');
+        if (mascot) {
+            const msgs = ['💙 Привет! Я Капля!', '💚 Хотите скидку 15%?', '🌊 Напишите нам!', '💙 У нас опт от 10 штук'];
+            let idx = 0;
+            mascot.addEventListener('click', () => { bubble.textContent = msgs[idx % msgs.length]; idx++; setTimeout(() => bubble.textContent = 'Привет! Я Капля 💙', 2500); });
+        }
+        // Снэйк-бар
+        const snackbar = document.getElementById('snackbar'), closeSnack = document.getElementById('closeSnackbar');
+        if (snackbar && !localStorage.getItem('snackbarClosed')) { setTimeout(() => snackbar.classList.add('show'), 2000); setTimeout(() => snackbar.classList.remove('show'), 8000); }
+        if (closeSnack) closeSnack.addEventListener('click', () => { snackbar.classList.remove('show'); localStorage.setItem('snackbarClosed', 'true'); });
+    }
+    document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
