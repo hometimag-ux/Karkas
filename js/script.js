@@ -35,14 +35,23 @@ function renderStars(rating) {
 
 // ===== ЗАГРУЗКА ТОВАРОВ ИЗ CRM =====
 function loadProductsFromCRM() {
+    console.log('loadProductsFromCRM вызвана');
     const saved = localStorage.getItem('crm_data');
-    if (!saved) { allProducts = []; categories = []; renderProducts(); return; }
+    if (!saved) {
+        console.log('Нет данных в localStorage');
+        allProducts = [];
+        categories = [];
+        renderProducts();
+        return;
+    }
     try {
         const data = JSON.parse(saved);
         allProducts = data.products || [];
         categories = data.categories || [];
-        console.log('Загружено товаров:', allProducts.length);
-    } catch(e) { console.error(e); }
+        console.log(`Загружено товаров: ${allProducts.length}, категорий: ${categories.length}`);
+    } catch(e) {
+        console.error('Ошибка загрузки товаров', e);
+    }
     renderFilters();
     renderProducts();
 }
@@ -76,9 +85,15 @@ function renderFilters() {
 function renderProducts() {
     const grid = document.getElementById('productsGrid');
     if (!grid) return;
-    if (allProducts.length === 0) { grid.innerHTML = `<div class="loading-message">Нет товаров в каталоге</div>`; return; }
+    if (allProducts.length === 0) {
+        grid.innerHTML = `<div class="loading-message">Нет товаров в каталоге</div>`;
+        return;
+    }
     const filtered = getFilteredProducts();
-    if (filtered.length === 0) { grid.innerHTML = '<div class="loading-message">😔 Товары не найдены</div>'; return; }
+    if (filtered.length === 0) {
+        grid.innerHTML = '<div class="loading-message">😔 Товары не найдены</div>';
+        return;
+    }
     grid.innerHTML = filtered.map((p, idx) => {
         const category = categories.find(c => c.id == p.category_id);
         const hasDiscount = p.discount_price && p.discount_price < p.price;
@@ -89,18 +104,31 @@ function renderProducts() {
         return `
             <div class="product-card" data-id="${p.id}">
                 ${hasDiscount ? `<div class="discount-badge">-${discountPercent}%</div>` : ''}
-                <div class="product-img">${productImage ? `<img src="${productImage}" style="width:100%; height:100%; object-fit:cover;">` : `<div style="font-size: 4rem;">👕</div>`}</div>
+                <div class="product-img">
+                    ${productImage ? `<img src="${productImage}" alt="${escapeHtml(p.title)}" style="width:100%; height:100%; object-fit:cover;">` : `<div style="font-size: 4rem;">👕</div>`}
+                </div>
                 <div class="product-info">
                     <div class="product-title">${escapeHtml(p.title)}</div>
                     <div class="product-category">${category ? escapeHtml(category.title) : ''}</div>
                     <div class="product-sizes">📏 Размеры: ${sizesText}</div>
                     <div class="product-rating"><div class="stars">${renderStars(rating)}</div><span class="rating-value">${rating}</span></div>
-                    <div class="product-prices">${hasDiscount ? `<span class="current-price discounted">${p.discount_price.toLocaleString()} ₽</span><span class="old-price">${p.price.toLocaleString()} ₽</span><span class="discount-percent">-${discountPercent}%</span>` : `<span class="current-price">${p.price.toLocaleString()} ₽</span>`}</div>
-                    <div class="product-actions"><button class="action-icon quick-view" data-id="${p.id}" title="Быстрый просмотр">👁️</button><button class="action-icon add-to-cart" data-id="${p.id}" title="В корзину">🛒</button></div>
+                    <div class="product-prices">
+                        ${hasDiscount ? 
+                            `<span class="current-price discounted">${p.discount_price.toLocaleString()} ₽</span>
+                             <span class="old-price">${p.price.toLocaleString()} ₽</span>
+                             <span class="discount-percent">-${discountPercent}%</span>` :
+                            `<span class="current-price">${p.price.toLocaleString()} ₽</span>`
+                        }
+                    </div>
+                    <div class="product-actions">
+                        <button class="action-icon quick-view" data-id="${p.id}" title="Быстрый просмотр">👁️</button>
+                        <button class="action-icon add-to-cart" data-id="${p.id}" title="В корзину">🛒</button>
+                    </div>
                 </div>
             </div>
         `;
     }).join('');
+    attachProductEvents();
 }
 
 // ===== ОБРАБОТЧИКИ СОБЫТИЙ (делегирование) =====
@@ -135,7 +163,43 @@ function openQuickView(productId) {
     const productImage = product.images && product.images.length > 0 ? product.images[0] : null;
     const chars = product.characteristics || {};
     const packaging = product.packaging || {};
-    const modalHtml = `<div class="quick-view-modal active" id="quickViewModal"><div class="quick-view-content"><button class="quick-view-close" onclick="closeQuickView()">&times;</button><div class="quick-view-body"><div class="quick-view-left"><div class="quick-view-image">${productImage ? `<img src="${productImage}" alt="${escapeHtml(product.title)}">` : '<div style="font-size: 6rem;">👕</div>'}</div></div><div class="quick-view-right"><h3>${escapeHtml(product.title)}</h3><div class="category">${category ? escapeHtml(category.title) : 'Без категории'}</div><div class="product-rating"><div class="stars">${renderStars(rating)}</div><span class="rating-value">${rating}</span></div><div class="product-sizes-info"><strong>📏 Размеры:</strong> ${sizes}</div><div class="product-prices quick">${hasDiscount ? `<span class="current-price discounted">${product.discount_price.toLocaleString()} ₽</span><span class="old-price">${product.price.toLocaleString()} ₽</span><span class="discount-percent">-${discountPercent}%</span>` : `<span class="current-price">${product.price.toLocaleString()} ₽</span>`}</div><div class="product-description"><h4>📝 Описание</h4><p>${escapeHtml(product.description || 'Нет описания')}</p></div>${chars.brand || chars.material ? `<div class="quick-view-characteristics"><h4>📋 Характеристики</h4><table class="chars-table">${chars.brand ? `<tr><th>Бренд</th><td>${escapeHtml(chars.brand)}</td>` : ''}${chars.material ? `<tr><th>Состав</th><td>${escapeHtml(chars.material)}</td>` : ''}${chars.collar ? `<tr><th>Воротник</th><td>${escapeHtml(chars.collar)}</td>` : ''}${chars.sleeves ? `<tr><th>Рукава</th><td>${escapeHtml(chars.sleeves)}</td>` : ''}${chars.silhouette ? `<tr><th>Силуэт</th><td>${escapeHtml(chars.silhouette)}</td>` : ''}${chars.country ? `<tr><th>Страна</th><td>${escapeHtml(chars.country)}</td>` : ''}</table></div>` : ''}${packaging.length || packaging.width || packaging.height || packaging.weight ? `<div class="quick-view-packaging"><h4>📦 Габариты упаковки</h4><div>${packaging.length ? `Длина: ${packaging.length} см, ` : ''}${packaging.width ? `Ширина: ${packaging.width} см, ` : ''}${packaging.height ? `Высота: ${packaging.height} см, ` : ''}${packaging.weight ? `Вес: ${packaging.weight} кг` : ''}</div></div>` : ''}<button class="quick-view-add" onclick="addToCartById(${product.id}); closeQuickView();">🛒 Добавить в корзину</button></div></div></div></div>`;
+    const modalHtml = `
+        <div class="quick-view-modal active" id="quickViewModal">
+            <div class="quick-view-content">
+                <button class="quick-view-close" onclick="closeQuickView()">&times;</button>
+                <div class="quick-view-body">
+                    <div class="quick-view-left">
+                        <div class="quick-view-image">${productImage ? `<img src="${productImage}" alt="${escapeHtml(product.title)}">` : '<div style="font-size: 6rem;">👕</div>'}</div>
+                    </div>
+                    <div class="quick-view-right">
+                        <h3>${escapeHtml(product.title)}</h3>
+                        <div class="category">${category ? escapeHtml(category.title) : 'Без категории'}</div>
+                        <div class="product-rating"><div class="stars">${renderStars(rating)}</div><span class="rating-value">${rating}</span></div>
+                        <div class="product-sizes-info"><strong>📏 Размеры:</strong> ${sizes}</div>
+                        <div class="product-prices quick">
+                            ${hasDiscount ? 
+                                `<span class="current-price discounted">${product.discount_price.toLocaleString()} ₽</span>
+                                 <span class="old-price">${product.price.toLocaleString()} ₽</span>
+                                 <span class="discount-percent">-${discountPercent}%</span>` :
+                                `<span class="current-price">${product.price.toLocaleString()} ₽</span>`
+                            }
+                        </div>
+                        <div class="product-description"><h4>📝 Описание</h4><p>${escapeHtml(product.description || 'Нет описания')}</p></div>
+                        ${chars.brand || chars.material ? `<div class="quick-view-characteristics"><h4>📋 Характеристики</h4><table class="chars-table">
+                            ${chars.brand ? `<tr><th>Бренд</th><td>${escapeHtml(chars.brand)}</td>` : ''}
+                            ${chars.material ? `<tr><th>Состав</th><td>${escapeHtml(chars.material)}</td>` : ''}
+                            ${chars.collar ? `<tr><th>Воротник</th><td>${escapeHtml(chars.collar)}</td>` : ''}
+                            ${chars.sleeves ? `<tr><th>Рукава</th><td>${escapeHtml(chars.sleeves)}</td>` : ''}
+                            ${chars.silhouette ? `<tr><th>Силуэт</th><td>${escapeHtml(chars.silhouette)}</td>` : ''}
+                            ${chars.country ? `<tr><th>Страна</th><td>${escapeHtml(chars.country)}</td>` : ''}
+                        </table></div>` : ''}
+                        ${packaging.length || packaging.width || packaging.height || packaging.weight ? `<div class="quick-view-packaging"><h4>📦 Габариты упаковки</h4><div>${packaging.length ? `Длина: ${packaging.length} см, ` : ''}${packaging.width ? `Ширина: ${packaging.width} см, ` : ''}${packaging.height ? `Высота: ${packaging.height} см, ` : ''}${packaging.weight ? `Вес: ${packaging.weight} кг` : ''}</div></div>` : ''}
+                        <button class="quick-view-add" onclick="addToCartById(${product.id}); closeQuickView();">🛒 Добавить в корзину</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
     const oldModal = document.getElementById('quickViewModal');
     if (oldModal) oldModal.remove();
     document.body.insertAdjacentHTML('beforeend', modalHtml);
@@ -170,7 +234,15 @@ function updateCartCount() {
 
 // ===== ЗАПУСК =====
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM загружен, запускаем инициализацию');
     loadProductsFromCRM();
     attachProductEvents();
     updateCartCount();
 });
+
+// Дублируем вызов на случай, если DOM уже загружен
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => loadProductsFromCRM());
+} else {
+    loadProductsFromCRM();
+}
