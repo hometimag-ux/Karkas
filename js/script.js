@@ -351,6 +351,12 @@ function openQuickView(id) {
     document.body.insertAdjacentHTML('beforeend', modalHtml);
     document.body.style.overflow = 'hidden';
     
+    // Обработчик закрытия
+    const closeBtn = document.querySelector('#quickViewModal .quick-view-close');
+    if (closeBtn) {
+        closeBtn.onclick = () => closeQuickView();
+    }
+    
     // ==== ИНИЦИАЛИЗАЦИЯ СОБЫТИЙ ====
     // Закрытие
     const closeBtn = document.querySelector('#quickViewModal .quick-view-close');
