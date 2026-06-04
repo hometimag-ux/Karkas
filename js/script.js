@@ -341,7 +341,7 @@ function openQuickView(id) {
     
     // Инициализация событий в модальном окне
     initModalEvents(product, hasDiscount);
-//}
+}
     
 // В функции initModalEvents добавьте этот код:
 const closeBtn = document.querySelector('#quickViewModal .quick-view-close');
