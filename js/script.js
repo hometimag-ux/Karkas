@@ -252,6 +252,7 @@ function attachProductEvents() {
 }
 
 // ===== БЫСТРЫЙ ПРОСМОТР =====
+// ===== БЫСТРЫЙ ПРОСМОТР С ГАЛЕРЕЕЙ И ВСЕМИ ХАРАКТЕРИСТИКАМИ =====
 function openQuickView(productId) {
     const product = allProducts.find(p => p.id === productId);
     if (!product) return;
@@ -260,28 +261,119 @@ function openQuickView(productId) {
     const hasDiscount = product.discount_price && product.discount_price < product.price;
     const discountPercent = hasDiscount ? Math.round((1 - product.discount_price / product.price) * 100) : 0;
     const rating = product.rating || getRandomRating();
-    const sizes = product.sizes && product.sizes.length ? product.sizes.join(', ') : '—';
-    const productImage = product.images && product.images.length > 0 ? product.images[0] : null;
+    
+    // Формируем галерею фотографий
+    let galleryHtml = '';
+    if (product.images && product.images.length > 0) {
+        galleryHtml = `
+            <div class="quick-view-gallery">
+                <div class="gallery-main">
+                    <img id="galleryMainImg" src="${product.images[0]}" alt="${escapeHtml(product.title)}">
+                </div>
+                <div class="gallery-thumbs">
+                    ${product.images.map((img, idx) => `
+                        <div class="gallery-thumb ${idx === 0 ? 'active' : ''}" data-img="${img}">
+                            <img src="${img}" alt="Фото ${idx + 1}">
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    } else {
+        galleryHtml = `<div class="quick-view-image-placeholder"><div style="font-size: 6rem;">${product.emoji || '👕'}</div></div>`;
+    }
+    
+    // Формируем характеристики товара
+    let characteristicsHtml = '';
+    const chars = product.characteristics || {};
+    
+    if (Object.keys(chars).length > 0) {
+        characteristicsHtml = `
+            <div class="quick-view-characteristics">
+                <h4>📋 Характеристики</h4>
+                <table class="chars-table">
+                    ${chars.brand ? `<tr><td>Бренд:</td><td>${escapeHtml(chars.brand)}</td></tr>` : ''}
+                    ${chars.material ? `<tr><td>Состав:</td><td>${escapeHtml(chars.material)}</td></tr>` : ''}
+                    ${chars.density ? `<tr><td>Плотность:</td><td>${escapeHtml(chars.density)}</td></tr>` : ''}
+                    ${chars.texture ? `<tr><td>Текстура:</td><td>${escapeHtml(chars.texture)}</td></tr>` : ''}
+                    ${chars.gender ? `<tr><td>Пол:</td><td>${escapeHtml(chars.gender)}</td></tr>` : ''}
+                    ${chars.age ? `<tr><td>Возраст:</td><td>${escapeHtml(chars.age)}</td></tr>` : ''}
+                    ${chars.model_size ? `<tr><td>Размер на модели:</td><td>${escapeHtml(chars.model_size)}</td></tr>` : ''}
+                    ${chars.model_height ? `<tr><td>Рост на модели:</td><td>${escapeHtml(chars.model_height)}</td></tr>` : ''}
+                    ${chars.collar ? `<tr><td>Воротник:</td><td>${escapeHtml(chars.collar)}</td></tr>` : ''}
+                    ${chars.sleeves ? `<tr><td>Рукава:</td><td>${escapeHtml(chars.sleeves)}</td></tr>` : ''}
+                    ${chars.pockets ? `<tr><td>Карманы:</td><td>${escapeHtml(chars.pockets)}</td></tr>` : ''}
+                    ${chars.clasp ? `<tr><td>Застёжка:</td><td>${escapeHtml(chars.clasp)}</td></tr>` : ''}
+                    ${chars.length ? `<tr><td>Длина изделия:</td><td>${escapeHtml(chars.length)}</td></tr>` : ''}
+                    ${chars.silhouette ? `<tr><td>Силуэт:</td><td>${escapeHtml(chars.silhouette)}</td></tr>` : ''}
+                    ${chars.features ? `<tr><td>Особенности:</td><td>${escapeHtml(chars.features)}</td></tr>` : ''}
+                    ${chars.care ? `<tr><td>Уход:</td><td>${escapeHtml(chars.care)}</td></tr>` : ''}
+                    ${chars.set ? `<tr><td>Комплектация:</td><td>${escapeHtml(chars.set)}</td></tr>` : ''}
+                    ${chars.tnved ? `<tr><td>ТН ВЭД:</td><td>${escapeHtml(chars.tnved)}</td></tr>` : ''}
+                    ${chars.country ? `<tr><td>Страна:</td><td>${escapeHtml(chars.country)}</td></tr>` : ''}
+                </table>
+            </div>
+        `;
+    }
+    
+    // Габариты упаковки
+    let packagingHtml = '';
+    const packaging = product.packaging || {};
+    if (packaging.length || packaging.width || packaging.height || packaging.weight) {
+        packagingHtml = `
+            <div class="quick-view-packaging">
+                <h4>📦 Габариты упаковки</h4>
+                <div class="packaging-grid">
+                    ${packaging.length ? `<div><strong>Длина:</strong> ${packaging.length} см</div>` : ''}
+                    ${packaging.width ? `<div><strong>Ширина:</strong> ${packaging.width} см</div>` : ''}
+                    ${packaging.height ? `<div><strong>Высота:</strong> ${packaging.height} см</div>` : ''}
+                    ${packaging.weight ? `<div><strong>Вес:</strong> ${packaging.weight} кг</div>` : ''}
+                </div>
+            </div>
+        `;
+    }
+    
+    // Ярлыки (теги)
+    let tagsHtml = '';
+    if (product.tags && product.tags.length > 0) {
+        tagsHtml = `
+            <div class="quick-view-tags">
+                ${product.tags.map(tag => `<span class="product-tag">${escapeHtml(tag)}</span>`).join('')}
+            </div>
+        `;
+    }
     
     const modalHtml = `
         <div class="quick-view-modal active" id="quickViewModal">
             <div class="quick-view-content">
                 <button class="quick-view-close" onclick="closeQuickView()">&times;</button>
                 <div class="quick-view-body">
-                    <div class="quick-view-image">
-                        ${productImage ? 
-                            `<img src="${productImage}" alt="${escapeHtml(product.title)}" style="width:100%; border-radius:1rem;">` : 
-                            `<div style="font-size: 6rem;">${product.emoji || '👕'}</div>`
-                        }
+                    <div class="quick-view-left">
+                        ${galleryHtml}
                     </div>
-                    <div class="quick-view-info">
+                    <div class="quick-view-right">
                         <h3>${escapeHtml(product.title)}</h3>
                         <div class="category">${category ? escapeHtml(category.title) : 'Без категории'}</div>
+                        
+                        ${tagsHtml}
+                        
                         <div class="product-rating">
                             <div class="stars">${renderStars(rating)}</div>
                             <span class="rating-value">${rating}</span>
+                            <span class="reviews-count">(${product.reviews_count || 0} отзывов)</span>
                         </div>
-                        <div class="prices">
+                        
+                        <div class="product-sizes-info">
+                            <strong>📏 Размеры в наличии:</strong>
+                            <div class="sizes-list">
+                                ${product.sizes && product.sizes.length ? 
+                                    product.sizes.map(s => `<span class="size-option">${escapeHtml(s)}</span>`).join('') : 
+                                    '<span>—</span>'
+                                }
+                            </div>
+                        </div>
+                        
+                        <div class="product-prices quick">
                             ${hasDiscount ? 
                                 `<span class="current-price discounted">${product.discount_price.toLocaleString()} ₽</span>
                                  <span class="old-price">${product.price.toLocaleString()} ₽</span>
@@ -289,9 +381,22 @@ function openQuickView(productId) {
                                 `<span class="current-price">${product.price.toLocaleString()} ₽</span>`
                             }
                         </div>
-                        <div class="sizes"><strong>Размеры:</strong><br>${sizes}</div>
-                        <p class="description">${escapeHtml(product.description || 'Нет описания')}</p>
-                        <button class="quick-view-add" onclick="addToCartById(${product.id}); closeQuickView();">🛒 Добавить в корзину</button>
+                        
+                        <div class="product-description">
+                            <h4>📝 Описание</h4>
+                            <p>${escapeHtml(product.description || 'Нет описания')}</p>
+                        </div>
+                        
+                        ${characteristicsHtml}
+                        ${packagingHtml}
+                        
+                        <div class="product-article" style="margin-top: 1rem; font-size: 0.75rem; color: #94a3b8;">
+                            Артикул: ${product.article || '—'}
+                        </div>
+                        
+                        <button class="quick-view-add" onclick="addToCartById(${product.id}); closeQuickView();">
+                            🛒 Добавить в корзину
+                        </button>
                     </div>
                 </div>
             </div>
@@ -303,12 +408,23 @@ function openQuickView(productId) {
     
     document.body.insertAdjacentHTML('beforeend', modalHtml);
     document.body.style.overflow = 'hidden';
+    
+    // Инициализация галереи
+    initQuickViewGallery();
 }
 
-function closeQuickView() {
-    const modal = document.getElementById('quickViewModal');
-    if (modal) modal.remove();
-    document.body.style.overflow = '';
+function initQuickViewGallery() {
+    const thumbs = document.querySelectorAll('.gallery-thumb');
+    const mainImg = document.getElementById('galleryMainImg');
+    
+    thumbs.forEach(thumb => {
+        thumb.addEventListener('click', () => {
+            const imgSrc = thumb.dataset.img;
+            if (mainImg) mainImg.src = imgSrc;
+            thumbs.forEach(t => t.classList.remove('active'));
+            thumb.classList.add('active');
+        });
+    });
 }
 
 // ===== КОРЗИНА =====
