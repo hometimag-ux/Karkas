@@ -34,21 +34,67 @@
 <header>
     <div class="container header-inner">
         <div class="logo">
-            <span class="logo-icon">💙💚</span>
-            <h1>MedAqua</h1>
+            <span class="logo-icon">🩺</span>
+            <h1>MURANO-APPAREL</h1>
         </div>
-        <div class="role-switch">
-            <button class="role-btn active" data-role="retail">🛍️ Розница</button>
-            <button class="role-btn" data-role="wholesale">📦 Опт</button>
+        
+        <!-- Основная навигация -->
+        <nav class="main-nav">
+            <ul class="nav-list">
+                <li><a href="#">Главная</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-trigger">Компания <i class="fas fa-chevron-down"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">О нас</a></li>
+                        <li><a href="#">Новости</a></li>
+                        <li><a href="#">Отзывы</a></li>
+                        <li><a href="#">Вакансии</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-trigger">Доставка <i class="fas fa-chevron-down"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">По России</a></li>
+                        <li><a href="#">Самовывоз</a></li>
+                        <li><a href="#">Курьером</a></li>
+                        <li><a href="#">СДЭК</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-trigger">Оплата <i class="fas fa-chevron-down"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Банковской картой</a></li>
+                        <li><a href="#">Наличными</a></li>
+                        <li><a href="#">Оплата по QR</a></li>
+                        <li><a href="#">Для юрлиц</a></li>
+                    </ul>
+                </li>
+                <li><a href="#">Контакты</a></li>
+            </ul>
+        </nav>
+        
+        <div class="header-actions">
+            <button class="cart-btn" id="cartBtn">
+                🛒 <span id="cartCounter">0</span>
+            </button>
+            <button class="btn-primary" id="contactBtn">Связаться</button>
         </div>
-        <div style="display: flex; gap: 1rem; align-items: center;">
-            <!-- ФИШКА 4: ГОЛОСОВОЙ ПОИСК -->
-            <div class="voice-search">
-                <input type="text" id="searchInput" placeholder="Поиск..." style="border:none; background:transparent; padding:0.5rem; outline:none;">
-                <button id="voiceBtn" class="voice-btn">🎤</button>
-            </div>
-            <button id="cartBtn" style="background: none; border: none; font-size: 1.8rem; cursor: pointer;">🛒 <span id="cartCounter" style="background: #4db6ac; color: white; border-radius: 50%; padding: 0.1rem 0.4rem; font-size: 0.8rem;">0</span></button>
-        </div>
+        
+        <!-- Кнопка для мобильного меню -->
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+    
+    <!-- Мобильное меню (скрыто по умолчанию) -->
+    <div class="mobile-menu" id="mobileMenu">
+        <ul>
+            <li><a href="#">Главная</a></li>
+            <li><a href="#">Компания</a></li>
+            <li><a href="#">Доставка</a></li>
+            <li><a href="#">Оплата</a></li>
+            <li><a href="#">Контакты</a></li>
+        </ul>
     </div>
 </header>
 
@@ -123,8 +169,60 @@
     <button id="checkoutBtn" class="btn-primary" style="width:100%;">💳 Оформить заказ</button>
 </div>
 <div class="overlay" id="overlay"></div>
+<footer>
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <div class="footer-logo">🩺 MURANO-APPAREL</div>
+                <p>Медицинская одежда для тех, кто спасает жизни.</p>
+                <div class="footer-contacts">
+                    <p>✉️ <a href="mailto:murano-apparel.@bk.ru">murano-apparel.@bk.ru</a></p>
+                    <p>📞 <a href="tel:+79063771985">+7 (906) 377-19-85</a></p>
+                </div>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Документы</h4>
+                <ul>
+                    <li><a href="/docs/offer.html">Оферта</a></li>
+                    <li><a href="/docs/privacy.html">Политика конфиденциальности</a></li>
+                    <li><a href="/docs/agreement.html">Пользовательское соглашение</a></li>
+                    <li><a href="/docs/return.html">Условия обмена и возврата</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Информация</h4>
+                <ul>
+                    <li><a href="#">О компании</a></li>
+                    <li><a href="#">Доставка и оплата</a></li>
+                    <li><a href="#">Контакты</a></li>
+                    <li><a href="#">Оптовым клиентам</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Подпишитесь</h4>
+                <p>Будьте в курсе новостей и акций</p>
+                <form class="footer-subscribe">
+                    <input type="email" placeholder="Ваш email">
+                    <button type="submit">→</button>
+                </form>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-vk"></i></a>
+                    <a href="#"><i class="fab fa-telegram"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 Murano Apparel — медицинская одежда для тех, кто спасает жизни.</p>
+        </div>
+    </div>
+</footer>
 
-<!-- Подключение JavaScript -->
+    
+    <!-- Подключение JavaScript -->
 <script src="js/script.js"></script>
 </body>
 </html>
