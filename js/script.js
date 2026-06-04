@@ -205,18 +205,24 @@ function openQuickView(id) {
                 <div class="quick-view-body">
                     <div class="quick-view-left">
                         <div class="quick-view-image">${img ? `<img src="${img}" alt="${escapeHtml(product.title)}">` : `<div>${product.emoji || '👕'}</div>`}</div>
-                        <div class="status-badge">✓ в наличии</div>
+                        <div class="status-badge">✓ в наличии | профессиональная серия</div>
                     </div>
                     <div class="quick-view-right">
                         <h2>${escapeHtml(product.title)}</h2>
+                        ${product.article ? `<div class="article">Артикул: ${escapeHtml(product.article)}</div>` : ''}
+                        <div class="category">${category ? escapeHtml(category.title) : ''}</div>
+                        
                         <div class="rating-row">
                             <div class="stars">${stars}</div>
                             <span>${rating}</span>
                         </div>
+                        
                         <div class="price-card">
                             <span class="current-price">${hasDiscount ? product.discount_price.toLocaleString() : product.price.toLocaleString()} ₽</span>
                             ${hasDiscount ? `<span class="old-price">${product.price.toLocaleString()} ₽</span>` : ''}
+                            ${hasDiscount ? `<span class="discount-percent">-${discountPercent}%</span>` : ''}
                         </div>
+                        
                         ${sizesList.length > 0 ? `
                         <div class="size-selector">
                             <div class="size-buttons">
@@ -224,9 +230,37 @@ function openQuickView(id) {
                             </div>
                         </div>
                         ` : ''}
+                        
                         <button class="btn-primary add-to-cart-modal" data-id="${product.id}">В корзину</button>
-                        <div class="description">${escapeHtml(product.description || 'Нет описания')}</div>
-                        ${chars.material ? `<div><strong>Состав:</strong> ${escapeHtml(chars.material)}</div>` : ''}
+                        
+                        <div class="description">
+                            <h4>Описание</h4>
+                            <p>${escapeHtml(product.description || 'Нет описания')}</p>
+                        </div>
+                        
+                        ${Object.keys(chars).length > 0 ? `
+                        <div class="characteristics">
+                            <h4>Характеристики</h4>
+                            <table class="chars-table">
+                                ${chars.brand ? `<tr><th>Бренд</th><td>${escapeHtml(chars.brand)}</td>` : ''}
+                                ${chars.material ? `<tr><th>Состав</th><td>${escapeHtml(chars.material)}</td>` : ''}
+                                ${chars.collar ? `<tr><th>Воротник</th><td>${escapeHtml(chars.collar)}</td>` : ''}
+                                ${chars.sleeves ? `<tr><th>Рукава</th><td>${escapeHtml(chars.sleeves)}</td>` : ''}
+                                ${chars.pockets ? `<tr><th>Карманы</th><td>${escapeHtml(chars.pockets)}</td>` : ''}
+                                ${chars.clasp ? `<td><th>Застёжка</th><td>${escapeHtml(chars.clasp)}</td>` : ''}
+                                ${chars.length ? `<tr><th>Длина</th><td>${escapeHtml(chars.length)}</td>` : ''}
+                                ${chars.silhouette ? `<tr><th>Силуэт</th><td>${escapeHtml(chars.silhouette)}</td>` : ''}
+                                ${chars.country ? `<tr><th>Страна</th><td>${escapeHtml(chars.country)}</td>` : ''}
+                            </table>
+                        </div>
+                        ` : ''}
+                        
+                        ${(pack.length || pack.width || pack.height || pack.weight) ? `
+                        <div class="packaging">
+                            <h4>Габариты упаковки</h4>
+                            <div>${pack.length ? `Длина: ${pack.length} см, ` : ''}${pack.width ? `Ширина: ${pack.width} см, ` : ''}${pack.height ? `Высота: ${pack.height} см, ` : ''}${pack.weight ? `Вес: ${pack.weight} кг` : ''}</div>
+                        </div>
+                        ` : ''}
                     </div>
                 </div>
             </div>
