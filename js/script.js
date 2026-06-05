@@ -38,29 +38,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const menuOverlay = document.getElementById('menuOverlay');
     
     if (burgerBtn && mobileMenu && menuOverlay) {
-        function closeMenu() {
-            mobileMenu.classList.remove('active');
-            menuOverlay.classList.remove('active');
-            burgerBtn.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-        
-        function openMenu() {
-            mobileMenu.classList.add('active');
-            menuOverlay.classList.add('active');
-            burgerBtn.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-        
         burgerBtn.onclick = function() {
-            if (mobileMenu.classList.contains('active')) {
-                closeMenu();
-            } else {
-                openMenu();
-            }
+            mobileMenu.classList.toggle('active');
+            menuOverlay.classList.toggle('active');
+            this.classList.toggle('active');
         };
         
-        menuOverlay.onclick = closeMenu;
+        menuOverlay.onclick = function() {
+            mobileMenu.classList.remove('active');
+            menuOverlay.classList.remove('active');
+            if (burgerBtn) burgerBtn.classList.remove('active');
+        };
     }
 });
     
