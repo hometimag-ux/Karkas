@@ -178,6 +178,13 @@ function attachProductEvents() {
 }
 
 // ===== БЫСТРЫЙ ПРОСМОТР (в стиле образца) =====
+
+function closeQuickView() {
+    const modal = document.getElementById('quickViewModal');
+    if (modal) modal.remove();
+    document.body.style.overflow = '';
+}
+
 function openQuickView(id) {
     const product = allProducts.find(p => p.id === id);
     if (!product) return;
