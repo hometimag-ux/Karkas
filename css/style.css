@@ -1,4 +1,8 @@
 /* ===== ОБЩИЕ СТИЛИ ===== */
+body {
+  background: linear-gradient(135deg, #e8f5e9 0%, #e0f2f1 25%, #b2dfdb 50%, #80cbc4 75%, #4db6ac 100%);
+}
+
 * {
     margin: 0;
     padding: 0;
