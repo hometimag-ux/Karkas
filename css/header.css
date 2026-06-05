@@ -1,262 +1,4 @@
-/* ===== ШАПКА ПРОФИЛЯ ===== */
-header {
-    background: white;
-    border-bottom: 1px solid #e2edf4;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-.header-inner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 0.8rem 1.5rem;
-    max-width: 1280px;
-    margin: 0 auto;
-}
-
-/* Бургер-кнопка — только на мобильных */
-.burger-btn {
-    display: none;
-    flex-direction: column;
-    gap: 4px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 8px;
-}
-
-.burger-btn span {
-    width: 22px;
-    height: 2px;
-    background: #1a2c3e;
-    border-radius: 2px;
-    transition: 0.3s;
-}
-
-.burger-btn.active span:nth-child(1) {
-    transform: translateY(6px) rotate(45deg);
-}
-.burger-btn.active span:nth-child(2) {
-    opacity: 0;
-}
-.burger-btn.active span:nth-child(3) {
-    transform: translateY(-6px) rotate(-45deg);
-}
-
-/* Поиск — всегда виден на десктопе */
-.voice-search {
-    display: flex;
-    align-items: center;
-    background: #f5f7fa;
-    border-radius: 40px;
-    padding: 0.3rem 1rem;
-    border: 1px solid #e2edf4;
-    width: 250px;
-}
-
-.voice-search-input {
-    flex: 1;
-    background: transparent;
-    border: none;
-    padding: 0.5rem;
-    font-size: 0.9rem;
-    outline: none;
-}
-
-.voice-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 1rem;
-    padding: 0 0 0 0.5rem;
-}
-
-/* Иконка поиска для мобильных (скрыта на десктопе) */
-.search-icon-btn {
-    display: none;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 1.2rem;
-    padding: 8px;
-    color: #1a2c3e;
-}
-
-/* Развёрнутый поиск для мобильных (скрыт по умолчанию) */
-.search-expanded {
-    display: none;
-}
-
-/* Бренд */
-.brand-link {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: #1a2c3e;
-    text-decoration: none;
-    white-space: nowrap;
-}
-
-/* Правая группа */
-.user-actions {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-}
-
-.account-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 1.2rem;
-    padding: 8px;
-    color: #1a2c3e;
-}
-
-.cart-btn {
-    position: relative;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 1.2rem;
-    padding: 8px;
-    color: #1a2c3e;
-}
-
-.cart-btn span {
-    position: absolute;
-    top: 0;
-    right: 0;
-    background: #2a9d8f;
-    color: white;
-    font-size: 0.6rem;
-    padding: 0.1rem 0.35rem;
-    border-radius: 20px;
-}
-
-/* Мобильное меню */
-.mobile-menu {
-    position: fixed;
-    top: 0;
-    left: -100%;
-    width: 80%;
-    max-width: 320px;
-    height: 100%;
-    background: white;
-    z-index: 1000;
-    padding: 70px 20px 20px;
-    transition: left 0.3s ease;
-    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-    overflow-y: auto;
-}
-
-.mobile-menu.active {
-    left: 0;
-}
-
-.mobile-nav-list {
-    list-style: none;
-    padding: 0;
-}
-
-.mobile-nav-list li {
-    margin-bottom: 1rem;
-}
-
-.mobile-nav-list a {
-    display: block;
-    padding: 0.75rem;
-    text-decoration: none;
-    color: #1a2c3e;
-    font-size: 1.1rem;
-    font-weight: 500;
-    border-bottom: 1px solid #e2edf4;
-}
-
-/* Затемнение фона */
-.menu-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.5);
-    z-index: 999;
-    opacity: 0;
-    visibility: hidden;
-    transition: 0.3s;
-}
-
-.menu-overlay.active {
-    opacity: 1;
-    visibility: visible;
-}
-
-/* ===== МОБИЛЬНАЯ АДАПТАЦИЯ ===== */
-@media (max-width: 768px) {
-    .header-inner {
-        padding: 0.8rem 1rem;
-    }
-    
-    /* Показываем бургер */
-    .burger-btn {
-        display: flex;
-    }
-    
-    /* Прячем обычный поиск, показываем иконку */
-    .voice-search {
-        display: none;
-    }
-    
-    .search-icon-btn {
-        display: block;
-    }
-    
-    /* Развёрнутый поиск */
-    .search-expanded {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        background: white;
-        padding: 12px 16px;
-        z-index: 1002;
-        transform: translateY(-100%);
-        transition: transform 0.3s ease;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-    
-    .search-expanded.active {
-        transform: translateY(0);
-    }
-    
-    .search-expanded .voice-search {
-        display: flex;
-        width: 100%;
-    }
-    
-    .search-expanded .voice-search-input {
-        flex: 1;
-        padding: 10px 12px;
-        border: 1px solid #e2edf4;
-        border-radius: 40px;
-    }
-    
-    /* Уменьшаем бренд */
-    .brand-link {
-        font-size: 0.9rem;
-    }
-    
-    /* Скрываем текст "Кабинет", оставляем иконку */
-    .account-text {
-        display: none;
-    }
-}
-
-
-/* ===== ШАПКА (ДОБАВИТЬ В КОНЕЦ ФАЙЛА) ===== */
+/* ===== ШАПКА (ЕДИНАЯ ДЛЯ ВСЕХ УСТРОЙСТВ) ===== */
 header {
     background: white;
     border-bottom: 1px solid #e2edf4;
@@ -275,9 +17,9 @@ header {
     margin: 0 auto;
 }
 
-/* Бургер */
+/* Бургер — виден на всех устройствах! */
 .burger-btn {
-    display: none;
+    display: flex;
     flex-direction: column;
     gap: 4px;
     background: none;
@@ -291,6 +33,18 @@ header {
     height: 2px;
     background: #1a2c3e;
     border-radius: 2px;
+    transition: 0.3s;
+}
+
+/* Анимация бургера при открытом меню */
+.burger-btn.active span:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+}
+.burger-btn.active span:nth-child(2) {
+    opacity: 0;
+}
+.burger-btn.active span:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
 }
 
 /* Десктопный поиск */
@@ -323,9 +77,10 @@ header {
     font-weight: 700;
     color: #1a2c3e;
     text-decoration: none;
+    white-space: nowrap;
 }
 
-/* Мобильная иконка поиска */
+/* Мобильная иконка поиска (скрыта на десктопе, показывается на мобильных) */
 .search-mobile-icon {
     display: none;
     background: none;
@@ -334,22 +89,46 @@ header {
     cursor: pointer;
 }
 
-/* Корзина */
+/* Правая группа: личный кабинет + корзина (видна на всех устройствах) */
+.user-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.account-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 8px;
+    color: #1a2c3e;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.account-text {
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
 .cart-btn {
     background: none;
     border: none;
     font-size: 1.2rem;
     cursor: pointer;
     position: relative;
+    padding: 8px;
 }
 
 .cart-btn span {
     position: absolute;
-    top: -8px;
-    right: -12px;
+    top: 0;
+    right: 0;
     background: #2a9d8f;
     color: white;
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     padding: 0.1rem 0.4rem;
     border-radius: 20px;
 }
@@ -359,13 +138,15 @@ header {
     position: fixed;
     top: 0;
     left: -100%;
-    width: 280px;
+    width: 80%;
+    max-width: 320px;
     height: 100%;
     background: white;
     z-index: 200;
     padding: 70px 20px 20px;
     transition: left 0.3s;
     box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    overflow-y: auto;
 }
 
 .mobile-menu.active {
@@ -409,7 +190,7 @@ header {
     visibility: visible;
 }
 
-/* Мобильный поиск */
+/* Мобильный поиск (выезжает сверху) */
 .mobile-search {
     position: fixed;
     top: 0;
@@ -444,12 +225,13 @@ header {
     cursor: pointer;
 }
 
-/* ===== МОБИЛЬНАЯ АДАПТАЦИЯ ===== */
+/* ===== АДАПТАЦИЯ ДЛЯ МОБИЛЬНЫХ ===== */
 @media (max-width: 768px) {
     .burger-btn {
         display: flex;
     }
     
+    /* Прячем десктопный поиск, показываем иконку */
     .search-desktop {
         display: none;
     }
@@ -458,7 +240,36 @@ header {
         display: block;
     }
     
+    /* Уменьшаем бренд */
     .brand-link {
         font-size: 0.9rem;
+    }
+    
+    /* Прячем текст "Кабинет", оставляем только иконку */
+    .account-text {
+        display: none;
+    }
+    
+    .account-btn {
+        font-size: 1.2rem;
+    }
+}
+
+/* ===== АДАПТАЦИЯ ДЛЯ ДЕСКТОПА ===== */
+@media (min-width: 769px) {
+    .burger-btn {
+        display: flex; /* Бургер виден и на десктопе */
+    }
+    
+    .search-mobile-icon {
+        display: none;
+    }
+    
+    .search-desktop {
+        display: flex;
+    }
+    
+    .account-text {
+        display: inline; /* Текст "Кабинет" виден на десктопе */
     }
 }
