@@ -1,0 +1,260 @@
+/* ===== КАРТОЧКИ ПРЕИМУЩЕСТВ ===== */
+.offers {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin: 3rem 0;
+}
+
+.offer-card {
+    background: white;
+    border-radius: 1.5rem;
+    padding: 1.5rem;
+    text-align: center;
+    border: 1px solid #eef2f8;
+    transition: all 0.3s;
+}
+
+.offer-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 28px -12px rgba(0,0,0,0.1);
+}
+
+.offer-card .icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.offer-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: #1a2c3e;
+}
+
+.offer-card p {
+    color: #5e7f97;
+    font-size: 0.85rem;
+}
+
+.offer-card .price {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #1f6e8c;
+    margin-top: 0.5rem;
+}
+
+/* ===== КАТАЛОГ ТОВАРОВ ===== */
+.section-title {
+    text-align: center;
+    font-size: 2rem;
+    margin: 3rem 0 2rem;
+    color: #1a2c3e;
+}
+
+.filter-categories {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+    justify-content: center;
+}
+
+.filter-btn {
+    background: none;
+    border: 1px solid #cbdde9;
+    padding: 0.4rem 1rem;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: #405d77;
+}
+
+.filter-btn.active {
+    background: #1f6e8c;
+    color: white;
+    border-color: #1f6e8c;
+}
+
+.filter-search {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.filter-search input {
+    padding: 0.5rem 1rem;
+    border: 1px solid #cbdde9;
+    border-radius: 30px;
+    width: 100%;
+    max-width: 300px;
+}
+
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.product-card {
+    position: relative;
+    background: white;
+    border-radius: 1.5rem;
+    overflow: hidden;
+    border: 1px solid #eef2f8;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 28px -12px rgba(0,0,0,0.1);
+}
+
+.product-img {
+    height: 200px;
+    padding: 1rem;
+    text-align: center;
+    background: #f4f9fe;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.product-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.product-img div {
+    font-size: 4rem;
+}
+
+.product-info {
+    padding: 1rem 1.5rem 1.5rem;
+}
+
+.product-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #1a2c3e;
+}
+
+.product-category {
+    font-size: 0.75rem;
+    color: #5e7f97;
+    margin-bottom: 0.5rem;
+}
+
+.product-sizes {
+    font-size: 0.75rem;
+    color: #5e7f97;
+    margin: 0.5rem 0;
+}
+
+.product-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin: 0.5rem 0;
+}
+
+.star {
+    color: #cbd5e1;
+    font-size: 0.85rem;
+}
+
+.star.filled {
+    color: #fbbf24;
+}
+
+.rating-value {
+    font-size: 0.75rem;
+    color: #64748b;
+}
+
+.product-prices {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin: 0.5rem 0;
+    flex-wrap: wrap;
+}
+
+.current-price {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #1f6e8c;
+}
+
+.current-price.discounted {
+    color: #f43f5e;
+}
+
+.old-price {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    text-decoration: line-through;
+}
+
+.discount-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: #f43f5e;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    z-index: 10;
+}
+
+.product-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.quick-view, .add-to-cart {
+    flex: 1;
+    background: #f1f5f9;
+    border: none;
+    padding: 0.5rem;
+    border-radius: 40px;
+    cursor: pointer;
+}
+
+.add-to-cart {
+    background: #1f6e8c;
+    color: white;
+}
+
+/* ===== ПРЕИМУЩЕСТВА ===== */
+.benefits {
+    background: white;
+    border-radius: 2rem;
+    padding: 2rem;
+    margin: 3rem 0;
+    text-align: center;
+    border: 1px solid #eef2f8;
+}
+
+.benefits h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: #1a2c3e;
+}
+
+.benefits-grid {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
+}
+
+.benefit-item {
+    color: #405d77;
+}
