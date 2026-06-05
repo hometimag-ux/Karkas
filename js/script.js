@@ -447,29 +447,6 @@ function updateCartCount() {
     if (counter) counter.textContent = total;
 }
 
-// ===== ПЕРЕКЛЮЧЕНИЕ ДЕСКТОП/МОБИЛЬНЫЙ =====
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM загружен');
-    loadProductsFromCRM();
-    updateCartCount();
-    
-    const desktopBtn = document.getElementById('desktopViewBtn');
-    const mobileBtn = document.getElementById('mobileViewBtn');
-    
-    if (desktopBtn && mobileBtn) {
-        desktopBtn.addEventListener('click', () => {
-            document.body.classList.remove('mobile-preview');
-            desktopBtn.classList.add('active');
-            mobileBtn.classList.remove('active');
-        });
-        mobileBtn.addEventListener('click', () => {
-            document.body.classList.add('mobile-preview');
-            mobileBtn.classList.add('active');
-            desktopBtn.classList.remove('active');
-        });
-    }
-});
-
 // ===== ПЕРЕМЕЩЕНИЕ КНОПКИ ГЕРОЙ В КАТАЛОГ =====
 const shopNowBtn = document.getElementById('shopNowBtn');
 if (shopNowBtn) {
