@@ -1425,7 +1425,9 @@ footer {
 }
 /* ===== НАСТОЯЩАЯ АДАПТИВНАЯ ВЁРСТКА (БЕЗ КНОПОК) ===== */
 
-/* Планшеты и маленькие ноутбуки (до 1024px) */
+/* ===== АДАПТИВНАЯ ВЁРСТКА ===== */
+
+/* Планшеты (до 1024px) */
 @media (max-width: 1024px) {
     .container {
         padding: 0 1.2rem;
@@ -1447,27 +1449,80 @@ footer {
         padding: 0 1rem;
     }
     
-    /* Шапка */
+    /* Шапка - сетка */
     .header-inner {
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+        gap: 0.8rem;
+        padding: 0.8rem 0;
     }
     
+    /* Логотип */
+    .logo {
+        grid-column: 1 / 2;
+    }
+    
+    .logo h1 {
+        font-size: 1.1rem;
+    }
+    
+    .logo-icon {
+        font-size: 1.6rem;
+    }
+    
+    /* Десктопное меню - скрываем */
     .main-nav {
         display: none;
     }
     
+    /* Кнопка бургера - показываем */
     .mobile-menu-btn {
         display: flex;
+        flex-direction: column;
+        gap: 5px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 8px;
+        order: 2;
     }
     
+    .mobile-menu-btn span {
+        width: 22px;
+        height: 2px;
+        background: #1a2c3e;
+        border-radius: 2px;
+    }
+    
+    /* Блок с поиском и корзиной */
+    .header-actions {
+        grid-column: 3 / 4;
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+    }
+    
+    /* Поиск компактный */
     .voice-search {
-        order: 3;
-        width: 100%;
-        justify-content: space-between;
+        padding: 0.2rem 0.5rem;
+        background: #fff;
+        border-radius: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+        border: 1px solid #cbdde9;
     }
     
     .voice-search-input {
-        width: 100%;
+        width: 80px;
+        font-size: 0.8rem;
+        padding: 0.4rem 0;
+    }
+    
+    .voice-btn {
+        font-size: 1rem;
+        padding: 0;
     }
     
     /* Герой-секция */
@@ -1561,10 +1616,6 @@ footer {
         transform: translateX(-50%);
     }
     
-    .footer-col a:hover {
-        padding-left: 0;
-    }
-    
     /* Маскот (талисман) */
     .mascot {
         bottom: 1rem;
@@ -1576,58 +1627,47 @@ footer {
         display: none;
     }
     
-    /* Снэкбар */
-    .snackbar {
-        bottom: 1rem;
-        right: 1rem;
-        left: 1rem;
-        font-size: 0.8rem;
-        padding: 0.5rem 1rem;
-    }
-    
-    /* Тосты */
-    .toast {
+    /* Снэкбар и тосты */
+    .snackbar, .toast {
         bottom: 1rem;
         right: 1rem;
         left: 1rem;
         text-align: center;
+    }
+    
+    .snackbar {
+        font-size: 0.8rem;
+        padding: 0.5rem 1rem;
     }
 }
 
 /* Очень маленькие телефоны (до 480px) */
 @media (max-width: 480px) {
     .logo h1 {
-        font-size: 1.1rem;
+        font-size: 0.9rem;
     }
     
     .logo-icon {
-        font-size: 1.5rem;
+        font-size: 1.3rem;
     }
     
     .hero h1 {
         font-size: 1.5rem;
     }
     
+    .voice-search-input {
+        display: none;
+    }
+    
+    .voice-btn {
+        background: #f0f0f0;
+        border-radius: 50%;
+        padding: 5px;
+    }
+    
     .btn-primary {
         padding: 0.4rem 1rem;
         font-size: 0.85rem;
-    }
-    
-    .offer-card {
-        padding: 1rem;
-    }
-    
-    .offer-card h3 {
-        font-size: 1rem;
-    }
-    
-    .section-title {
-        font-size: 1.5rem;
-        margin: 2rem 0 1rem;
-    }
-    
-    .product-info {
-        padding: 0.75rem 1rem 1rem;
     }
     
     .product-actions {
@@ -1638,79 +1678,5 @@ footer {
     .quick-view, .add-to-cart {
         padding: 0.4rem;
         font-size: 0.85rem;
-    }
-}
-/* ===== АДАПТИВНАЯ ШАПКА ===== */
-@media (max-width: 768px) {
-    /* Изменяем внутренний контейнер шапки на сетку */
-    .header-inner {
-        display: grid;
-        grid-template-columns: auto 1fr auto; /* Логотип | место | иконки */
-        align-items: center;
-        gap: 0.8rem;
-        padding: 0.8rem 0;
-    }
-
-    /* Логотип остаётся на месте */
-    .logo {
-        grid-column: 1 / 2;
-        gap: 0.3rem;
-    }
-
-    .logo h1 {
-        font-size: 1.1rem; /* Немного уменьшаем текст логотипа */
-    }
-
-    .logo-icon {
-        font-size: 1.6rem;
-    }
-
-    /* Блок с поиском и корзиной */
-    .header-actions {
-        grid-column: 3 / 4;
-        display: flex;
-        gap: 0.8rem;
-        align-items: center;
-    }
-
-    /* Кнопка корзины */
-    .cart-btn {
-        font-size: 1.3rem;
-    }
-
-    /* Голосовой поиск — компактный вид */
-    .voice-search {
-        padding: 0.2rem 0.5rem;
-        background: #fff;
-        border-radius: 2rem;
-        display: flex;
-        align-items: center;
-        gap: 0.3rem;
-    }
-
-    .voice-search-input {
-        width: 120px; /* Фиксированная ширина для поиска */
-        font-size: 0.8rem;
-        padding: 0.4rem 0;
-    }
-
-    .voice-btn {
-        font-size: 1rem;
-        padding: 0;
-    }
-
-    /* Кнопка мобильного меню */
-    .mobile-menu-btn {
-        display: flex;
-        order: 2; /* Ставим её между логотипом и действиями */
-        justify-self: end; /* Прижимаем к правому краю её ячейки */
-    }
-    
-    /* Кнопка мобильного меню — стили, если их нет */
-    .mobile-menu-btn span {
-        width: 22px;
-        height: 2px;
-        background: #1a2c3e;
-        border-radius: 2px;
     }
 }
