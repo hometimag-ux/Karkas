@@ -178,13 +178,13 @@ function attachProductEvents() {
 }
 
 // ===== БЫСТРЫЙ ПРОСМОТР (в стиле образца) =====
-// Объявите функцию закрытия ДО использования
-window.closeQuickView = function() {
+
+// Функцию закрытия ДО использования - КРЕСТИК
+function closeQuickView() {
     const modal = document.getElementById('quickViewModal');
     if (modal) modal.remove();
     document.body.style.overflow = '';
-};
-
+}
 function openQuickView(id) {
     const product = allProducts.find(p => p.id === id);
     if (!product) return;
