@@ -105,19 +105,59 @@
 
 <main>
     <div class="container">
-        <!-- Герой-секция -->
-        <div class="hero">
-            <div class="hero-content">
-                <div class="hero-badge">💙 АКВА-КОЛЛЕКЦИЯ 2025 💚</div>
-                <h1>Медицинская одежда<br><span>свежесть и комфорт</span></h1>
-                <p>Дышащие ткани, идеальная посадка, современный дизайн. Создано для вашего комфорта.</p>
-                <button class="btn-primary" id="shopNowBtn">✨ В каталог →</button>
-            </div>
-            <div class="hero-image">
-                <img src="https://placehold.co/400x400/4db6ac/white?text=%F0%9F%91%A9%E2%80%8D%E2%9A%95%EF%B8%8F" alt="Медицинская одежда">
-            </div>
-        </div>
 
+        
+       <!-- Герой-секция -->
+<div class="hero">
+    <div class="hero-content">
+        <div class="hero-badge">💙 АКВА-КОЛЛЕКЦИЯ 2025 💚</div>
+        <h1>Медицинская одежда<br><span>свежесть и комфорт</span></h1>
+        <p>Дышащие ткани, идеальная посадка, современный дизайн. Создано для вашего комфорта.</p>
+        <button class="btn-primary" id="shopNowBtn">✨ В каталог →</button>
+    </div>
+    <div class="hero-image">
+        <img id="heroBanner" src="images/hero-banner.jpg" alt="Медицинская одежда" 
+             style="width: 100%; max-width: 400px; border-radius: 20px;">
+    </div>
+</div>
+
+<!-- Кнопка для замены (можно добавить в админ-панель) -->
+<div style="position: fixed; bottom: 20px; right: 20px; z-index: 999;">
+    <button id="changeBannerBtn" style="background: #4db6ac; border: none; padding: 10px; border-radius: 50%; cursor: pointer;">
+        📸
+    </button>
+    <input type="file" id="bannerUpload" accept="image/*" style="display: none;">
+</div>
+
+<script>
+// Замена баннера
+const changeBtn = document.getElementById('changeBannerBtn');
+const fileInput = document.getElementById('bannerUpload');
+const heroBanner = document.getElementById('heroBanner');
+
+changeBtn.onclick = () => fileInput.click();
+
+fileInput.onchange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            heroBanner.src = e.target.result;
+            // Сохраняем в localStorage
+            localStorage.setItem('heroBanner', e.target.result);
+        };
+        reader.readAsDataURL(file);
+    }
+};
+
+// Загружаем сохранённый баннер при старте
+const savedBanner = localStorage.getItem('heroBanner');
+if (savedBanner) {
+    heroBanner.src = savedBanner;
+}
+</script>
+
+        
         <!-- Карточки преимуществ -->
         <div class="offers">
             <div class="offer-card"><div class="icon">💧</div><h3>Увлажняющая ткань</h3><p>Технология Cool&amp;Dry</p><div class="price">-25%</div></div>
