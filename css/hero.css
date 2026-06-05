@@ -1,0 +1,56 @@
+/* ===== ГЕРОЙ-СЕКЦИЯ (БАННЕР) ===== */
+.hero {
+    padding: 3rem 0;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.hero-content {
+    flex: 1;
+}
+
+.hero-badge {
+    background: #e1f0f5;
+    color: #1f6e8c;
+    display: inline-block;
+    padding: 0.3rem 1rem;
+    border-radius: 9999px;
+    margin-bottom: 1rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.hero h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    color: #1a2c3e;
+}
+
+.hero h1 span {
+    color: #2a9d8f;
+}
+
+.hero p {
+    color: #405d77;
+    margin-bottom: 1.5rem;
+}
+
+.hero-image {
+    flex: 1;
+    text-align: center;
+}
+
+.hero-image img {
+    max-width: 100%;
+    filter: drop-shadow(0 20px 30px rgba(0,0,0,0.1));
+    animation: floatHero 4s ease-in-out infinite;
+}
+
+@keyframes floatHero {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
