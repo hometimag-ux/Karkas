@@ -30,14 +30,12 @@ function renderStars(rating) {
     return stars;
 }
 
-document.addEventListener('DOMContentLoaded', () => {
 
-    
-    // Бургер меню
+// Мобильное меню
+document.addEventListener('DOMContentLoaded', () => {
     const burgerBtn = document.getElementById('burgerBtn');
     const mobileMenu = document.getElementById('mobileMenu');
     const menuOverlay = document.getElementById('menuOverlay');
-    const menuCloseBtn = document.getElementById('menuCloseBtn');
 
     function toggleMenu() {
         mobileMenu.classList.toggle('active');
@@ -48,9 +46,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (burgerBtn) burgerBtn.addEventListener('click', toggleMenu);
     if (menuOverlay) menuOverlay.addEventListener('click', toggleMenu);
-    if (menuCloseBtn) menuCloseBtn.addEventListener('click', toggleMenu);
 
-    // Поиск: иконка → развёрнутое поле
+    // Мобильный поиск
     const searchIcon = document.getElementById('searchIconBtn');
     const searchExpanded = document.getElementById('searchExpanded');
     const searchClose = document.getElementById('searchCloseBtn');
