@@ -745,38 +745,6 @@ footer {
 }
 
 /* ===== ВИДЖЕТЫ ===== */
-.view-switcher-top {
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    background: white;
-    border-radius: 40px;
-    padding: 6px 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    z-index: 1001;
-    border: 1px solid #cbdde9;
-    font-size: 12px;
-    backdrop-filter: blur(10px);
-    background: rgba(255,255,255,0.95);
-}
-
-.view-switcher-top button {
-    background: none;
-    border: none;
-    padding: 4px 12px;
-    border-radius: 30px;
-    cursor: pointer;
-    font-size: 12px;
-    font-weight: 500;
-    color: #666;
-}
-
-.view-switcher-top button.active {
-    background: #1f6e8c;
-    color: white;
-}
 
 .mascot {
     position: fixed;
