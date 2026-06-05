@@ -1640,3 +1640,77 @@ footer {
         font-size: 0.85rem;
     }
 }
+/* ===== АДАПТИВНАЯ ШАПКА ===== */
+@media (max-width: 768px) {
+    /* Изменяем внутренний контейнер шапки на сетку */
+    .header-inner {
+        display: grid;
+        grid-template-columns: auto 1fr auto; /* Логотип | место | иконки */
+        align-items: center;
+        gap: 0.8rem;
+        padding: 0.8rem 0;
+    }
+
+    /* Логотип остаётся на месте */
+    .logo {
+        grid-column: 1 / 2;
+        gap: 0.3rem;
+    }
+
+    .logo h1 {
+        font-size: 1.1rem; /* Немного уменьшаем текст логотипа */
+    }
+
+    .logo-icon {
+        font-size: 1.6rem;
+    }
+
+    /* Блок с поиском и корзиной */
+    .header-actions {
+        grid-column: 3 / 4;
+        display: flex;
+        gap: 0.8rem;
+        align-items: center;
+    }
+
+    /* Кнопка корзины */
+    .cart-btn {
+        font-size: 1.3rem;
+    }
+
+    /* Голосовой поиск — компактный вид */
+    .voice-search {
+        padding: 0.2rem 0.5rem;
+        background: #fff;
+        border-radius: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+    .voice-search-input {
+        width: 120px; /* Фиксированная ширина для поиска */
+        font-size: 0.8rem;
+        padding: 0.4rem 0;
+    }
+
+    .voice-btn {
+        font-size: 1rem;
+        padding: 0;
+    }
+
+    /* Кнопка мобильного меню */
+    .mobile-menu-btn {
+        display: flex;
+        order: 2; /* Ставим её между логотипом и действиями */
+        justify-self: end; /* Прижимаем к правому краю её ячейки */
+    }
+    
+    /* Кнопка мобильного меню — стили, если их нет */
+    .mobile-menu-btn span {
+        width: 22px;
+        height: 2px;
+        background: #1a2c3e;
+        border-radius: 2px;
+    }
+}
