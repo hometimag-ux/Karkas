@@ -470,5 +470,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// ===== ПЕРЕМЕЩЕНИЕ КНОПКИ ГЕРОЙ В КАТАЛОГ =====
+const shopNowBtn = document.getElementById('shopNowBtn');
+if (shopNowBtn) {
+    shopNowBtn.addEventListener('click', function(e) {
+        e.preventDefault(); // Отменяем стандартное действие, если кнопка внутри формы
+        const productsGrid = document.getElementById('productsGrid');
+        if (productsGrid) {
+            // Плавно прокручиваем к сетке товаров
+            productsGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+            console.warn('Элемент #productsGrid не найден');
+        }
+    });
+}
+
+
+
 window.closeQuickView = closeQuickView;
 window.addToCartById = addToCartById;
