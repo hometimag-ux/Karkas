@@ -177,7 +177,18 @@ function attachProductEvents() {
     });
 }
 
+
+
 // ===== БЫСТРЫЙ ПРОСМОТР (в стиле образца) =====
+
+// Функция закрытия
+function closeModal() {
+    const modal = document.getElementById('quickViewModal');
+    if (modal) modal.remove();
+    document.body.style.overflow = '';
+}
+
+// Функция открытия
 function openQuickView(id) {
     const product = allProducts.find(p => p.id === id);
     if (!product) return;
@@ -406,6 +417,9 @@ function openQuickView(id) {
     const corpBtn = document.getElementById('modalCorpBtn');
     if (corpBtn) corpBtn.onclick = () => showToast('📩 Свяжитесь с B2B-отделом: b2b@murano-apparel.ru');
 }
+
+
+
 // ===== КОРЗИНА =====
 function addToCartById(id) {
     const product = allProducts.find(p => p.id === id);
