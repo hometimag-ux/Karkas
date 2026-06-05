@@ -350,7 +350,7 @@ function openQuickView(id) {
     document.body.insertAdjacentHTML('beforeend', modalHtml);
     document.body.style.overflow = 'hidden';
     
-    // ==== ИНИЦИАЛИЗАЦИЯ СОБЫТИЙ ====
+// ==== ИНИЦИАЛИЗАЦИЯ СОБЫТИЙ ====
     
     // Закрытие
     const closeBtn = document.querySelector('#quickViewModal .quick-view-close');
@@ -406,6 +406,8 @@ function openQuickView(id) {
     const corpBtn = document.getElementById('modalCorpBtn');
     if (corpBtn) corpBtn.onclick = () => showToast('📩 Свяжитесь с B2B-отделом: b2b@murano-apparel.ru');
 }
+
+
 // ===== КОРЗИНА =====
 function addToCartById(id) {
     const product = allProducts.find(p => p.id === id);
