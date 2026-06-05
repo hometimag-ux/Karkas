@@ -30,65 +30,49 @@
 </div>
 
 <header>
-    <div class="container header-inner">
-        <!-- Бургер (виден везде) -->
+    <div class="header-inner">
+        <!-- Бургер -->
         <button class="burger-btn" id="burgerBtn">
             <span></span><span></span><span></span>
         </button>
 
-        <!-- Поиск (только иконка) -->
-        <button class="search-icon-btn" id="searchIconBtn">
-            🔍
-        </button>
-        
-        <!-- Скрытое поле поиска (появляется при клике) -->
-        <div class="search-expanded" id="searchExpanded">
-            <div class="voice-search">
-                <input type="text" id="searchInput" placeholder="Поиск..." class="voice-search-input">
-                <button id="voiceBtn" class="voice-btn">🎤</button>
-                <button class="search-close" id="searchCloseBtn">✕</button>
-            </div>
+        <!-- Поиск (десктоп) -->
+        <div class="search-desktop">
+            <input type="text" id="searchInput" placeholder="Поиск...">
+            <button id="voiceBtn">🎤</button>
         </div>
 
         <!-- Бренд -->
-        <div class="brand">
-            <a href="/" class="brand-link">MURANO APPAREL</a>
-        </div>
+        <a href="/" class="brand-link">MURANO APPAREL</a>
 
-        <!-- Правая группа: личный кабинет + корзина -->
-        <div class="user-actions">
-            <button class="account-btn" id="accountBtn">
-                👤
-            </button>
-            <button class="cart-btn" id="cartBtn">
-                🛒
-                <span id="cartCounter">0</span>
-            </button>
-        </div>
+        <!-- Иконка поиска (мобильная) -->
+        <button class="search-mobile-icon" id="searchMobileIcon">🔍</button>
+
+        <!-- Корзина -->
+        <button class="cart-btn" id="cartBtn">
+            🛒 <span id="cartCounter">0</span>
+        </button>
     </div>
 
     <!-- Мобильное меню -->
     <div class="mobile-menu" id="mobileMenu">
-        <div class="mobile-menu-header">
-            <span class="mobile-menu-title">Меню</span>
-            <button class="mobile-menu-close" id="menuCloseBtn">✕</button>
-        </div>
-        <ul class="mobile-nav-list">
+        <ul>
             <li><a href="#">Каталог</a></li>
-            <li><a href="#">Новинки</a></li>
             <li><a href="#">О компании</a></li>
-            <li><a href="#">Доставка и оплата</a></li>
+            <li><a href="#">Доставка</a></li>
             <li><a href="#">Контакты</a></li>
         </ul>
     </div>
 
     <!-- Затемнение -->
     <div class="menu-overlay" id="menuOverlay"></div>
-</header>
 
-    
-<main>
-    <div class="container">
+    <!-- Мобильный поиск (выезжает сверху) -->
+    <div class="mobile-search" id="mobileSearch">
+        <input type="text" id="mobileSearchInput" placeholder="Поиск...">
+        <button id="closeSearchBtn">✕</button>
+    </div>
+</header>
         
        <!-- Герой-секция -->
 <div class="container">
