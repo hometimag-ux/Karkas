@@ -1,6 +1,6 @@
-/* ===== АДАПТАЦИЯ (МОБИЛЬНЫЕ УСТРОЙСТВА) ===== */
+/* ===== АДАПТАЦИЯ ===== */
 
-/* Планшеты и маленькие ноутбуки (до 1024px) */
+/* Планшеты (до 1024px) */
 @media (max-width: 1024px) {
     .container {
         padding: 0 1.2rem;
@@ -36,7 +36,7 @@
         font-size: 0.9rem;
     }
     
-    /* Бренд в шапке */
+    /* Бренд */
     .brand-link {
         font-size: 0.85rem;
     }
@@ -62,10 +62,6 @@
     
     .product-img {
         height: 180px;
-    }
-    
-    .product-title {
-        font-size: 1rem;
     }
     
     /* Преимущества */
@@ -96,6 +92,7 @@
         bottom: 1rem;
         left: 1rem;
         transform: scale(0.8);
+        z-index: 100;
     }
     
     .mascot-bubble {
@@ -141,13 +138,5 @@
     }
 }
 
-/* Десктоп (скрываем бургер и мобильное меню) */
-@media (min-width: 769px) {
-    .burger-btn {
-        display: none !important;
-    }
-    
-    .mobile-menu, .menu-overlay {
-        display: none !important;
-    }
-}
+/* Убираем скрытие бургера — он виден везде */
+/* (никакого @media с display:none для бургера больше нет) */
