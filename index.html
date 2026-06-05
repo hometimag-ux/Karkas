@@ -123,42 +123,6 @@
 </div>
 
         
-<!-- Кнопка для замены (можно добавить в админ-панель) -->
-<div style="position: fixed; bottom: 20px; right: 20px; z-index: 999;">
-    <button id="changeBannerBtn" style="background: #4db6ac; border: none; padding: 10px; border-radius: 50%; cursor: pointer;">
-        📸
-    </button>
-    <input type="file" id="bannerUpload" accept="image/*" style="display: none;">
-</div>
-
-<script>
-// Замена баннера
-const changeBtn = document.getElementById('changeBannerBtn');
-const fileInput = document.getElementById('bannerUpload');
-const heroBanner = document.getElementById('heroBanner');
-
-changeBtn.onclick = () => fileInput.click();
-
-fileInput.onchange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            heroBanner.src = e.target.result;
-            // Сохраняем в localStorage
-            localStorage.setItem('heroBanner', e.target.result);
-        };
-        reader.readAsDataURL(file);
-    }
-};
-
-// Загружаем сохранённый баннер при старте
-const savedBanner = localStorage.getItem('heroBanner');
-if (savedBanner) {
-    heroBanner.src = savedBanner;
-}
-</script>
-
         
         <!-- Карточки преимуществ -->
         <div class="offers">
