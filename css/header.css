@@ -49,7 +49,7 @@ header {
 /* 🔍 Поиск */
 .search-wrapper {
     display: flex;
-    align-items: center;
+    align-items: left;
     background: #f5f7fa;
     border-radius: 40px;
     transition: all 0.3s;
@@ -85,7 +85,7 @@ header {
     border: none;
     cursor: pointer;
     display: flex;
-    align-items: center;
+    align-items: right;
     gap: 0.3rem;
     transition: all 0.3s;
 }
