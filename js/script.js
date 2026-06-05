@@ -178,6 +178,13 @@ function attachProductEvents() {
 }
 
 // ===== БЫСТРЫЙ ПРОСМОТР (в стиле образца) =====
+// Объявите функцию закрытия ДО использования
+window.closeQuickView = function() {
+    const modal = document.getElementById('quickViewModal');
+    if (modal) modal.remove();
+    document.body.style.overflow = '';
+};
+
 function openQuickView(id) {
     const product = allProducts.find(p => p.id === id);
     if (!product) return;
@@ -351,10 +358,6 @@ function openQuickView(id) {
     document.body.style.overflow = 'hidden';
     
     // ==== ИНИЦИАЛИЗАЦИЯ СОБЫТИЙ ====
-    
-    // Закрытие
-    const closeBtn = document.querySelector('#quickViewModal .quick-view-close');
-    if (closeBtn) closeBtn.onclick = () => closeQuickView();
     
     // Размеры
     document.querySelectorAll('#quickViewModal .size-btn').forEach(btn => {
