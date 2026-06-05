@@ -30,6 +30,45 @@ function renderStars(rating) {
     return stars;
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+
+    
+    // Бургер меню
+    const burgerBtn = document.getElementById('burgerBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const menuOverlay = document.getElementById('menuOverlay');
+    const menuCloseBtn = document.getElementById('menuCloseBtn');
+
+    function toggleMenu() {
+        mobileMenu.classList.toggle('active');
+        menuOverlay.classList.toggle('active');
+        burgerBtn.classList.toggle('active');
+        document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
+    }
+
+    if (burgerBtn) burgerBtn.addEventListener('click', toggleMenu);
+    if (menuOverlay) menuOverlay.addEventListener('click', toggleMenu);
+    if (menuCloseBtn) menuCloseBtn.addEventListener('click', toggleMenu);
+
+    // Поиск: иконка → развёрнутое поле
+    const searchIcon = document.getElementById('searchIconBtn');
+    const searchExpanded = document.getElementById('searchExpanded');
+    const searchClose = document.getElementById('searchCloseBtn');
+
+    if (searchIcon) {
+        searchIcon.addEventListener('click', () => {
+            searchExpanded.classList.add('active');
+            document.getElementById('searchInput')?.focus();
+        });
+    }
+    if (searchClose) {
+        searchClose.addEventListener('click', () => {
+            searchExpanded.classList.remove('active');
+        });
+    }
+});
+
+
 // ===== ЗАГРУЗКА ТОВАРОВ =====
 function loadProductsFromCRM() {
     console.log('loadProductsFromCRM вызвана');
