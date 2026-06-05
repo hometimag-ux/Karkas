@@ -33,7 +33,6 @@ function renderStars(rating) {
 
 // ===== МОБИЛЬНОЕ МЕНЮ И ПОИСК =====
 document.addEventListener('DOMContentLoaded', function() {
-    // 1. Бургер меню
     const burgerBtn = document.getElementById('burgerBtn');
     const mobileMenu = document.getElementById('mobileMenu');
     const menuOverlay = document.getElementById('menuOverlay');
@@ -42,12 +41,14 @@ document.addEventListener('DOMContentLoaded', function() {
         function closeMenu() {
             mobileMenu.classList.remove('active');
             menuOverlay.classList.remove('active');
+            burgerBtn.classList.remove('active');
             document.body.style.overflow = '';
         }
         
         function openMenu() {
             mobileMenu.classList.add('active');
             menuOverlay.classList.add('active');
+            burgerBtn.classList.add('active');
             document.body.style.overflow = 'hidden';
         }
         
@@ -61,6 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         menuOverlay.onclick = closeMenu;
     }
+});
     
     // 2. Мобильный поиск
     const searchMobileIcon = document.getElementById('searchMobileIcon');
