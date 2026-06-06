@@ -134,20 +134,52 @@ function renderProducts() {
 }
 
 function attachProductEvents() {
-    document.querySelectorAll('.quick-view').forEach(btn => {
-        btn.onclick = (e) => {
+    console.log('Навешивание событий на кнопки...');
+    
+    // Находим все кнопки "глазик"
+    const quickViewBtns = document.querySelectorAll('.quick-view');
+    console.log('Найдено кнопок quick-view:', quickViewBtns.length);
+    
+    quickViewBtns.forEach(btn => {
+        // Удаляем старые обработчики, чтобы не дублировать
+        btn.removeEventListener('click', btn._handler);
+        
+        // Создаём новый обработчик
+        btn._handler = (e) => {
             e.stopPropagation();
+            e.preventDefault();
             const id = parseInt(btn.dataset.id);
-            if (id && window.openQuickView) window.openQuickView(id);
+            console.log('Клик по глазику, id товара:', id);
+            
+            if (id && window.openQuickView) {
+                window.openQuickView(id);
+            } else {
+                console.error('openQuickView не найден или id неверный');
+            }
         };
+        
+        btn.addEventListener('click', btn._handler);
     });
     
-    document.querySelectorAll('.add-to-cart').forEach(btn => {
-        btn.onclick = (e) => {
+    // Кнопки "В корзину"
+    const cartBtns = document.querySelectorAll('.add-to-cart');
+    console.log('Найдено кнопок add-to-cart:', cartBtns.length);
+    
+    cartBtns.forEach(btn => {
+        btn.removeEventListener('click', btn._cartHandler);
+        
+        btn._cartHandler = (e) => {
             e.stopPropagation();
+            e.preventDefault();
             const id = parseInt(btn.dataset.id);
-            if (id && window.addToCartById) window.addToCartById(id);
+            console.log('Клик по корзине, id товара:', id);
+            
+            if (id && window.addToCartById) {
+                window.addToCartById(id);
+            }
         };
+        
+        btn.addEventListener('click', btn._cartHandler);
     });
 }
 
