@@ -16,11 +16,6 @@
     transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
-.quick-view-modal.active {
-    opacity: 1;
-    visibility: visible;
-}
-
 .quick-view-content {
     background: white;
     border-radius: 32px;
