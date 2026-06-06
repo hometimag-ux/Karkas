@@ -1,0 +1,113 @@
+/* ===== СТИЛИ ДЛЯ СТРАНИЦЫ КАТАЛОГА ===== */
+
+/* Хлебные крошки */
+.breadcrumbs {
+    padding: 1.5rem 0 0.5rem;
+    font-size: 0.85rem;
+    color: var(--text-muted, #64748b);
+}
+
+.breadcrumbs a {
+    color: #4db6ac;
+    text-decoration: none;
+}
+
+.breadcrumbs a:hover {
+    text-decoration: underline;
+}
+
+/* Заголовок страницы */
+.catalog-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin: 1rem 0 0.5rem;
+    color: #1a2c3e;
+}
+
+.catalog-subtitle {
+    font-size: 1rem;
+    color: #5e7f97;
+    margin-bottom: 2rem;
+}
+
+/* Обёртка фильтров */
+.filters-wrapper {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.2rem;
+    margin-bottom: 2rem;
+    border: 1px solid #e2edf4;
+}
+
+.filter-categories {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+    justify-content: center;
+}
+
+.filter-btn {
+    background: none;
+    border: 1px solid #cbdde9;
+    padding: 0.5rem 1.2rem;
+    border-radius: 40px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: #405d77;
+    transition: all 0.2s;
+}
+
+.filter-btn.active {
+    background: linear-gradient(135deg, #00897b, #4db6ac);
+    color: white;
+    border-color: transparent;
+}
+
+.filter-search {
+    text-align: center;
+}
+
+.filter-search input {
+    padding: 0.6rem 1rem;
+    border: 1px solid #cbdde9;
+    border-radius: 40px;
+    width: 100%;
+    max-width: 320px;
+    font-size: 0.85rem;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.filter-search input:focus {
+    border-color: #4db6ac;
+    box-shadow: 0 0 0 3px rgba(77, 182, 172, 0.1);
+}
+
+/* Сообщение о пустом каталоге */
+.loading-message {
+    text-align: center;
+    padding: 3rem;
+    color: #5e7f97;
+    grid-column: 1 / -1;
+}
+
+/* Адаптация */
+@media (max-width: 768px) {
+    .catalog-title {
+        font-size: 1.6rem;
+    }
+    
+    .catalog-subtitle {
+        font-size: 0.85rem;
+    }
+    
+    .filters-wrapper {
+        padding: 1rem;
+    }
+    
+    .filter-btn {
+        padding: 0.4rem 1rem;
+        font-size: 0.75rem;
+    }
+}
