@@ -111,3 +111,13 @@
         font-size: 0.75rem;
     }
 }
+
+.cart-sidebar {
+    position: fixed;
+    right: -100%;
+    transition: right 0.3s;
+}
+
+.cart-sidebar.open {
+    right: 0;
+}
