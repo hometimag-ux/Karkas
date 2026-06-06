@@ -1,81 +1,75 @@
-// ===== ШАПКА, БУРГЕР, ПОИСК И КОРЗИНА =====
-document.addEventListener('DOMContentLoaded', function() {
-    // 1. Бургер меню
-    const burgerBtn = document.getElementById('burgerBtn');
+// ===== НОВАЯ ЛОГИКА ДЛЯ ШАПКИ =====
+document.addEventListener('DOMContentLoaded', () => {
+    // --- Бургер-меню ---
+    const burger = document.getElementById('burgerBtn');
     const mobileMenu = document.getElementById('mobileMenu');
-    const menuOverlay = document.getElementById('menuOverlay');
-    
-    if (burgerBtn && mobileMenu && menuOverlay) {
-        burgerBtn.onclick = function() {
-            mobileMenu.classList.toggle('active');
-            menuOverlay.classList.toggle('active');
-            this.classList.toggle('active');
-            document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
-        };
-        
-        menuOverlay.onclick = function() {
-            mobileMenu.classList.remove('active');
-            menuOverlay.classList.remove('active');
-            if (burgerBtn) burgerBtn.classList.remove('active');
-            document.body.style.overflow = '';
-        };
+    const mobileOverlay = document.getElementById('mobileMenuOverlay');
+    const closeMenuBtn = document.getElementById('closeMobileMenu');
+
+    function toggleMenu() {
+        mobileMenu.classList.toggle('active');
+        mobileOverlay.classList.toggle('active');
+        burger.classList.toggle('active');
+        document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
     }
-    
-    // 2. Мобильный поиск
-    const searchMobileIcon = document.getElementById('searchMobileIcon');
+
+    if (burger) burger.addEventListener('click', toggleMenu);
+    if (closeMenuBtn) closeMenuBtn.addEventListener('click', toggleMenu);
+    if (mobileOverlay) mobileOverlay.addEventListener('click', toggleMenu);
+
+    // --- Мобильный поиск ---
+    const mobileSearchIcon = document.getElementById('mobileSearchIcon');
     const mobileSearch = document.getElementById('mobileSearch');
-    const closeSearchBtn = document.getElementById('closeSearchBtn');
-    
-    if (searchMobileIcon && mobileSearch && closeSearchBtn) {
-        searchMobileIcon.onclick = function() {
+    const closeMobileSearch = document.getElementById('closeMobileSearch');
+
+    if (mobileSearchIcon) {
+        mobileSearchIcon.addEventListener('click', () => {
             mobileSearch.classList.add('active');
-            const mobileInput = document.getElementById('mobileSearchInput');
-            if (mobileInput) mobileInput.focus();
-        };
-        
-        closeSearchBtn.onclick = function() {
-            mobileSearch.classList.remove('active');
-        };
+        });
     }
-    
-    // 3. Синхронизация поиска
+    if (closeMobileSearch) {
+        closeMobileSearch.addEventListener('click', () => {
+            mobileSearch.classList.remove('active');
+        });
+    }
+
+    // --- Синхронизация поиска (десктоп и мобильный) ---
     const desktopSearch = document.getElementById('searchInput');
     const mobileSearchInput = document.getElementById('mobileSearchInput');
-    
+
     if (desktopSearch && mobileSearchInput) {
-        desktopSearch.oninput = function() {
-            mobileSearchInput.value = this.value;
-        };
-        mobileSearchInput.oninput = function() {
-            desktopSearch.value = this.value;
-        };
+        desktopSearch.addEventListener('input', () => {
+            mobileSearchInput.value = desktopSearch.value;
+        });
+        mobileSearchInput.addEventListener('input', () => {
+            desktopSearch.value = mobileSearchInput.value;
+        });
     }
-    
-   // Корзина
-const cartBtn = document.getElementById('cartBtn');
-const cartSidebar = document.getElementById('cartSidebar');
-const overlay = document.getElementById('overlay');
-const closeCart = document.getElementById('closeCart');
 
-if (cartBtn && cartSidebar && overlay) {
-    cartBtn.onclick = () => {
-        cartSidebar.classList.add('open');
-        overlay.classList.add('active');
-        document.body.style.overflow = 'hidden';
-    };
-}
+    // --- Корзина (открытие боковой панели) ---
+    const cartBtn = document.getElementById('cartBtn');
+    const cartSidebar = document.getElementById('cartSidebar');
+    const closeCart = document.getElementById('closeCart');
+    const overlay = document.getElementById('overlay');
 
-if (closeCart && cartSidebar && overlay) {
-    closeCart.onclick = () => {
-        cartSidebar.classList.remove('open');
-        overlay.classList.remove('active');
-        document.body.style.overflow = '';
-    };
-}    
-    overlay.onclick = () => {
-        cartSidebar.classList.remove('open');
-        overlay.classList.remove('active');
-        document.body.style.overflow = '';
-   } 
+    if (cartBtn && cartSidebar && overlay) {
+        cartBtn.addEventListener('click', () => {
+            cartSidebar.classList.add('open');
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+    }
+
+    if (closeCart && cartSidebar && overlay) {
+        closeCart.addEventListener('click', () => {
+            cartSidebar.classList.remove('open');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+        overlay.addEventListener('click', () => {
+            cartSidebar.classList.remove('open');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+    }
 });
-    
