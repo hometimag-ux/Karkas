@@ -62,16 +62,15 @@
 
        <!-- ===== КОРЗИНА (БОКОВАЯ ПАНЕЛЬ) ===== -->
 <div class="cart-sidebar" id="cartSidebar">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+    <div class="cart-header">
         <h3>🛒 Корзина</h3>
-        <button id="closeCart" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">✕</button>
+        <button id="closeCart">✕</button>
     </div>
-    <div id="cartItems">
-        <p style="text-align: center; color: #5e7f97;">Корзина пуста</p>
-    </div>
-    <div id="cartTotal" style="font-weight: bold; margin: 1rem 0;"></div>
-    <button id="checkoutBtn" class="btn-primary" style="width: 100%;">💳 Оформить заказ</button>
+    <div id="cartItems">Корзина пуста</div>
+    <div id="cartTotal"></div>
+    <button id="checkoutBtn" class="btn-primary">💳 Оформить заказ</button>
 </div>
+<div class="overlay" id="overlay"></div>
 
 
         
