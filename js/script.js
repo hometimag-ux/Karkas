@@ -81,3 +81,80 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+
+// ===== 3D КАРУСЕЛЬ КОЛЛЕКЦИЙ =====
+function initCollectionSlider() {
+    const sliderWrapper = document.getElementById('collectionSlider');
+    if (!sliderWrapper) return;
+    
+    // Инициализация Swiper
+    const swiper = new Swiper(sliderWrapper, {
+        effect: 'creative',
+        creativeEffect: {
+            prev: {
+                translate: ['-120%', 0, -200],
+                scale: 0.7,
+                opacity: 0.5,
+            },
+            next: {
+                translate: ['120%', 0, -200],
+                scale: 0.7,
+                opacity: 0.5,
+            },
+        },
+        slidesPerView: 'auto',
+        centeredSlides: true,
+        spaceBetween: 20,
+        loop: true,
+        autoplay: {
+            delay: 4000,
+            disableOnInteraction: false,
+        },
+        navigation: {
+            prevEl: '#collectionPrev',
+            nextEl: '#collectionNext',
+        },
+        pagination: {
+            el: '.collection-slider__pagination',
+            clickable: true,
+            dynamicBullets: false,
+        },
+        breakpoints: {
+            320: {
+                slidesPerView: 1,
+                spaceBetween: 15,
+            },
+            640: {
+                slidesPerView: 2,
+                spaceBetween: 20,
+            },
+            1024: {
+                slidesPerView: 3,
+                spaceBetween: 30,
+            },
+            1280: {
+                slidesPerView: 3,
+                spaceBetween: 40,
+            },
+        },
+        on: {
+            init: function() {
+                console.log('Коллекции карусель инициализирована');
+            },
+        },
+    });
+    
+    // Пауза автопрокрутки при наведении
+    const sliderContainer = document.querySelector('.collection-slider__wrapper');
+    if (sliderContainer) {
+        sliderContainer.addEventListener('mouseenter', () => swiper.autoplay.stop());
+        sliderContainer.addEventListener('mouseleave', () => swiper.autoplay.start());
+    }
+}
+
+// Запуск при загрузке
+document.addEventListener('DOMContentLoaded', function() {
+    // ... ваш существующий код ...
+    initCollectionSlider(); // Добавьте эту строку
+});
