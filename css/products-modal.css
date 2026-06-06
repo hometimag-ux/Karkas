@@ -1,5 +1,19 @@
 /* ===== МОДАЛЬНОЕ ОКНО БЫСТРОГО ПРОСМОТРА ===== */
 
+.quick-view-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
 .quick-view-content {
     background: white;
     border-radius: 32px;
