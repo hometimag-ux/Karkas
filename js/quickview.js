@@ -184,17 +184,31 @@ function openQuickView(id) {
         };
     }
     
-    // === НОВЫЙ ОБРАБОТЧИК ДЛЯ МИНИАТЮР ===
-    const thumbnails = document.querySelectorAll('#quickViewModal .thumbnail');
-    const mainImage = document.getElementById('modalMainImage');
-    if (thumbnails.length && mainImage) {
-        thumbnails.forEach(thumb => {
-            thumb.onclick = () => {
-                thumbnails.forEach(t => t.classList.remove('active'));
-                thumb.classList.add('active');
-                const newSrc = thumb.dataset.img;
-                if (newSrc) mainImage.src = newSrc;
-            };
+   // === ОБРАБОТЧИК ДЛЯ МИНИАТЮР (С АНИМАЦИЕЙ) ===
+const thumbnails = document.querySelectorAll('#quickViewModal .thumbnail');
+const mainImage = document.getElementById('modalMainImage');
+
+if (thumbnails.length && mainImage) {
+    thumbnails.forEach(thumb => {
+        thumb.onclick = () => {
+            // Убираем активный класс у всех
+            thumbnails.forEach(t => t.classList.remove('active'));
+            // Добавляем активный класс текущей
+            thumb.classList.add('active');
+            
+            // Меняем главное фото с плавным эффектом
+            const newSrc = thumb.dataset.img;
+            if (newSrc) {
+                // Эффект затухания при смене фото
+                mainImage.style.opacity = '0.5';
+                setTimeout(() => {
+                    mainImage.src = newSrc;
+                    setTimeout(() => {
+                        mainImage.style.opacity = '1';
+                    }, 50);
+                }, 100);
+            }
+        };
         });
     }
     
