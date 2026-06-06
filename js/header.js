@@ -1,75 +1,48 @@
-// ===== НОВАЯ ЛОГИКА ДЛЯ ШАПКИ =====
+// ===== НОВАЯ ШАПКА =====
 document.addEventListener('DOMContentLoaded', () => {
-    // --- Бургер-меню ---
-    const burger = document.getElementById('burgerBtn');
+    // Мобильное меню
+    const menuBtn = document.getElementById('mobileMenuBtn');
     const mobileMenu = document.getElementById('mobileMenu');
-    const mobileOverlay = document.getElementById('mobileMenuOverlay');
-    const closeMenuBtn = document.getElementById('closeMobileMenu');
+    const overlay = document.getElementById('mobileOverlay');
+    const closeMenu = document.getElementById('closeMobileMenu');
 
     function toggleMenu() {
         mobileMenu.classList.toggle('active');
-        mobileOverlay.classList.toggle('active');
-        burger.classList.toggle('active');
+        overlay.classList.toggle('active');
         document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
     }
 
-    if (burger) burger.addEventListener('click', toggleMenu);
-    if (closeMenuBtn) closeMenuBtn.addEventListener('click', toggleMenu);
-    if (mobileOverlay) mobileOverlay.addEventListener('click', toggleMenu);
+    if (menuBtn) menuBtn.addEventListener('click', toggleMenu);
+    if (closeMenu) closeMenu.addEventListener('click', toggleMenu);
+    if (overlay) overlay.addEventListener('click', toggleMenu);
 
-    // --- Мобильный поиск ---
-    const mobileSearchIcon = document.getElementById('mobileSearchIcon');
-    const mobileSearch = document.getElementById('mobileSearch');
-    const closeMobileSearch = document.getElementById('closeMobileSearch');
+    // Модальный поиск
+    const searchIcon = document.getElementById('searchIcon');
+    const searchModal = document.getElementById('searchModal');
+    const closeSearch = document.getElementById('closeSearchModal');
 
-    if (mobileSearchIcon) {
-        mobileSearchIcon.addEventListener('click', () => {
-            mobileSearch.classList.add('active');
+    if (searchIcon && searchModal) {
+        searchIcon.addEventListener('click', () => {
+            searchModal.classList.add('active');
+            document.getElementById('mobileSearchInput')?.focus();
         });
     }
-    if (closeMobileSearch) {
-        closeMobileSearch.addEventListener('click', () => {
-            mobileSearch.classList.remove('active');
+    if (closeSearch) {
+        closeSearch.addEventListener('click', () => {
+            searchModal.classList.remove('active');
         });
     }
 
-    // --- Синхронизация поиска (десктоп и мобильный) ---
+    // Синхронизация поиска
     const desktopSearch = document.getElementById('searchInput');
     const mobileSearchInput = document.getElementById('mobileSearchInput');
-
+    
     if (desktopSearch && mobileSearchInput) {
         desktopSearch.addEventListener('input', () => {
             mobileSearchInput.value = desktopSearch.value;
         });
         mobileSearchInput.addEventListener('input', () => {
             desktopSearch.value = mobileSearchInput.value;
-        });
-    }
-
-    // --- Корзина (открытие боковой панели) ---
-    const cartBtn = document.getElementById('cartBtn');
-    const cartSidebar = document.getElementById('cartSidebar');
-    const closeCart = document.getElementById('closeCart');
-    const overlay = document.getElementById('overlay');
-
-    if (cartBtn && cartSidebar && overlay) {
-        cartBtn.addEventListener('click', () => {
-            cartSidebar.classList.add('open');
-            overlay.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        });
-    }
-
-    if (closeCart && cartSidebar && overlay) {
-        closeCart.addEventListener('click', () => {
-            cartSidebar.classList.remove('open');
-            overlay.classList.remove('active');
-            document.body.style.overflow = '';
-        });
-        overlay.addEventListener('click', () => {
-            cartSidebar.classList.remove('open');
-            overlay.classList.remove('active');
-            document.body.style.overflow = '';
         });
     }
 });
