@@ -7,7 +7,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <!-- Swiper CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <!-- Swiper JS -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
     <link rel="stylesheet" href="css/style.css">
@@ -20,67 +22,344 @@
     <link rel="stylesheet" href="css/carousel.css">
     <link rel="stylesheet" href="css/contact-form.css">
     <link rel="stylesheet" href="css/footer.css">
+    
+
 </head>
 <body>
 
-<!-- Маскот -->
+<!-- Виджет: Маскот (Капелька) -->
 <div class="mascot" id="mascot">
     <div class="mascot-icon">💧</div>
     <div class="mascot-bubble" id="mascotBubble">Привет! Я Капля 💙</div>
 </div>
 
-<!-- Снэйк-бар -->
+<!-- Виджет: Снэйк-бар акций -->
 <div class="snackbar" id="snackbar">
     <span>🎉 Скидка 15% на первый заказ!</span>
     <button id="closeSnackbar">✕</button>
 </div>
 
 <header>
-   
+    <div class="header-inner">
+        <button class="burger-btn" id="burgerBtn">
+            <span></span><span></span><span></span>
+        </button>
+
+        <div class="search-wrapper">
+            <input type="text" id="searchInput" placeholder="Поиск...">
+            <button class="voice-btn" id="voiceBtn">🎤</button>
+        </div>
+
+        <a href="index.html" class="brand-link">MURANO APPAREL</a>
+
+        <button class="account-btn" id="accountBtn">
+            👤 <span class="account-text">Кабинет</span>
+        </button>
+
+        <!-- КНОПКА КОРЗИНЫ (ТОЛЬКО КНОПКА!) -->
+        <button class="cart-btn" id="cartBtn">
+            🛒 <span id="cartCounter">0</span>
+        </button>
+    </div>
+
+    <!-- Мобильное меню -->
+    <div class="mobile-menu" id="mobileMenu">
+        <ul>
+            <li><a href="#">Каталог</a></li>
+            <li><a href="#">О компании</a></li>
+            <li><a href="#">Доставка</a></li>
+            <li><a href="#">Контакты</a></li>
+        </ul>
+    </div>
+
+    <div class="menu-overlay" id="menuOverlay"></div>
 </header>
 
-<main>
+        
+
+
+        
+    <!-- Затемнение -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Мобильное меню (выезжает) -->
+    <div class="mobile-menu" id="mobileMenu">
+        <ul>
+            <li><a href="#">Каталог</a></li>
+            <li><a href="#">О компании</a></li>
+            <li><a href="#">Доставка</a></li>
+            <li><a href="#">Контакты</a></li>
+        </ul>
+    </div>
+
+    <!-- Затемнение -->
+    <div class="menu-overlay" id="menuOverlay"></div>
+</header>
+    
+        
+    <!-- ===== БАННЕР-КАРУСЕЛЬ ===== -->
+<div class="hero-banner">
+    <div class="banner-slides" id="bannerSlides">
+        <!-- Слайд 1 -->
+        <div class="banner-slide active">
+            <div class="banner-bg" style="background-image: url('images/banner-1.jpg');">
+                <div class="banner-overlay"></div>
+            </div>
+            <div class="banner-content">
+                <div class="banner-badge">💙 НОВАЯ КОЛЛЕКЦИЯ 2025 💚</div>
+                <h1>Медицинская одежда<br><span>свежесть и комфорт</span></h1>
+                <p>Дышащие ткани, идеальная посадка, современный дизайн. Создано для вашего комфорта.</p>
+                <button class="btn-primary" id="shopNowBtn2">✨ В каталог →</button>
+            </div>
+        </div>
+        
+        <!-- Слайд 2 -->
+        <div class="banner-slide">
+            <div class="banner-bg" style="background-image: url('images/banner-2.jpg');">
+                <div class="banner-overlay"></div>
+            </div>
+            <div class="banner-content">
+                <div class="banner-badge">💙 ПРОФЕССИОНАЛЬНАЯ СЕРИЯ 💚</div>
+                <h1>Свобода движений<br><span>каждый день</span></h1>
+                <p>Эргономичный крой, эластичные ткани, продуманные детали для вашей работы.</p>
+                <button class="btn-primary" id="catalogScrollBtn">✨ Смотреть коллекцию →</button>
+            </div>
+        </div>
+        
+        <!-- Слайд 3 -->
+        <div class="banner-slide">
+            <div class="banner-bg" style="background-image: url('images/banner-3.jpg');">
+                <div class="banner-overlay"></div>
+            </div>
+            <div class="banner-content">
+                <div class="banner-badge">💙 ДОСТУПНЫЕ ЦЕНЫ 💚</div>
+                <h1>Скидка 20%<br><span>на первый заказ</span></h1>
+                <p>Подпишитесь на рассылку и получите промокод на скидку 20% при первом заказе.</p>
+                <button class="btn-primary" id="subscribeBtn">📧 Получить скидку →</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Кнопки навигации -->
+    <button class="banner-nav prev" id="bannerPrev">‹</button>
+    <button class="banner-nav next" id="bannerNext">›</button>
+    
+    <!-- Индикаторы -->
+    <div class="banner-dots">
+        <span class="dot active" data-slide="0"></span>
+        <span class="dot" data-slide="1"></span>
+        <span class="dot" data-slide="2"></span>
+    </div>
+</div>
+
+
+    <!-- ===== 3D КАРУСЕЛЬ КОЛЛЕКЦИЙ ===== -->
+<section class="collection-section">
     <div class="container">
-        <!-- Баннер, карусели, товары и т.д. -->
+        <h2 class="collection-title">
+            Наши <span>коллекции</span>
+        </h2>
+    </div>
+    
+    <div class="collection-slider__wrapper swiper" id="collectionSlider">
+        <div class="swiper-wrapper">
+            <!-- Слайд 1 -->
+            <div class="collection-slider__item swiper-slide">
+                <article class="collection-item">
+                    <a href="#" class="collection-item__title">
+                        Аква-коллекция 2025
+                    </a>
+                    <img class="collection-item__img" src="images/collection-aqua.jpg" alt="Аква-коллекция" loading="lazy">
+                </article>
+            </div>
+            
+            <!-- Слайд 2 -->
+            <div class="collection-slider__item swiper-slide">
+                <article class="collection-item">
+                    <a href="#" class="collection-item__title">
+                        Премиум серия
+                    </a>
+                    <img class="collection-item__img" src="images/collection-premium.jpg" alt="Премиум серия" loading="lazy">
+                </article>
+            </div>
+            
+            <!-- Слайд 3 -->
+            <div class="collection-slider__item swiper-slide">
+                <article class="collection-item">
+                    <a href="#" class="collection-item__title">
+                        Хирургическая серия
+                    </a>
+                    <img class="collection-item__img" src="images/collection-surgical.jpg" alt="Хирургическая серия" loading="lazy">
+                </article>
+            </div>
+            
+            <!-- Слайд 4 -->
+            <div class="collection-slider__item swiper-slide">
+                <article class="collection-item">
+                    <a href="#" class="collection-item__title">
+                        Лаборатория Hircost
+                    </a>
+                    <img class="collection-item__img" src="images/collection-lab.jpg" alt="Лаборатория" loading="lazy">
+                </article>
+            </div>
+            
+            <!-- Слайд 5 -->
+            <div class="collection-slider__item swiper-slide">
+                <article class="collection-item">
+                    <a href="#" class="collection-item__title">
+                        Простые вещи
+                    </a>
+                    <img class="collection-item__img" src="images/collection-simple.jpg" alt="Простые вещи" loading="lazy">
+                </article>
+            </div>
+        </div>
+        
+        <!-- Кнопки навигации -->
+        <div class="collection-slider__nav prev" id="collectionPrev">‹</div>
+        <div class="collection-slider__nav next" id="collectionNext">›</div>
+        
+        <!-- Пагинация -->
+        <div class="collection-slider__pagination swiper-pagination"></div>
+    </div>
+</section>
+        
+        <!-- Карточки преимуществ -->
+        <div class="offers">
+            <div class="offer-card"><div class="icon">💧</div><h3>Увлажняющая ткань</h3><p>Технология Cool&amp;Dry</p><div class="price">-25%</div></div>
+            <div class="offer-card"><div class="icon">🌊</div><h3>Бесплатная доставка</h3><p>При заказе от 5000₽</p><div class="price">0 ₽</div></div>
+            <div class="offer-card"><div class="icon">💎</div><h3>Подарочный набор</h3><p>При первом заказе</p><div class="price">Бесплатно</div></div>
+        </div>
+
+        <!-- Каталог товаров -->
+        <h2 class="section-title">🌟 Аква-коллекция 🌟</h2>
+        <div class="filter-categories" id="filterCategories"></div>
+        <div class="filter-search">
+            <input type="text" id="catalogSearch" placeholder="🔍 Поиск по названию...">
+        </div>
+        <div class="products-grid" id="productsGrid"></div>
+
+    <!-- ===== ФОРМА ОБРАТНОЙ СВЯЗИ (ОПТ) ===== -->
+<div class="lead-form" id="optForm">
+    <div class="lead-form__inner">
+        <div class="lead-form__content">
+            <span class="lead-form__badge">🎯 ОПТОВЫМ КЛИЕНТАМ</span>
+            <h3 class="lead-form__title">Бесплатная <span class="accent-gradient">консультация</span> по опту</h3>
+            <p class="lead-form__desc">Оставьте заявку — мы подберём ткани, посчитаем партию и вышлем коммерческое предложение с индивидуальной скидкой.</p>
+            <ul class="lead-form__features">
+                <li>✓ Подбор ткани под вашу специализацию</li>
+                <li>✓ Расчёт стоимости партии от 5 штук</li>
+                <li>✓ Помощь с лекалами и размерами</li>
+                <li>✓ Подготовка документов для тендера</li>
+            </ul>
+        </div>
+        <div class="lead-form__box">
+            <div class="lead-form__gift">🎁 В подарок: чек-лист по выбору медодежды</div>
+            <input type="text" id="formName" placeholder="Имя / Должность" class="lead-form__input">
+            <input type="email" id="formEmail" placeholder="E-mail" class="lead-form__input">
+            <input type="tel" id="formPhone" placeholder="Телефон (необязательно)" class="lead-form__input">
+            <textarea id="formMessage" rows="3" placeholder="Кол-во сотрудников / пожелания / тираж" class="lead-form__textarea"></textarea>
+            <button id="formSubmitBtn" class="lead-form__btn">Получить индивидуальное УТП →</button>
+            <div class="lead-form__privacy">Нажимая на кнопку, вы соглашаетесь с политикой обработки персональных данных</div>
+        </div>
+    </div>
+</div>
+    
+        <!-- Преимущества -->
+        <div class="benefits">
+            <h3>💙 Преимущества работы с нами</h3>
+            <div class="benefits-grid">
+                <div class="benefit-item">✅ Сертифицированная продукция</div>
+                <div class="benefit-item">✅ Доставка по всей России</div>
+                <div class="benefit-item">✅ Опт от 10 штук</div>
+                <div class="benefit-item">✅ 24/7 поддержка</div>
+            </div>
+        </div>
     </div>
 </main>
 
+
 <footer>
-    <!-- футер -->
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <div class="footer-logo">🩺 MURANO-APPAREL</div>
+                <p>Медицинская одежда для тех, кто спасает жизни.</p>
+                <div class="footer-contacts">
+                    <p>✉️ <a href="mailto:murano-apparel@bk.ru">murano-apparel@bk.ru</a></p>
+                    <p>📞 <a href="tel:+79063771985">+7 (906) 377-19-85</a></p>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Документы</h4>
+                <ul>
+                    <li><a href="#" class="footer-link" data-doc="offer">Оферта</a></li>
+                    <li><a href="#" class="footer-link" data-doc="privacy">Политика конфиденциальности</a></li>
+                    <li><a href="#" class="footer-link" data-doc="agreement">Пользовательское соглашение</a></li>
+                    <li><a href="#" class="footer-link" data-doc="return">Условия обмена и возврата</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Информация</h4>
+                <ul>
+                    <li><a href="#" class="footer-link" data-doc="about">О компании</a></li>
+                    <li><a href="#" class="footer-link" data-doc="delivery">Доставка и оплата</a></li>
+                    <li><a href="#" class="footer-link" data-doc="contacts">Контакты</a></li>
+                    <li><a href="#" class="footer-link" data-doc="wholesale">Оптовым клиентам</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Подпишитесь</h4>
+                <p>Будьте в курсе новостей и акций</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-telegram"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 Murano Apparel — медицинская одежда для тех, кто спасает жизни.</p>
+        </div>
+    </div>
 </footer>
 
-<!-- Модальное окно для текстов -->
+<!-- ===== МОДАЛЬНОЕ ОКНО ДЛЯ ТЕКСТОВ ===== -->
 <div class="modal-overlay" id="docModalOverlay">
     <div class="modal-container" id="docModalContainer">
         <div class="modal-header">
             <h3 id="modalTitle">Оферта</h3>
             <button class="modal-close" id="docModalClose">&times;</button>
         </div>
-        <div class="modal-body" id="modalBody"></div>
+        <div class="modal-body" id="modalBody">
+            <!-- Текст будет подставляться динамически -->
+        </div>
     </div>
 </div>
-
-<!-- Боковая корзина -->
-<div class="cart-sidebar" id="cartSidebar">
-    <div class="cart-header">
-        <h3>🛒 Корзина</h3>
-        <button id="closeCart">✕</button>
+    
+    <!-- ===== БОКОВАЯ КОРЗИНА (ДОЛЖНА БЫТЬ В КОНЦЕ СТРАНИЦЫ) ===== -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3>🛒 Корзина</h3>
+            <button id="closeCart">✕</button>
+        </div>
+        <div id="cartItems">Корзина пуста</div>
+        <div id="cartTotal"></div>
+        <button id="checkoutBtn" class="btn-primary">Оформить заказ</button>
     </div>
-    <div id="cartItems">Корзина пуста</div>
-    <div id="cartTotal"></div>
-    <button id="checkoutBtn" class="btn-primary">Оформить заказ</button>
-</div>
+    <div class="overlay" id="overlay"></div>
 
-<div class="overlay" id="overlay"></div>
-
-<script src="js/script.js"></script>
-<script src="js/utils.js"></script>
-<script src="js/cart.js"></script>
-<script src="js/products.js"></script>
-<script src="js/quickview.js"></script>
-<script src="js/header.js"></script>
-<script src="js/main.js"></script>  
-<script src="js/contact-form.js"></script>
-
+</body>
+</html>
+    
+        <script src="js/script.js"></script>
+        <script src="js/utils.js"></script>
+        <script src="js/cart.js"></script>
+        <script src="js/products.js"></script>
+        <script src="js/quickview.js"></script>
+        <script src="js/header.js"></script>
+        <script src="js/main.js"></script>  
+        <script src="js/contact-form.js"></script>
+        
+    
 </body>
 </html>
