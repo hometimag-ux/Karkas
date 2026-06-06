@@ -71,18 +71,58 @@
 </header>
     
         
-       <!-- Герой-секция -->
-<div class="container">
-    <div class="hero">
-        <div class="hero-content">
-            <div class="hero-badge">💙 АКВА-КОЛЛЕКЦИЯ 2025 💚</div>
-            <h1>Медицинская одежда<br><span>свежесть и комфорт</span></h1>
-            <p>Дышащие ткани, идеальная посадка, современный дизайн. Создано для вашего комфорта.</p>
-            <button class="btn-primary" id="shopNowBtn">✨ В каталог →</button>
+      <!-- ===== БАННЕР-КАРУСЕЛЬ (ВСТАВИТЬ ВМЕСТО СТАРОГО БАННЕРА) ===== -->
+<div class="hero-banner">
+    <div class="banner-slides" id="bannerSlides">
+        <!-- Слайд 1 -->
+        <div class="banner-slide active">
+            <div class="banner-bg" style="background-image: url('https://images.unsplash.com/photo-1581056771107-24ca5f033842?w=1920');">
+                <div class="banner-overlay"></div>
+            </div>
+            <div class="banner-content">
+                <div class="banner-badge">💙 НОВАЯ КОЛЛЕКЦИЯ 2025 💚</div>
+                <h1>Медицинская одежда<br><span>свежесть и комфорт</span></h1>
+                <p>Дышащие ткани, идеальная посадка, современный дизайн. Создано для вашего комфорта.</p>
+                <button class="btn-primary" id="shopNowBtn2">✨ В каталог →</button>
+            </div>
         </div>
-        <div class="hero-image">
-            <img src="images/Баннер-герой.jpg" alt="Медицинская одежда">
+        
+        <!-- Слайд 2 -->
+        <div class="banner-slide">
+            <div class="banner-bg" style="background-image: url('https://images.unsplash.com/photo-1629909613654-28e377c37d09?w=1920');">
+                <div class="banner-overlay"></div>
+            </div>
+            <div class="banner-content">
+                <div class="banner-badge">💙 ПРОФЕССИОНАЛЬНАЯ СЕРИЯ 💚</div>
+                <h1>Свобода движений<br><span>каждый день</span></h1>
+                <p>Эргономичный крой, эластичные ткани, продуманные детали для вашей работы.</p>
+                <button class="btn-primary" onclick="document.getElementById('productsGrid')?.scrollIntoView({behavior:'smooth'})">✨ Смотреть коллекцию →</button>
+            </div>
         </div>
+        
+        <!-- Слайд 3 -->
+        <div class="banner-slide">
+            <div class="banner-bg" style="background-image: url('https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=1920');">
+                <div class="banner-overlay"></div>
+            </div>
+            <div class="banner-content">
+                <div class="banner-badge">💙 ДОСТУПНЫЕ ЦЕНЫ 💚</div>
+                <h1>Скидка 20%<br><span>на первый заказ</span></h1>
+                <p>Подпишитесь на рассылку и получите промокод на скидку 20% при первом заказе.</p>
+                <button class="btn-primary" id="subscribeBtn">📧 Получить скидку →</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Кнопки навигации -->
+    <button class="banner-nav prev" id="bannerPrev">‹</button>
+    <button class="banner-nav next" id="bannerNext">›</button>
+    
+    <!-- Индикаторы (точки) -->
+    <div class="banner-dots">
+        <span class="dot active" data-slide="0"></span>
+        <span class="dot" data-slide="1"></span>
+        <span class="dot" data-slide="2"></span>
     </div>
 </div>
 
