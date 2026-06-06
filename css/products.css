@@ -258,3 +258,102 @@
 .benefit-item {
     color: #405d77;
 }
+
+/* ===== МОДАЛЬНОЕ ОКНО БЫСТРОГО ПРОСМОТРА ===== */
+.quick-view-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    overflow: hidden; /* Важно: скролл внутри модалки, а не снаружи */
+}
+
+.quick-view-content {
+    background: white;
+    border-radius: 36px;
+    width: 90%;
+    max-width: 1200px;
+    max-height: 85vh;  /* Максимальная высота — 85% экрана */
+    overflow-y: auto;  /* Включаем вертикальный скролл */
+    position: relative;
+    animation: modalFadeIn 0.3s ease;
+    padding: 0;  /* Убираем padding, чтобы скролл был от края до края */
+}
+
+/* Внутренний контент с отступами */
+.quick-view-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    padding: 40px 44px;
+}
+
+/* Кастомный скроллбар (для красоты) */
+.quick-view-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.quick-view-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.quick-view-content::-webkit-scrollbar-thumb {
+    background: #4db6ac;
+    border-radius: 10px;
+}
+
+.quick-view-content::-webkit-scrollbar-thumb:hover {
+    background: #00897b;
+}
+
+/* Кнопка закрытия */
+.quick-view-close {
+    position: sticky;
+    top: 16px;
+    right: 16px;
+    float: right;
+    background: white;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin: 16px 16px 0 0;
+}
+
+.quick-view-close:hover {
+    background: #f1f5f9;
+    transform: scale(1.05);
+}
+
+/* Адаптация для мобильных */
+@media (max-width: 860px) {
+    .quick-view-body {
+        grid-template-columns: 1fr;
+        padding: 24px;
+        gap: 20px;
+    }
+    
+    .quick-view-content {
+        max-height: 90vh;
+    }
+    
+    .quick-view-left, .quick-view-right {
+        flex: auto;
+    }
+}
