@@ -1,19 +1,11 @@
-// ===== БЫСТРЫЙ ПРОСМОТР =====
-function closeQuickView() {
-    const modal = document.getElementById('quickViewModal');
-    if (modal) modal.remove();
-    document.body.style.overflow = '';
-}
-
 function openQuickView(id) {
     const product = allProducts.find(p => p.id === id);
     if (!product) return;
     
-    const category = categories.find(c => c.id == product.category_id);
     const hasDiscount = product.discount_price && product.discount_price < product.price;
     const rating = product.rating || getRandomRating();
     const stars = '★'.repeat(Math.floor(rating)) + '☆'.repeat(5 - Math.floor(rating));
-    const img = product.images && product.images.length > 0 ? product.images[0] : null;
+    const mainImg = product.images && product.images.length > 0 ? product.images[0] : null;
     const chars = product.characteristics || {};
     const pack = product.packaging || {};
 
@@ -33,12 +25,24 @@ function openQuickView(id) {
             <div class="quick-view-content">
                 <button class="quick-view-close">&times;</button>
                 <div class="quick-view-body">
-                    <!-- Левая колонка -->
+                    <!-- Левая колонка с галереей -->
                     <div class="quick-view-left">
                         <div class="main-visual">
-                            ${img ? `<img src="${img}" alt="${escapeHtml(product.title)}">` : `<div style="font-size: 6rem;">${product.emoji || '👕'}</div>`}
+                            ${mainImg ? `<img src="${mainImg}" alt="${escapeHtml(product.title)}" id="modalMainImage">` : `<div style="font-size: 6rem;">${product.emoji || '👕'}</div>`}
                         </div>
                         <div class="status-badge">✓ в наличии | профессиональная серия</div>
+                        
+                        <!-- Миниатюры всех фото -->
+                        ${product.images && product.images.length > 1 ? `
+                        <div class="thumbnail-list" id="modalThumbnails">
+                            ${product.images.map((thumb, idx) => `
+                                <div class="thumbnail ${idx === 0 ? 'active' : ''}" data-img="${escapeHtml(thumb)}">
+                                    <img src="${thumb}" alt="Фото ${idx + 1}">
+                                </div>
+                            `).join('')}
+                        </div>
+                        ` : ''}
+                        
                         <div class="color-swatches" id="modalColorSwatches">
                             ${colors.map((color, idx) => `
                                 <div class="swatch ${idx === 0 ? 'active' : ''}" style="background: ${color}; ${color === '#ffffff' ? 'border:1px solid #ccc;' : ''}" data-color="${colorNames[idx]}"></div>
@@ -47,7 +51,7 @@ function openQuickView(id) {
                         <div class="rating-note">★ ${rating} на основе отзывов</div>
                     </div>
                     
-                    <!-- Правая колонка -->
+                    <!-- Правая колонка (без изменений) -->
                     <div class="quick-view-right">
                         <div class="brand">MURANO APPAREL — медицинская коллекция</div>
                         <h1>${escapeHtml(product.title)}</h1>
@@ -106,7 +110,7 @@ function openQuickView(id) {
                         
                         <div class="tab-content">
                             <div class="tab-pane active" id="desc">
-                                <p>${escapeHtml(product.description || 'Профессиональная медицинская одежда, разработанная с учётом пожеланий медицинских работников.')}</p>
+                                <p>${escapeHtml(product.description || 'Профессиональная медицинская одежда...')}</p>
                                 <ul class="feature-list">
                                     <li>Анатомическая посадка: не стесняет движений</li>
                                     <li>Материал «дышит», отводит влагу</li>
@@ -120,7 +124,7 @@ function openQuickView(id) {
                                         ${chars.brand ? `<tr><td>Бренд</td><td>${escapeHtml(chars.brand)}</td></tr>` : ''}
                                         ${chars.material ? `<tr><td>Состав</td><td>${escapeHtml(chars.material)}</td></tr>` : ''}
                                         ${chars.collar ? `<tr><td>Воротник</td><td>${escapeHtml(chars.collar)}</td></tr>` : ''}
-                                        ${chars.sleeves ? `<td><td>Рукава</td><td>${escapeHtml(chars.sleeves)}</td></tr>` : ''}
+                                        ${chars.sleeves ? `<tr><td>Рукава</td><td>${escapeHtml(chars.sleeves)}</td></tr>` : ''}
                                         ${chars.pockets ? `<tr><td>Карманы</td><td>${escapeHtml(chars.pockets)}</td></tr>` : ''}
                                         ${chars.country ? `<tr><td>Страна</td><td>${escapeHtml(chars.country)}</td></tr>` : ''}
                                     </tbody>
@@ -133,7 +137,6 @@ function openQuickView(id) {
                                     ${pack.height ? `<div>📦 Высота: ${pack.height} см</div>` : ''}
                                     ${pack.weight ? `<div>⚖️ Вес: ${pack.weight} кг</div>` : ''}
                                 </div>
-                                ${!pack.length && !pack.width && !pack.height && !pack.weight ? '<p>Информация о габаритах упаковки отсутствует</p>' : ''}
                             </div>
                             <div class="tab-pane" id="b2b">
                                 <p><strong>Преимущества для клиник, медцентров и оптовых заказчиков:</strong></p>
@@ -164,12 +167,13 @@ function openQuickView(id) {
         </div>
     `;
     
+    // Вставка модалки
     const oldModal = document.getElementById('quickViewModal');
     if (oldModal) oldModal.remove();
     document.body.insertAdjacentHTML('beforeend', modalHtml);
     document.body.style.overflow = 'hidden';
     
-    // Инициализация событий
+    // Инициализация событий (добавить обработчик миниатюр)
     const closeBtn = document.querySelector('#quickViewModal .quick-view-close');
     if (closeBtn) closeBtn.onclick = () => closeQuickView();
     
@@ -180,6 +184,21 @@ function openQuickView(id) {
         };
     }
     
+    // === НОВЫЙ ОБРАБОТЧИК ДЛЯ МИНИАТЮР ===
+    const thumbnails = document.querySelectorAll('#quickViewModal .thumbnail');
+    const mainImage = document.getElementById('modalMainImage');
+    if (thumbnails.length && mainImage) {
+        thumbnails.forEach(thumb => {
+            thumb.onclick = () => {
+                thumbnails.forEach(t => t.classList.remove('active'));
+                thumb.classList.add('active');
+                const newSrc = thumb.dataset.img;
+                if (newSrc) mainImage.src = newSrc;
+            };
+        });
+    }
+    
+    // Остальные обработчики...
     document.querySelectorAll('#quickViewModal .size-btn').forEach(btn => {
         btn.onclick = function() {
             document.querySelectorAll('#quickViewModal .size-btn').forEach(b => b.classList.remove('active'));
