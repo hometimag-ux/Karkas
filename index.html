@@ -261,6 +261,7 @@
     </div>
 </main>
 
+
 <footer>
     <div class="container">
         <div class="footer-grid">
@@ -275,19 +276,19 @@
             <div class="footer-col">
                 <h4>Документы</h4>
                 <ul>
-                    <li><a href="#">Оферта</a></li>
-                    <li><a href="#">Политика конфиденциальности</a></li>
-                    <li><a href="#">Пользовательское соглашение</a></li>
-                    <li><a href="#">Условия обмена и возврата</a></li>
+                    <li><a href="#" class="footer-link" data-doc="offer">Оферта</a></li>
+                    <li><a href="#" class="footer-link" data-doc="privacy">Политика конфиденциальности</a></li>
+                    <li><a href="#" class="footer-link" data-doc="agreement">Пользовательское соглашение</a></li>
+                    <li><a href="#" class="footer-link" data-doc="return">Условия обмена и возврата</a></li>
                 </ul>
             </div>
             <div class="footer-col">
                 <h4>Информация</h4>
                 <ul>
-                    <li><a href="#">О компании</a></li>
-                    <li><a href="#">Доставка и оплата</a></li>
-                    <li><a href="#">Контакты</a></li>
-                    <li><a href="#">Оптовым клиентам</a></li>
+                    <li><a href="#" class="footer-link" data-doc="about">О компании</a></li>
+                    <li><a href="#" class="footer-link" data-doc="delivery">Доставка и оплата</a></li>
+                    <li><a href="#" class="footer-link" data-doc="contacts">Контакты</a></li>
+                    <li><a href="#" class="footer-link" data-doc="wholesale">Оптовым клиентам</a></li>
                 </ul>
             </div>
             <div class="footer-col">
@@ -305,6 +306,21 @@
         </div>
     </div>
 </footer>
+
+<!-- ===== МОДАЛЬНОЕ ОКНО ДЛЯ ТЕКСТОВ ===== -->
+<div class="modal-overlay" id="docModalOverlay">
+    <div class="modal-container" id="docModalContainer">
+        <div class="modal-header">
+            <h3 id="modalTitle">Оферта</h3>
+            <button class="modal-close" id="docModalClose">&times;</button>
+        </div>
+        <div class="modal-body" id="modalBody">
+            <!-- Текст будет подставляться динамически -->
+        </div>
+    </div>
+</div>
+
+    
         <script src="js/script.js"></script>
         <script src="js/utils.js"></script>
         <script src="js/cart.js"></script>
