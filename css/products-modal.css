@@ -513,3 +513,149 @@ body.modal-open {
         width: 100%;
     }
 }
+
+/* ===== ГАЛЕРЕЯ С МИНИАТЮРАМИ ===== */
+
+/* Контейнер галереи */
+.quick-view-left {
+    background: #fafcf9;
+    border-radius: 24px;
+    padding: 24px;
+    text-align: center;
+    border: 1px solid #e6ede5;
+}
+
+/* Крупное основное фото */
+.main-visual {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 16px;
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.main-visual img {
+    max-width: 100%;
+    max-height: 300px;
+    width: auto;
+    height: auto;
+    border-radius: 16px;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.main-visual img:hover {
+    transform: scale(1.02);
+}
+
+/* Список миниатюр */
+.thumbnail-list {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+/* Миниатюра */
+.thumbnail {
+    width: 70px;
+    height: 70px;
+    border-radius: 12px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+    overflow: hidden;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.2s ease;
+}
+
+.thumbnail:hover img {
+    transform: scale(1.1);
+}
+
+.thumbnail:hover {
+    border-color: #4db6ac;
+    transform: translateY(-2px);
+}
+
+/* Активная миниатюра */
+.thumbnail.active {
+    border-color: #2b7a4b;
+    box-shadow: 0 0 0 2px white, 0 0 0 4px #2b7a4b;
+    transform: scale(1.02);
+}
+
+/* Если нет миниатюр, скрываем блок */
+.thumbnail-list:empty {
+    display: none;
+}
+
+/* Статус-бейдж */
+.status-badge {
+    display: inline-block;
+    background: #e7f3ec;
+    color: #2b7a4b;
+    padding: 6px 16px;
+    border-radius: 40px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin: 16px 0 8px;
+}
+
+/* Рейтинг в левой колонке */
+.rating-note {
+    font-size: 0.7rem;
+    color: #5b7f6a;
+    margin-top: 12px;
+}
+
+/* Адаптация для мобильных */
+@media (max-width: 860px) {
+    .main-visual {
+        min-height: 250px;
+        padding: 15px;
+    }
+    
+    .main-visual img {
+        max-height: 250px;
+    }
+    
+    .thumbnail {
+        width: 55px;
+        height: 55px;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-visual {
+        min-height: 200px;
+        padding: 10px;
+    }
+    
+    .main-visual img {
+        max-height: 200px;
+    }
+    
+    .thumbnail {
+        width: 45px;
+        height: 45px;
+        border-radius: 8px;
+    }
+    
+    .thumbnail-list {
+        gap: 8px;
+    }
+}
