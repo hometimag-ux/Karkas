@@ -18,7 +18,7 @@
     background: white;
     border-radius: 24px;
     width: 95%;
-    max-width: 1300px;
+    max-width: 1400px;
     max-height: 90vh;
     overflow-y: auto;
     position: relative;
@@ -81,8 +81,8 @@
 .quick-view-body {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 40px;
-    padding: 30px 40px;
+    gap: 50px;
+    padding: 40px 50px;
     clear: both;
 }
 
@@ -102,7 +102,7 @@
 
 .main-visual img {
     width: 100%;
-    max-width: 600px;
+    max-width: 800px;
     height: auto;
     border-radius: 0;
     display: block;
