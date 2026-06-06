@@ -76,6 +76,5 @@ if (closeCart && cartSidebar && overlay) {
         cartSidebar.classList.remove('open');
         overlay.classList.remove('active');
         document.body.style.overflow = '';
-    };
-});
+    });
     
