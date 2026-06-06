@@ -659,3 +659,6 @@ body.modal-open {
         gap: 8px;
     }
 }
+
+.main-visual img {
+    transition: opacity 0.2s ease;
