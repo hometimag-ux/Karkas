@@ -1,3 +1,106 @@
+// ===== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ =====
+let allProducts = [];
+let categories = [];
+let currentCategory = 'all';
+let currentSearch = '';
+
+// ===== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ =====
+function escapeHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
+}
+
+function showToast(message) {
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
+
+function getRandomRating() {
+    return (3 + Math.random() * 2).toFixed(1);
+}
+
+function renderStars(rating) {
+    let stars = '';
+    for (let i = 0; i < Math.floor(rating); i++) stars += '<span class="star filled">★</span>';
+    if (rating % 1 >= 0.5) stars += '<span class="star filled">½</span>';
+    for (let i = 0; i < 5 - Math.ceil(rating); i++) stars += '<span class="star">★</span>';
+    return stars;
+}
+
+// ===== ЗАГРУЗКА ТОВАРОВ =====
+function loadProductsFromCRM() {
+    console.log('loadProductsFromCRM вызвана');
+    const saved = localStorage.getItem('crm_data');
+    
+    if (!saved) {
+        console.log('Нет данных в localStorage');
+        allProducts = [];
+        categories = [];
+        renderProducts();
+        return;
+    }
+    
+    try {
+        const data = JSON.parse(saved);
+        allProducts = data.products || [];
+        categories = data.categories || [];
+        console.log('Загружено товаров:', allProducts.length);
+    } catch(e) {
+        console.error('Ошибка загрузки товаров', e);
+    }
+    
+    renderFilters();
+    renderProducts();
+}
+
+function getFilteredProducts() {
+    let filtered = [...allProducts];
+    if (currentCategory !== 'all') {
+        filtered = filtered.filter(p => p.category_id == currentCategory);
+    }
+    if (currentSearch) {
+        filtered = filtered.filter(p => p.title.toLowerCase().includes(currentSearch.toLowerCase()));
+    }
+    return filtered;
+}
+
+// ===== ФИЛЬТРЫ =====
+function renderFilters() {
+    const container = document.getElementById('filterCategories');
+    if (!container) return;
+    
+    if (categories.length === 0) {
+        container.innerHTML = '';
+        return;
+    }
+    
+    let html = '<button class="filter-btn active" data-cat="all">Все</button>';
+    categories.forEach(cat => {
+        html += `<button class="filter-btn" data-cat="${cat.id}">${escapeHtml(cat.title)}</button>`;
+    });
+    container.innerHTML = html;
+    
+    container.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            container.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentCategory = btn.dataset.cat;
+            renderProducts();
+        });
+    });
+    
+    const searchInput = document.getElementById('catalogSearch');
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            currentSearch = e.target.value;
+            renderProducts();
+        });
+    }
+}
+
 // ===== ОТРИСОВКА ТОВАРОВ =====
 function renderProducts() {
     const grid = document.getElementById('productsGrid');
@@ -74,7 +177,7 @@ function attachProductEvents() {
     });
 }
 
-// ===== БЫСТРЫЙ ПРОСМОТР (в стиле образца) =====
+// ===== БЫСТРЫЙ ПРОСМОТР =====
 
 function closeQuickView() {
     const modal = document.getElementById('quickViewModal');
@@ -95,7 +198,6 @@ function openQuickView(id) {
     const chars = product.characteristics || {};
     const pack = product.packaging || {};
 
-    // Размеры
     let sizesList = [];
     if (product.sizes_data && product.sizes_data.length > 0) {
         sizesList = product.sizes_data.map(s => s.size);
@@ -103,7 +205,6 @@ function openQuickView(id) {
         sizesList = product.sizes;
     }
     
-    // Цвета (если есть в товаре, иначе стандартные)
     const colors = product.colors || ['#8F9E6B', '#ffffff', '#2F5D50', '#4a708b'];
     const colorNames = product.color_names || ['оливковый', 'белый', 'тёмно-зелёный', 'синий'];
     
@@ -112,7 +213,6 @@ function openQuickView(id) {
             <div class="quick-view-content">
                 <button class="quick-view-close">&times;</button>
                 <div class="quick-view-body">
-                    <!-- Левая колонка: галерея -->
                     <div class="quick-view-left">
                         <div class="main-visual">
                             ${img ? `<img src="${img}" alt="${escapeHtml(product.title)}" style="width:100%; border-radius: 28px;">` : `<div style="font-size: 6rem;">${product.emoji || '👕'}</div>`}
@@ -126,7 +226,6 @@ function openQuickView(id) {
                         <div style="font-size:0.7rem; margin-top:12px; color:#5b7f6a;">★ ${rating} на основе отзывов</div>
                     </div>
                     
-                    <!-- Правая колонка: информация -->
                     <div class="quick-view-right">
                         <div class="brand">MURANO APPAREL — медицинская коллекция</div>
                         <h1>${escapeHtml(product.title)}</h1>
@@ -153,7 +252,6 @@ function openQuickView(id) {
                             <span class="spec-item">🧼 антибактерия</span>
                         </div>
                         
-                        <!-- Размеры -->
                         ${sizesList.length > 0 ? `
                         <div class="size-selector">
                             <h4>Выберите размер</h4>
@@ -177,7 +275,6 @@ function openQuickView(id) {
                             <span>🧵 логотип за 48ч</span>
                         </div>
                         
-                        <!-- Табы -->
                         <div class="tabs">
                             <button class="tab-btn active" data-tab="desc">описание</button>
                             <button class="tab-btn" data-tab="specs">характеристики</button>
@@ -187,7 +284,7 @@ function openQuickView(id) {
                         
                         <div class="tab-content">
                             <div class="tab-pane active" id="desc">
-                                <p>${escapeHtml(product.description || 'Профессиональная медицинская одежда, разработанная с учётом пожеланий медицинских работников. Эргономичный крой, эластичная ткань и продуманные детали.')}</p>
+                                <p>${escapeHtml(product.description || 'Профессиональная медицинская одежда...')}</p>
                                 <ul class="feature-list">
                                     <li>Анатомическая посадка: не стесняет движений</li>
                                     <li>Материал «дышит», отводит влагу в течение смены</li>
@@ -198,15 +295,15 @@ function openQuickView(id) {
                             <div class="tab-pane" id="specs">
                                 <table style="width:100%; border-collapse: collapse; font-size:0.85rem;">
                                     <tbody>
-                                        ${chars.brand ? `<tr><td style="padding:6px 0;">Бренд</td><td>${escapeHtml(chars.brand)}</td></tr>` : ''}
-                                        ${chars.material ? `<tr><td style="padding:6px 0;">Состав</td><td>${escapeHtml(chars.material)}</td></tr>` : ''}
-                                        ${chars.collar ? `<tr><td style="padding:6px 0;">Воротник</td><td>${escapeHtml(chars.collar)}</td></tr>` : ''}
-                                        ${chars.sleeves ? `<tr><td style="padding:6px 0;">Рукава</td><td>${escapeHtml(chars.sleeves)}</td></tr>` : ''}
-                                        ${chars.pockets ? `<tr><td style="padding:6px 0;">Карманы</td><td>${escapeHtml(chars.pockets)}</td></tr>` : ''}
-                                        ${chars.clasp ? `<tr><td style="padding:6px 0;">Застёжка</td><td>${escapeHtml(chars.clasp)}</td></tr>` : ''}
-                                        ${chars.length ? `<tr><td style="padding:6px 0;">Длина</td><td>${escapeHtml(chars.length)}</td></tr>` : ''}
-                                        ${chars.silhouette ? `<tr><td style="padding:6px 0;">Силуэт</td><td>${escapeHtml(chars.silhouette)}</td></tr>` : ''}
-                                        ${chars.country ? `<tr><td style="padding:6px 0;">Страна</td><td>${escapeHtml(chars.country)}</td></tr>` : ''}
+                                        ${chars.brand ? `<tr><td style="padding:6px 0;">Бренд</td><td>${escapeHtml(chars.brand)}</td>` : ''}
+                                        ${chars.material ? `<tr><td style="padding:6px 0;">Состав</td><td>${escapeHtml(chars.material)}</td>` : ''}
+                                        ${chars.collar ? `<tr><td style="padding:6px 0;">Воротник</td><td>${escapeHtml(chars.collar)}</td>` : ''}
+                                        ${chars.sleeves ? `<tr><td style="padding:6px 0;">Рукава</td><td>${escapeHtml(chars.sleeves)}</td>` : ''}
+                                        ${chars.pockets ? `<tr><td style="padding:6px 0;">Карманы</td><td>${escapeHtml(chars.pockets)}</td>` : ''}
+                                        ${chars.clasp ? `<tr><td style="padding:6px 0;">Застёжка</td><td>${escapeHtml(chars.clasp)}</td>` : ''}
+                                        ${chars.length ? `<tr><td style="padding:6px 0;">Длина</td><td>${escapeHtml(chars.length)}</td>` : ''}
+                                        ${chars.silhouette ? `<tr><td style="padding:6px 0;">Силуэт</td><td>${escapeHtml(chars.silhouette)}</td>` : ''}
+                                        ${chars.country ? `<tr><td style="padding:6px 0;">Страна</td><td>${escapeHtml(chars.country)}</td>` : ''}
                                     </tbody>
                                 </table>
                             </div>
@@ -217,7 +314,6 @@ function openQuickView(id) {
                                     ${pack.height ? `<div>📦 Высота: ${pack.height} см</div>` : ''}
                                     ${pack.weight ? `<div>⚖️ Вес: ${pack.weight} кг</div>` : ''}
                                 </div>
-                                ${!pack.length && !pack.width && !pack.height && !pack.weight ? '<p>Информация о габаритах упаковки отсутствует</p>' : ''}
                             </div>
                             <div class="tab-pane" id="b2b">
                                 <p><strong>Преимущества для клиник, медцентров и оптовых заказчиков:</strong></p>
@@ -254,13 +350,18 @@ function openQuickView(id) {
     document.body.insertAdjacentHTML('beforeend', modalHtml);
     document.body.style.overflow = 'hidden';
     
-// ==== ИНИЦИАЛИЗАЦИЯ СОБЫТИЙ ====
+    // ==== ИНИЦИАЛИЗАЦИЯ СОБЫТИЙ ====
     
-    // Закрытие
     const closeBtn = document.querySelector('#quickViewModal .quick-view-close');
     if (closeBtn) closeBtn.onclick = () => closeQuickView();
     
-    // Размеры
+    const modalDiv = document.getElementById('quickViewModal');
+    if (modalDiv) {
+        modalDiv.onclick = (e) => {
+            if (e.target === modalDiv) closeQuickView();
+        };
+    }
+    
     document.querySelectorAll('#quickViewModal .size-btn').forEach(btn => {
         btn.onclick = function() {
             document.querySelectorAll('#quickViewModal .size-btn').forEach(b => b.classList.remove('active'));
@@ -268,7 +369,6 @@ function openQuickView(id) {
         };
     });
     
-    // Цвета
     document.querySelectorAll('#quickViewModal .swatch').forEach(sw => {
         sw.onclick = function() {
             document.querySelectorAll('#quickViewModal .swatch').forEach(s => s.classList.remove('active'));
@@ -276,7 +376,6 @@ function openQuickView(id) {
         };
     });
     
-    // Табы
     const tabBtns = document.querySelectorAll('#quickViewModal .tab-btn');
     const panes = document.querySelectorAll('#quickViewModal .tab-pane');
     tabBtns.forEach(btn => {
@@ -290,24 +389,75 @@ function openQuickView(id) {
         };
     });
     
-    // Кнопка "В корзину"
     const buyBtn = document.getElementById('modalBuyBtn');
-    if (buyBtn) buyBtn.onclick = () => { addToCartById(product.id); closeQuickView(); };
+    if (buyBtn) buyBtn.onclick = () => { 
+        addToCartById(product.id); 
+        closeQuickView(); 
+    };
     
-    // Быстрый заказ
     const oneClickBtn = document.getElementById('modalOneClickBtn');
     if (oneClickBtn) oneClickBtn.onclick = () => showToast('📞 Оставьте номер телефона — менеджер перезвонит через 5 минут');
     
-    // Лид-магнит
     const leadBtn = document.getElementById('modalLeadMagnetBtn');
     if (leadBtn) leadBtn.onclick = () => showToast('📧 Чек-лист примерки отправлен на ваш email');
     
-    // B2B кнопка в табе
     const b2bBtn = document.getElementById('modalB2bBtn');
-    if (b2bBtn) b2bBtn.onclick = () => showToast('📩 Запрос для B2B принят. Подготовим КП с ценами от 5 шт');
+    if (b2bBtn) b2bBtn.onclick = () => showToast('📩 Запрос для B2B принят');
     
-    // Корпоративная кнопка
     const corpBtn = document.getElementById('modalCorpBtn');
     if (corpBtn) corpBtn.onclick = () => showToast('📩 Свяжитесь с B2B-отделом: b2b@murano-apparel.ru');
 }
 
+// ===== КОРЗИНА =====
+function addToCartById(id) {
+    const product = allProducts.find(p => p.id === id);
+    if (!product) return;
+    
+    let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    const existing = cart.find(item => item.id === id);
+    
+    if (existing) {
+        existing.quantity++;
+    } else {
+        cart.push({
+            id: product.id,
+            title: product.title,
+            price: product.discount_price || product.price,
+            quantity: 1,
+            image: product.images?.[0] || null
+        });
+    }
+    
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCartCount();
+    showToast(`✅ ${product.title} добавлен в корзину`);
+}
+
+function updateCartCount() {
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    const total = cart.reduce((sum, item) => sum + item.quantity, 0);
+    const counter = document.getElementById('cartCounter');
+    if (counter) counter.textContent = total;
+}
+
+// Запуск при загрузке страницы
+document.addEventListener('DOMContentLoaded', function() {
+    loadProductsFromCRM();
+    updateCartCount();
+    
+    // Кнопка "В каталог"
+    const shopNowBtn = document.getElementById('shopNowBtn');
+    if (shopNowBtn) {
+        shopNowBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const productsGrid = document.getElementById('productsGrid');
+            if (productsGrid) productsGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    }
+});
+
+// Делаем функции глобальными
+window.closeQuickView = closeQuickView;
+window.addToCartById = addToCartById;
+window.openQuickView = openQuickView;
+window.allProducts = allProducts;
