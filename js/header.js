@@ -1,4 +1,4 @@
-// ===== ШАПКА, БУРГЕР И ПОИСК =====
+// ===== ШАПКА, БУРГЕР, ПОИСК И КОРЗИНА =====
 document.addEventListener('DOMContentLoaded', function() {
     // 1. Бургер меню
     const burgerBtn = document.getElementById('burgerBtn');
@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
     
-    // 3. Синхронизация поиска (десктоп + мобильный)
+    // 3. Синхронизация поиска
     const desktopSearch = document.getElementById('searchInput');
     const mobileSearchInput = document.getElementById('mobileSearchInput');
     
@@ -48,6 +48,36 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         mobileSearchInput.oninput = function() {
             desktopSearch.value = this.value;
+        };
+    }
+    
+    // ===== 4. КОРЗИНА (ДОБАВИТЬ ЭТОТ БЛОК) =====
+    const cartBtn = document.getElementById('cartBtn');
+    const cartSidebar = document.getElementById('cartSidebar');
+    const overlay = document.getElementById('overlay');
+    const closeCart = document.getElementById('closeCart');
+    
+    // Открытие корзины
+    if (cartBtn && cartSidebar && overlay) {
+        cartBtn.onclick = function() {
+            cartSidebar.classList.add('open');
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        };
+    }
+    
+    // Закрытие корзины
+    if (closeCart && cartSidebar && overlay) {
+        closeCart.onclick = function() {
+            cartSidebar.classList.remove('open');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        };
+        
+        overlay.onclick = function() {
+            cartSidebar.classList.remove('open');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
         };
     }
 });
