@@ -1,6 +1,6 @@
 // ===== ФОРМА ОБРАТНОЙ СВЯЗИ =====
 document.addEventListener('DOMContentLoaded', function() {
-    const submitBtn = document.getElementById('contactSubmitBtn');
+    const submitBtn = document.getElementById('formSubmitBtn');
     if (!submitBtn) return;
     
     function showFormMessage(message, isError = false) {
@@ -22,10 +22,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     submitBtn.onclick = function() {
-        const name = document.getElementById('contactName')?.value.trim();
-        const email = document.getElementById('contactEmail')?.value.trim();
-        const phone = document.getElementById('contactPhone')?.value.trim();
-        const message = document.getElementById('contactMessage')?.value.trim();
+        const name = document.getElementById('formName')?.value.trim();
+        const email = document.getElementById('formEmail')?.value.trim();
+        const phone = document.getElementById('formPhone')?.value.trim();
+        const message = document.getElementById('formMessage')?.value.trim();
         
         if (!name) {
             showFormMessage('❌ Пожалуйста, укажите ваше имя', true);
@@ -45,9 +45,9 @@ document.addEventListener('DOMContentLoaded', function() {
         showFormMessage(responseMessage);
         
         // Очистка формы
-        document.getElementById('contactName').value = '';
-        document.getElementById('contactEmail').value = '';
-        document.getElementById('contactPhone').value = '';
-        document.getElementById('contactMessage').value = '';
+        document.getElementById('formName').value = '';
+        document.getElementById('formEmail').value = '';
+        document.getElementById('formPhone').value = '';
+        document.getElementById('formMessage').value = '';
     };
 });
