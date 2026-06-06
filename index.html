@@ -34,33 +34,56 @@
     <button id="closeSnackbar">✕</button>
 </div>
 
-<header>
-    <div class="header-inner">
-        <button class="burger-btn" id="burgerBtn">
+<header class="site-header">
+    <div class="header-container">
+        <!-- 1. Бургер -->
+        <button class="header-burger" id="burgerBtn">
             <span></span><span></span><span></span>
         </button>
-        <div class="search-wrapper">
+
+        <!-- 2. Поиск (на десктопе) -->
+        <div class="header-search">
             <input type="text" id="searchInput" placeholder="Поиск...">
-            <button class="voice-btn" id="voiceBtn">🎤</button>
+            <button class="header-search__voice" id="voiceBtn">🎤</button>
         </div>
-        <a href="index.html" class="brand-link">MURANO APPAREL</a>
-        <button class="account-btn" id="accountBtn">
-            👤 <span class="account-text">Кабинет</span>
-        </button>
-        <button class="cart-btn" id="cartBtn">
-            🛒 <span id="cartCounter">0</span>
-        </button>
+
+        <!-- 3. Логотип / Бренд -->
+        <a href="index.html" class="header-logo">MURANO APPAREL</a>
+
+        <!-- 4. Иконка поиска (только на мобильных) -->
+        <button class="header-mobile-search" id="mobileSearchIcon">🔍</button>
+
+        <!-- 5. Кабинет и корзина -->
+        <div class="header-actions">
+            <button class="header-account" id="accountBtn">
+                👤 <span>Кабинет</span>
+            </button>
+            <button class="header-cart" id="cartBtn">
+                🛒 <span id="cartCounter">0</span>
+            </button>
+        </div>
     </div>
 
-    <div class="mobile-menu" id="mobileMenu">
-        <ul>
-            <li><a href="#">Каталог</a></li>
+    <!-- Мобильное меню (выезжает слева) -->
+    <div class="mobile-nav" id="mobileMenu">
+        <div class="mobile-nav__header">
+            <span class="mobile-nav__title">Меню</span>
+            <button class="mobile-nav__close" id="closeMobileMenu">✕</button>
+        </div>
+        <ul class="mobile-nav__list">
+            <li><a href="catalog.html">Каталог</a></li>
             <li><a href="#">О компании</a></li>
-            <li><a href="#">Доставка</a></li>
+            <li><a href="#">Доставка и оплата</a></li>
             <li><a href="#">Контакты</a></li>
         </ul>
     </div>
-    <div class="menu-overlay" id="menuOverlay"></div>
+    <div class="mobile-nav-overlay" id="mobileMenuOverlay"></div>
+
+    <!-- Мобильный поиск (выезжает сверху) -->
+    <div class="mobile-search" id="mobileSearch">
+        <input type="text" id="mobileSearchInput" placeholder="Поиск...">
+        <button id="closeMobileSearch">✕</button>
+    </div>
 </header>
 
 <main>
