@@ -1,13 +1,17 @@
-// ===== БЫСТРЫЙ ПРОСМОТР =====
-function closeQuickView() {
-    const modal = document.getElementById('quickViewModal');
-    if (modal) modal.remove();
-    document.body.style.overflow = '';
-}
-
 function openQuickView(id) {
+    console.log('🔍 1. openQuickView вызвана, id:', id);
+    console.log('🔍 2. allProducts:', allProducts);
+    
     const product = allProducts.find(p => p.id === id);
-    if (!product) return;
+    console.log('🔍 3. Найденный товар:', product);
+    
+    if (!product) {
+        console.error('❌ Товар не найден! id:', id);
+        showToast('Ошибка: товар не найден');
+        return;
+    }
+    
+    console.log('🔍 4. Начинаем создавать модалку для:', product.title);
     
     const category = categories.find(c => c.id == product.category_id);
     const hasDiscount = product.discount_price && product.discount_price < product.price;
@@ -28,6 +32,8 @@ function openQuickView(id) {
     
     const colors = product.colors || ['#8F9E6B', '#ffffff', '#2F5D50', '#4a708b'];
     const colorNames = product.color_names || ['оливковый', 'белый', 'тёмно-зелёный', 'синий'];
+    
+    console.log('🔍 5. Данные собраны, создаём HTML модалки');
     
     const modalHtml = `
         <div class="quick-view-modal" id="quickViewModal">
@@ -119,7 +125,7 @@ function openQuickView(id) {
                                         ${chars.brand ? `<tr><td style="padding:6px 0;">Бренд</td><td>${escapeHtml(chars.brand)}</td></tr>` : ''}
                                         ${chars.material ? `<tr><td style="padding:6px 0;">Состав</td><td>${escapeHtml(chars.material)}</td></tr>` : ''}
                                         ${chars.collar ? `<tr><td style="padding:6px 0;">Воротник</td><td>${escapeHtml(chars.collar)}</td></tr>` : ''}
-                                        ${chars.sleeves ? `<td><td style="padding:6px 0;">Рукава</td><td>${escapeHtml(chars.sleeves)}</td></tr>` : ''}
+                                        ${chars.sleeves ? `<tr><td style="padding:6px 0;">Рукава</td><td>${escapeHtml(chars.sleeves)}</td></tr>` : ''}
                                         ${chars.pockets ? `<tr><td style="padding:6px 0;">Карманы</td><td>${escapeHtml(chars.pockets)}</td></tr>` : ''}
                                         ${chars.clasp ? `<tr><td style="padding:6px 0;">Застёжка</td><td>${escapeHtml(chars.clasp)}</td></tr>` : ''}
                                         ${chars.length ? `<tr><td style="padding:6px 0;">Длина</td><td>${escapeHtml(chars.length)}</td></tr>` : ''}
@@ -171,6 +177,8 @@ function openQuickView(id) {
     if (oldModal) oldModal.remove();
     document.body.insertAdjacentHTML('beforeend', modalHtml);
     document.body.style.overflow = 'hidden';
+    
+    console.log('🔍 6. Модалка вставлена в DOM');
     
     // ===== ИНИЦИАЛИЗАЦИЯ СОБЫТИЙ =====
     
@@ -238,4 +246,6 @@ function openQuickView(id) {
     // Корпоративная кнопка
     const corpBtn = document.getElementById('modalCorpBtn');
     if (corpBtn) corpBtn.onclick = () => showToast('📩 Свяжитесь с B2B-отделом: b2b@murano-apparel.ru');
+    
+    console.log('🔍 7. Все обработчики навешены, модалка должна работать');
 }
