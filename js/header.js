@@ -51,33 +51,31 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
     
-    // ===== 4. КОРЗИНА (ДОБАВИТЬ ЭТОТ БЛОК) =====
-    const cartBtn = document.getElementById('cartBtn');
-    const cartSidebar = document.getElementById('cartSidebar');
-    const overlay = document.getElementById('overlay');
-    const closeCart = document.getElementById('closeCart');
+   // Корзина
+const cartBtn = document.getElementById('cartBtn');
+const cartSidebar = document.getElementById('cartSidebar');
+const overlay = document.getElementById('overlay');
+const closeCart = document.getElementById('closeCart');
+
+if (cartBtn && cartSidebar && overlay) {
+    cartBtn.onclick = () => {
+        cartSidebar.classList.add('open');
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    };
+}
+
+if (closeCart && cartSidebar && overlay) {
+    closeCart.onclick = () => {
+        cartSidebar.classList.remove('open');
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    };
     
-    // Открытие корзины
-    if (cartBtn && cartSidebar && overlay) {
-        cartBtn.onclick = function() {
-            cartSidebar.classList.add('open');
-            overlay.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        };
-    }
+    overlay.onclick = () => {
+        cartSidebar.classList.remove('open');
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    };
+}
     
-    // Закрытие корзины
-    if (closeCart && cartSidebar && overlay) {
-        closeCart.onclick = function() {
-            cartSidebar.classList.remove('open');
-            overlay.classList.remove('active');
-            document.body.style.overflow = '';
-        };
-        
-        overlay.onclick = function() {
-            cartSidebar.classList.remove('open');
-            overlay.classList.remove('active');
-            document.body.style.overflow = '';
-        };
-    }
-});
