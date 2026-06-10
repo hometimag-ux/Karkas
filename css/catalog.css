@@ -4,16 +4,18 @@
 .breadcrumbs {
     padding: 1.5rem 0 0.5rem;
     font-size: 0.85rem;
-    color: var(--text-muted, #64748b);
+    color: #64748b;
 }
 
 .breadcrumbs a {
     color: #4db6ac;
     text-decoration: none;
+    transition: color 0.2s;
 }
 
 .breadcrumbs a:hover {
     text-decoration: underline;
+    color: #00897b;
 }
 
 /* Заголовок страницы */
@@ -33,10 +35,11 @@
 /* Обёртка фильтров */
 .filters-wrapper {
     background: white;
-    border-radius: 1rem;
+    border-radius: 1.5rem;
     padding: 1.2rem;
     margin-bottom: 2rem;
     border: 1px solid #e2edf4;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
 }
 
 .filter-categories {
@@ -56,6 +59,12 @@
     font-size: 0.85rem;
     color: #405d77;
     transition: all 0.2s;
+    font-weight: 500;
+}
+
+.filter-btn:hover {
+    border-color: #4db6ac;
+    background: rgba(77, 182, 172, 0.05);
 }
 
 .filter-btn.active {
@@ -77,6 +86,7 @@
     font-size: 0.85rem;
     outline: none;
     transition: all 0.2s;
+    background: white;
 }
 
 .filter-search input:focus {
@@ -90,6 +100,7 @@
     padding: 3rem;
     color: #5e7f97;
     grid-column: 1 / -1;
+    font-size: 1rem;
 }
 
 /* Адаптация */
@@ -100,10 +111,12 @@
     
     .catalog-subtitle {
         font-size: 0.85rem;
+        margin-bottom: 1.5rem;
     }
     
     .filters-wrapper {
         padding: 1rem;
+        border-radius: 1rem;
     }
     
     .filter-btn {
@@ -112,12 +125,13 @@
     }
 }
 
-.cart-sidebar {
-    position: fixed;
-    right: -100%;
-    transition: right 0.3s;
-}
-
-.cart-sidebar.open {
-    right: 0;
+@media (max-width: 480px) {
+    .catalog-title {
+        font-size: 1.4rem;
+    }
+    
+    .filter-search input {
+        max-width: 100%;
+        font-size: 0.8rem;
+    }
 }
