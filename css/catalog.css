@@ -16,44 +16,14 @@
     text-align: center;
 }
 
-/* Хлебные крошки и фильтры в одной строке */
-.catalog-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin-top: 0.5rem;     /* ← ОТСТУП ПОСЛЕ ШАПКИ */
-    margin-bottom: 2rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid #e2edf4;
-}
-
-/* Хлебные крошки (слева) */
-.breadcrumbs {
-    font-size: 0.85rem;
-    color: #64748b;
-    white-space: nowrap;
-}
-
-.breadcrumbs a {
-    color: #4db6ac;
-    text-decoration: none;
-    transition: color 0.2s;
-}
-
-.breadcrumbs a:hover {
-    text-decoration: underline;
-    color: #00897b;
-}
-
-/* Фильтры (по центру) */
+/* Фильтры — по центру, с отступом после шапки */
 .filter-categories {
     display: flex;
     gap: 0.8rem;
     flex-wrap: wrap;
     justify-content: center;
-    flex: 1;
+    margin-top: 0.5rem;
+    margin-bottom: 2rem;
 }
 
 .filter-btn {
@@ -94,20 +64,6 @@
 
 /* Адаптация */
 @media (max-width: 768px) {
-    .catalog-header {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 0.8rem;
-    }
-    
-    .breadcrumbs {
-        text-align: left;
-    }
-    
-    .filter-categories {
-        justify-content: center;
-    }
-    
     .catalog-title {
         font-size: 1.6rem;
     }
