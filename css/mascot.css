@@ -1,74 +1,101 @@
-/* ===== МАСКОТ (ТАЛИСМАН) ===== */
+/* ==================== МАСКОТ — БЬЮЩЕЕСЯ КРАСНОЕ СЕРДЦЕ ==================== */
 .mascot {
     position: fixed;
-    bottom: 2rem;
-    left: 2rem;
+    bottom: 20px;
+    left: 20px;
     cursor: pointer;
-    z-index: 150;
-    background: white;
+    z-index: 1000;
+    background: transparent;
     border-radius: 50%;
-    padding: 0.5rem;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    animation: mascotFloat 3s ease-in-out infinite;
+    padding: 8px;
+    transition: all 0.3s;
+    /* Только для десктопа — скрыто на мобильных */
 }
 
-@keyframes mascotFloat {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-}
-
+/* Анимация биения сердца */
 .mascot-icon {
-    font-size: 2rem;
+    display: inline-block;
+    animation: heartbeat 1s ease-in-out infinite;
+    transform-origin: center;
+    filter: drop-shadow(0 4px 10px rgba(227, 27, 35, 0.3));
 }
 
+.mascot-icon svg {
+    display: block;
+    width: 40px;
+    height: 40px;
+}
+
+@keyframes heartbeat {
+    0% {
+        transform: scale(1);
+    }
+    25% {
+        transform: scale(1.2);
+    }
+    35% {
+        transform: scale(1.1);
+    }
+    45% {
+        transform: scale(1.2);
+    }
+    55% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.mascot:hover .mascot-icon {
+    animation: heartbeat 0.6s ease-in-out infinite;
+    filter: drop-shadow(0 6px 15px rgba(227, 27, 35, 0.4));
+}
+
+/* Пузырёк с цитатой */
 .mascot-bubble {
     position: absolute;
-    bottom: 60px;
+    bottom: 55px;
     left: 50px;
     background: white;
-    padding: 0.5rem 1rem;
-    border-radius: 1.5rem;
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: #1f6e8c;
-    white-space: nowrap;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    padding: 10px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #1a2c3e;
+    max-width: 230px;
+    white-space: normal;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     opacity: 0;
-    transition: opacity 0.3s;
-    pointer-events: none;
-    border: 1px solid #cbdde9;
+    visibility: hidden;
+    transition: 0.3s;
+    border: 1px solid #ffcdd2;
+    line-height: 1.4;
+    text-align: center;
+    background: linear-gradient(135deg, #fff, #fff5f5);
+}
+
+.mascot-bubble::before {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 20px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 10px solid #fff5f5;
+    filter: drop-shadow(1px 1px 0px rgba(0,0,0,0.05));
 }
 
 .mascot:hover .mascot-bubble {
     opacity: 1;
+    visibility: visible;
 }
 
-/* ===== СНЭКБАР ===== */
-.snackbar {
-    position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    background: linear-gradient(135deg, #1f6e8c, #0a5a75);
-    color: white;
-    padding: 0.75rem 1.5rem;
-    border-radius: 0.5rem;
-    z-index: 300;
-    transform: translateX(120%);
-    transition: transform 0.3s;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    font-size: 0.9rem;
-}
-
-.snackbar.show {
-    transform: translateX(0);
-}
-
-.snackbar button {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 1.2rem;
-    cursor: pointer;
+/* Скрываем на мобильных устройствах */
+@media (max-width: 768px) {
+    .mascot {
+        display: none;
+    }
 }
