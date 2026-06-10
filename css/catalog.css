@@ -2,7 +2,7 @@
 
 /* Отступ после шапки */
 .main-content {
-    padding-top: 1.0rem !important;
+    padding-top: 0.5rem;
 }
 
 /* Фильтры */
@@ -11,7 +11,7 @@
     flex-wrap: wrap;
     justify-content: center;
     gap: 0.8rem;
-    margin-bottom: 2rem;
+    margin-bottom: 0.5rem;   /* ← было 2rem, стало 0.5rem */
 }
 
 .filter-btn {
