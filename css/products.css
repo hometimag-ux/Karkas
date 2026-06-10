@@ -94,23 +94,23 @@
 }
 
 /* ===== СЕТКА ТОВАРОВ ===== */
-/* Десктоп (> 1024px) — 5 товаров в ряд */
+/* Десктоп — 4 товара в ряд */
 .products-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 1.2rem;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
     margin-bottom: 3rem;
 }
 
-/* Планшеты (768px – 1024px) — 3 товара в ряд */
+/* Планшеты (до 1024px) — 2 товара в ряд */
 @media (max-width: 1024px) {
     .products-grid {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(2, 1fr);
         gap: 1.2rem;
     }
 }
 
-/* Мобильные телефоны (< 768px) — 2 товара в ряд */
+/* Мобильные телефоны (до 768px) — 2 товара в ряд */
 @media (max-width: 768px) {
     .products-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -118,15 +118,15 @@
     }
 }
 
-/* Маленькие телефоны (< 480px) — 2 товара в ряд */
+/* Маленькие телефоны (до 480px) — 1 товар в ряд */
 @media (max-width: 480px) {
     .products-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.8rem;
+        grid-template-columns: 1fr;
+        gap: 1rem;
     }
 }
 
-/* ===== КАРТОЧКА ТОВАРА (ФОТО НА ВСЮ КАРТОЧКУ) ===== */
+/* ===== КАРТОЧКА ТОВАРА ===== */
 .product-card {
     position: relative;
     background: white;
@@ -142,7 +142,7 @@
     box-shadow: 0 20px 28px -12px rgba(0,0,0,0.1);
 }
 
-/* Фото на всю карточку */
+/* Фото товара — вертикальный формат 4:3 (ширина 3, высота 4) */
 .product-img {
     aspect-ratio: 3 / 4;
     width: 100%;
@@ -170,14 +170,14 @@
     font-size: 4rem;
 }
 
-/* Информация поверх фото */
+/* Информация поверх фото (как водные знаки) */
 .product-info {
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
     padding: 1rem 0.8rem;
-    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%);
+    background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0) 100%);
     color: white;
 }
 
