@@ -1,23 +1,25 @@
 // ==================== МОДАЛКИ ДЛЯ ДОКУМЕНТОВ ====================
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('modal.js: DOM загружен');
+    
     // Элементы модалки
     const modalOverlay = document.getElementById('docModalOverlay');
     const modalTitle = document.getElementById('modalTitle');
     const modalBody = document.getElementById('modalBody');
     const modalClose = document.getElementById('docModalClose');
     
-    // Проверяем, что все элементы существуют
     if (!modalOverlay) {
         console.error('Ошибка: не найден #docModalOverlay');
         return;
     }
+    console.log('✅ Модалка найдена');
     
     // Функция открытия модалки
-    window.openDocModal = function(docId) {
-        let title = '';
-        let content = '<p>Информация готовится...</p>';
+    function openDocModal(docId) {
+        console.log('openDocModal вызван с docId:', docId);
         
-        // Заголовки для разных документов
+        let title = '';
+        
         switch(docId) {
             case 'offer':
                 title = 'Договор оферты';
@@ -47,17 +49,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 title = 'Документ';
         }
         
-        modalTitle.textContent = title;
-        modalBody.innerHTML = `<p>Содержание документа "${title}" появится здесь позже.</p>`;
+        if (modalTitle) modalTitle.textContent = title;
+        if (modalBody) modalBody.innerHTML = `<p>Содержание документа "${title}" появится здесь позже.</p>`;
         modalOverlay.classList.add('active');
         document.body.style.overflow = 'hidden';
-    };
+        console.log('Модалка открыта, заголовок:', title);
+    }
     
     // Функция закрытия модалки
     function closeModal() {
         modalOverlay.classList.remove('active');
         document.body.style.overflow = '';
+        console.log('Модалка закрыта');
     }
+    
+    // Делаем функцию глобальной
+    window.openDocModal = openDocModal;
     
     // Навешиваем обработчики на ссылки в футере
     const footerLinks = document.querySelectorAll('.footer-link');
@@ -67,9 +74,9 @@ document.addEventListener('DOMContentLoaded', function() {
         link.addEventListener('click', function(e) {
             e.preventDefault();
             const docId = this.getAttribute('data-doc');
-            console.log('Клик по ссылке, docId:', docId);
+            console.log('Клик по ссылке, data-doc:', docId);
             if (docId) {
-                window.openDocModal(docId);
+                openDocModal(docId);
             }
         });
     });
@@ -77,6 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Закрытие по крестику
     if (modalClose) {
         modalClose.addEventListener('click', closeModal);
+        console.log('Обработчик крестика добавлен');
     }
     
     // Закрытие по клику на оверлей
