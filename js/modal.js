@@ -82,3 +82,61 @@ document.addEventListener('DOMContentLoaded', function() {
     
     console.log('✅ Модалки готовы');
 });
+
+.cookie-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    z-index: 9998;
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.3s;
+}
+.cookie-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+.cookie-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    z-index: 9999;
+    transform: translateY(100%);
+    transition: 0.4s;
+}
+.cookie-bar.active {
+    transform: translateY(0);
+}
+.cookie-bar-content {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+.cookie-text {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+.cookie-icon {
+    font-size: 1.8rem;
+}
+.cookie-btn {
+    background: linear-gradient(135deg, #00897b, #4db6ac);
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 40px;
+    font-weight: 600;
+    cursor: pointer;
+}
