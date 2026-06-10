@@ -11,7 +11,7 @@
     flex-wrap: wrap;
     justify-content: center;
     gap: 0.8rem;
-    margin-bottom: 0.5rem;   /* ← было 2rem, стало 0.5rem */
+    margin-bottom: 0rem;   /* ← было 2rem, стало 0.5rem */
 }
 
 .filter-btn {
