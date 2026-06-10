@@ -4,22 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Каталог — Murano Apparel</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Swiper CSS -->
+    <!-- Swiper -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     
-    <!-- Основные стили -->
+    <!-- Styles -->
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/header.css">
-    <link rel="stylesheet" href="css/products.css">
-    <link rel="stylesheet" href="css/products-modal.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/modal.css">
     <link rel="stylesheet" href="css/mascot.css">
     <link rel="stylesheet" href="css/responsive.css">
-    <link rel="stylesheet" href="css/catalog.css">
+    <link rel="stylesheet" href="css/products.css">
+    <link rel="stylesheet" href="css/products-modal.css">
 </head>
 <body>
+
+<!-- Модалка документов -->
+<div class="modal-overlay" id="docModalOverlay">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h3 id="modalTitle">Документ</h3>
+            <button class="modal-close" id="docModalClose">×</button>
+        </div>
+        <div class="modal-body" id="modalBody">Загрузка...</div>
+    </div>
+</div>
+
+<!-- Куки -->
+<div class="cookie-overlay" id="cookieOverlay"></div>
+<div class="cookie-bar" id="cookieBar">
+    <div class="cookie-bar-content">
+        <div class="cookie-text">
+            <span class="cookie-icon">🍪</span>
+            <div>
+                <strong>Мы используем cookies</strong>
+                <p>Продолжая использовать сайт, вы соглашаетесь с <a href="#" id="cookiePrivacyLink">политикой конфиденциальности</a>.</p>
+            </div>
+        </div>
+        <button class="cookie-btn cookie-btn-primary" id="cookieAccept">Принять</button>
+    </div>
+</div>
 
 <!-- Маскот -->
 <div class="mascot" id="mascot">
@@ -27,63 +57,80 @@
     <div class="mascot-bubble" id="mascotBubble">Привет! Я Капля 💙</div>
 </div>
 
-<header>
-    <div class="header-inner">
-        <button class="burger-btn" id="burgerBtn">
+<!-- ==================== ШАПКА ==================== -->
+<header class="main-header">
+    <div class="header-container">
+        <button class="header-burger" id="burgerBtn">
             <span></span><span></span><span></span>
         </button>
-        <div class="search-wrapper">
-            <input type="text" id="searchInput" placeholder="Поиск...">
-            <button class="voice-btn" id="voiceBtn">🎤</button>
+
+        <div class="header-search">
+            <input type="text" id="searchInput" placeholder="Поиск товаров...">
+            <button class="header-search__voice" id="voiceBtn">🎤</button>
         </div>
-        <a href="/" class="brand-link">MURANO APPAREL</a>
-        <button class="account-btn" id="accountBtn">
-            👤 <span class="account-text">Кабинет</span>
-        </button>
-        <button class="cart-btn" id="cartBtn">
-            🛒 <span id="cartCounter">0</span>
-        </button>
+
+        <a href="index.html" class="header-logo">MURANO APPAREL</a>
+
+        <button class="header-mobile-search" id="mobileSearchIcon">🔍</button>
+
+        <div class="header-actions">
+            <button class="header-account" id="accountBtn">👤 <span>Кабинет</span></button>
+            <button class="header-cart" id="cartBtn">🛒 <span id="cartCounter">0</span></button>
+        </div>
     </div>
 
-    <div class="mobile-menu" id="mobileMenu">
-        <ul>
-            <li><a href="/">Главная</a></li>
-            <li><a href="catalog.html">Каталог</a></li>
-            <li><a href="#">О компании</a></li>
-            <li><a href="#">Доставка</a></li>
-            <li><a href="#">Контакты</a></li>
-        </ul>
+    <div class="header-mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-header">
+            <span>Меню</span>
+            <button class="mobile-menu-close" id="closeMobileMenu">✕</button>
+        </div>
+        <nav class="mobile-nav-links">
+            <a href="index.html">Главная</a>
+            <a href="catalog.html">Каталог</a>
+            <a href="#">О компании</a>
+            <a href="#">Доставка</a>
+            <a href="#">Контакты</a>
+            <a href="#">Оптовым клиентам</a>
+        </nav>
     </div>
-    <div class="menu-overlay" id="menuOverlay"></div>
+    <div class="header-overlay" id="mobileOverlay"></div>
+
+    <div class="mobile-search" id="mobileSearch">
+        <input type="text" id="mobileSearchInput" placeholder="Поиск...">
+        <button id="closeMobileSearch">✕</button>
+    </div>
 </header>
 
-<main class="container catalog-page">
-    <!-- Хлебные крошки -->
-    <div class="breadcrumbs">
-        <a href="/">Главная</a> / <span>Каталог</span>
-    </div>
-
-    <!-- Заголовок страницы -->
-    <h1 class="catalog-title">Каталог медицинской одежды</h1>
-    <p class="catalog-subtitle">Профессиональная одежда для врачей, медсестёр и фармацевтов</p>
-
-    <!-- Фильтры -->
-    <div class="filters-wrapper">
-        <div class="filter-categories" id="filterCategories"></div>
-        <div class="filter-search">
-            <input type="text" id="catalogSearch" placeholder="🔍 Поиск по названию...">
+<!-- ==================== ОСНОВНОЙ КОНТЕНТ ==================== -->
+<main class="main-content">
+    <div class="container">
+        <!-- Хлебные крошки -->
+        <div class="breadcrumbs">
+            <a href="index.html">Главная</a> / <span>Каталог</span>
         </div>
-    </div>
 
-    <!-- Сетка товаров -->
-    <div class="products-grid" id="productsGrid"></div>
+        <h1 class="catalog-title">Каталог медицинской одежды</h1>
+        <p class="catalog-subtitle">Профессиональная одежда для врачей, медсестёр и фармацевтов</p>
+
+        <!-- Фильтры -->
+        <div class="filters-wrapper">
+            <div class="filter-categories" id="filterCategories"></div>
+            <div class="filter-search">
+                <input type="text" id="catalogSearch" placeholder="🔍 Поиск по названию...">
+            </div>
+        </div>
+
+        <!-- Сетка товаров -->
+        <div class="products-grid" id="productsGrid"></div>
+    </div>
 </main>
 
-<footer>
-    <div class="container">
+<!-- ==================== ПОДВАЛ ==================== -->
+<footer class="main-footer">
+    <div class="footer-container">
         <div class="footer-grid">
             <div class="footer-col">
-                <div class="footer-logo">🩺 MURANO-APPAREL</div>
+                <div class="footer-logo">🩺 MURANO APPAREL</div>
                 <p>Медицинская одежда для тех, кто спасает жизни.</p>
                 <div class="footer-contacts">
                     <p>✉️ <a href="mailto:murano-apparel@bk.ru">murano-apparel@bk.ru</a></p>
@@ -95,22 +142,21 @@
                 <ul>
                     <li><a href="#" class="footer-link" data-doc="offer">Оферта</a></li>
                     <li><a href="#" class="footer-link" data-doc="privacy">Политика конфиденциальности</a></li>
-                    <li><a href="#" class="footer-link" data-doc="agreement">Пользовательское соглашение</a></li>
-                    <li><a href="#" class="footer-link" data-doc="return">Условия обмена и возврата</a></li>
+                    <li><a href="#" class="footer-link" data-doc="agreement">Соглашение</a></li>
+                    <li><a href="#" class="footer-link" data-doc="return">Возврат</a></li>
                 </ul>
             </div>
             <div class="footer-col">
                 <h4>Информация</h4>
                 <ul>
                     <li><a href="#" class="footer-link" data-doc="about">О компании</a></li>
-                    <li><a href="#" class="footer-link" data-doc="delivery">Доставка и оплата</a></li>
+                    <li><a href="#" class="footer-link" data-doc="delivery">Доставка</a></li>
                     <li><a href="#" class="footer-link" data-doc="contacts">Контакты</a></li>
-                    <li><a href="#" class="footer-link" data-doc="wholesale">Оптовым клиентам</a></li>
+                    <li><a href="#" class="footer-link" data-doc="wholesale">Опт</a></li>
                 </ul>
             </div>
             <div class="footer-col">
                 <h4>Подпишитесь</h4>
-                <p>Будьте в курсе новостей и акций</p>
                 <div class="social-links">
                     <a href="#"><i class="fab fa-instagram"></i></a>
                     <a href="#"><i class="fab fa-telegram"></i></a>
@@ -119,25 +165,22 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p>© 2026 Murano Apparel — медицинская одежда для тех, кто спасает жизни.</p>
+            <p>© 2026 Murano Apparel — медицинская одежда</p>
         </div>
     </div>
 </footer>
 
 <!-- Корзина -->
 <div class="cart-sidebar" id="cartSidebar">
-    <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+    <div class="cart-header">
         <h3>🛒 Корзина</h3>
-        <button id="closeCart" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">✕</button>
+        <button id="closeCart">✕</button>
     </div>
-    <div id="cartItems"><p style="text-align:center;">Корзина пуста</p></div>
-    <div id="cartTotal" style="font-weight:bold; margin:1rem 0;"></div>
-    <button id="checkoutBtn" class="btn-primary" style="width:100%;">💳 Оформить заказ</button>
+    <div id="cartItems" class="cart-items">Корзина пуста</div>
+    <div id="cartTotal" class="cart-total"></div>
+    <button id="checkoutBtn" class="cart-checkout-btn">Оформить заказ</button>
 </div>
 <div class="overlay" id="overlay"></div>
-
-<!-- Swiper JS -->
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
 <!-- Скрипты -->
 <script src="js/utils.js"></script>
@@ -145,6 +188,9 @@
 <script src="js/products.js"></script>
 <script src="js/quickview.js"></script>
 <script src="js/header.js"></script>
+<script src="js/modal.js"></script>
+<script src="js/mascot.js"></script>
+<script src="js/cookie.js"></script>
 <script src="js/catalog.js"></script>
 
 </body>
