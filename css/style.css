@@ -5,6 +5,10 @@
     box-sizing: border-box;
 }
 
+h1, h2, h3, .logo, .brand-link {
+    font-weight: 600; /* или 700 для большей выразительности */
+}
+
 body {
     font-family: 'Plus Jakarta Sans', sans-serif;
     background: linear-gradient(135deg, #e8f5e9 0%, #e0f2f1 25%, #b2dfdb 50%, #80cbc4 75%, #4db6ac 100%);
