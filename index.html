@@ -42,12 +42,17 @@
     </div>
 </div>
 
-<!-- Модальное окно для куки -->
-<div class="cookie-modal" id="cookieModal">
-    <div class="cookie-modal-content">
-        <div class="cookie-icon">🍪</div>
-        <h3>Мы используем куки</h3>
-        <p>Мы используем файлы cookie для улучшения работы сайта, анализа трафика и персонализации. Продолжая использовать сайт, вы соглашаетесь с нашей <a href="#" class="cookie-link">политикой конфиденциальности</a>.</p>
+<!-- Модальное окно для куки (нижняя панель + затемнение) -->
+<div class="cookie-overlay" id="cookieOverlay"></div>
+<div class="cookie-bar" id="cookieBar">
+    <div class="cookie-bar-content">
+        <div class="cookie-text">
+            <span class="cookie-icon">🍪</span>
+            <div>
+                <strong>Мы используем куки</strong>
+                <p>Это помогает нам делать сайт удобнее. Продолжая использовать сайт, вы соглашаетесь с <a href="#" class="cookie-link">политикой конфиденциальности</a>.</p>
+            </div>
+        </div>
         <div class="cookie-buttons">
             <button class="cookie-btn cookie-btn-primary" id="cookieAccept">Принять</button>
             <button class="cookie-btn cookie-btn-secondary" id="cookieSettings">Настройки</button>
