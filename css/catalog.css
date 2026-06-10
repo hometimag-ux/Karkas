@@ -1,30 +1,17 @@
 /* ===== СТИЛИ ДЛЯ СТРАНИЦЫ КАТАЛОГА ===== */
 
-/* Отступ после шапки */
-.main-content .container {
+/* Отступ после шапки для всего контейнера */
+.container {
     padding-top: 1.5rem;
 }
-<style>
-    .main-content {
-        padding-top: 1.5rem !important;
-    }
-</style>
 
-/* Контейнер фильтров — принудительный отступ */
-#filterCategories,
+/* Фильтры */
 .filter-categories {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 0.8rem;
-    margin-top: 1.5rem !important;   /* !important чтобы перебить другие стили */
     margin-bottom: 2rem;
-    min-height: 50px;
-}
-
-/* Более специфичный селектор */
-main .container .filter-categories {
-    margin-top: 1.5rem;
 }
 
 .filter-btn {
