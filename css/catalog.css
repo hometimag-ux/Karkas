@@ -23,6 +23,7 @@
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 1rem;
+    margin-top: 0.5rem;     /* ← ОТСТУП ПОСЛЕ ШАПКИ */
     margin-bottom: 2rem;
     padding-bottom: 0.5rem;
     border-bottom: 1px solid #e2edf4;
