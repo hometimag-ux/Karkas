@@ -1,21 +1,5 @@
 /* ===== СТИЛИ ДЛЯ СТРАНИЦЫ КАТАЛОГА ===== */
 
-/* Заголовок страницы */
-.catalog-title {
-    font-size: 2rem;
-    font-weight: 700;
-    margin: 1rem 0 0.5rem;
-    color: #1a2c3e;
-    text-align: center;
-}
-
-.catalog-subtitle {
-    font-size: 0.95rem;
-    color: #5e7f97;
-    margin-bottom: 2rem;
-    text-align: center;
-}
-
 /* Фильтры — по центру, с отступом после шапки */
 .filter-categories {
     display: flex;
@@ -64,14 +48,6 @@
 
 /* Адаптация */
 @media (max-width: 768px) {
-    .catalog-title {
-        font-size: 1.6rem;
-    }
-    
-    .catalog-subtitle {
-        font-size: 0.85rem;
-    }
-    
     .filter-btn {
         padding: 0.4rem 1rem;
         font-size: 0.75rem;
