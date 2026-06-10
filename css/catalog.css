@@ -1,5 +1,10 @@
 /* ===== СТИЛИ ДЛЯ СТРАНИЦЫ КАТАЛОГА ===== */
 
+/* Отступ после шапки */
+.main-content .container {
+    padding-top: 1.5rem;
+}
+
 /* Контейнер фильтров — принудительный отступ */
 #filterCategories,
 .filter-categories {
