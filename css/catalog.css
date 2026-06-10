@@ -1,13 +1,15 @@
 /* ===== СТИЛИ ДЛЯ СТРАНИЦЫ КАТАЛОГА ===== */
 
-/* Фильтры — по центру, с отступом после шапки */
+/* Контейнер для фильтров — гарантированный отступ */
+#filterCategories,
 .filter-categories {
     display: flex;
-    gap: 0.8rem;
     flex-wrap: wrap;
     justify-content: center;
-    margin-top: 1rem;      /* ← увеличил отступ сверху */
+    gap: 0.8rem;
+    margin-top: 1rem;   /* ← отступ сверху */
     margin-bottom: 2rem;
+    min-height: 50px;   /* ← чтобы контейнер точно был виден, даже если пуст */
 }
 
 .filter-btn {
@@ -31,19 +33,6 @@
     background: linear-gradient(135deg, #00897b, #4db6ac);
     color: white;
     border-color: transparent;
-}
-
-/* Скрываем поиск */
-.filter-search {
-    display: none;
-}
-
-/* Сообщение о пустом каталоге */
-.loading-message {
-    text-align: center;
-    padding: 3rem;
-    color: #5e7f97;
-    grid-column: 1 / -1;
 }
 
 /* Адаптация */
