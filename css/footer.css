@@ -1,118 +1,125 @@
-/* ===== МОДАЛЬНОЕ ОКНО ДЛЯ ДОКУМЕНТОВ ===== */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(5px);
-    z-index: 10000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
+/* ==================== ПОДВАЛ ==================== */
+.main-footer {
+    background: #1a2c3e;
+    color: #e1e3e6;
+    padding: 3rem 0 1.5rem;
+    margin-top: 4rem;
 }
 
-.modal-overlay.active {
-    opacity: 1;
-    visibility: visible;
+.footer-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
 }
 
-.modal-container {
-    background: white;
-    border-radius: 28px;
-    width: 90%;
-    max-width: 800px;
-    max-height: 85vh;
-    overflow: hidden;
-    position: relative;
-    animation: modalSlideIn 0.3s ease;
+.footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
 }
 
-@keyframes modalSlideIn {
-    from {
-        opacity: 0;
-        transform: scale(0.95) translateY(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-    }
-}
-
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 25px;
-    border-bottom: 1px solid #e2edf4;
-    background: #f8fafc;
-}
-
-.modal-header h3 {
-    font-size: 1.3rem;
+.footer-logo {
+    font-size: 1.2rem;
     font-weight: 700;
-    color: #1a2c3e;
-    margin: 0;
+    margin-bottom: 1rem;
+    color: white;
 }
 
-.modal-close {
-    background: none;
-    border: none;
-    font-size: 1.8rem;
-    cursor: pointer;
+.footer-col h4 {
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    color: white;
+    position: relative;
+    display: inline-block;
+}
+
+.footer-col h4:after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    width: 30px;
+    height: 2px;
+    background: #4db6ac;
+}
+
+.footer-col ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-col li {
+    margin-bottom: 0.5rem;
+}
+
+.footer-col a {
+    color: #cbd5e1;
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: color 0.2s;
+}
+
+.footer-col a:hover {
+    color: #4db6ac;
+}
+
+.footer-contacts {
+    margin-top: 1rem;
+}
+
+.footer-contacts p {
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+}
+
+.footer-contacts a {
+    color: #cbd5e1;
+    text-decoration: none;
+}
+
+.footer-contacts a:hover {
+    color: #4db6ac;
+}
+
+.social-links {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.social-links a {
+    color: #cbd5e1;
+    font-size: 1.2rem;
+    transition: color 0.2s;
+}
+
+.social-links a:hover {
+    color: #4db6ac;
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 1.5rem;
+    border-top: 1px solid #2a3a4e;
+    font-size: 0.75rem;
     color: #94a3b8;
-    transition: all 0.2s;
-    line-height: 1;
-}
-
-.modal-close:hover {
-    color: #1a2c3e;
-    transform: scale(1.1);
-}
-
-.modal-body {
-    padding: 25px;
-    overflow-y: auto;
-    max-height: 60vh;
-    font-size: 0.9rem;
-    line-height: 1.5;
-    color: #334155;
-}
-
-.modal-body h4 {
-    color: #00897b;
-    margin: 1rem 0 0.5rem;
-}
-
-.modal-body h4:first-child {
-    margin-top: 0;
-}
-
-.modal-body p {
-    margin-bottom: 0.8rem;
 }
 
 /* Адаптация */
 @media (max-width: 768px) {
-    .modal-container {
-        width: 95%;
-        border-radius: 20px;
+    .footer-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 1.5rem;
     }
     
-    .modal-header {
-        padding: 15px 20px;
+    .footer-col h4:after {
+        left: 50%;
+        transform: translateX(-50%);
     }
     
-    .modal-header h3 {
-        font-size: 1.1rem;
-    }
-    
-    .modal-body {
-        padding: 20px;
-        font-size: 0.85rem;
+    .social-links {
+        justify-content: center;
     }
 }
