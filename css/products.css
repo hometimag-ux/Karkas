@@ -93,14 +93,40 @@
     max-width: 300px;
 }
 
-/* Сетка товаров — увеличенные карточки */
+/* ===== СЕТКА ТОВАРОВ (АДАПТИВНАЯ) ===== */
+/* Десктоп — 4 товара в ряд */
 .products-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 2rem;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
     margin-bottom: 3rem;
 }
 
+/* Планшеты (до 1024px) — 2 товара в ряд */
+@media (max-width: 1024px) {
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+}
+
+/* Мобильные телефоны (до 768px) — 2 товара в ряд */
+@media (max-width: 768px) {
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+}
+
+/* Маленькие телефоны (до 480px) — 1 товар в ряд */
+@media (max-width: 480px) {
+    .products-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}
+
+/* ===== КАРТОЧКА ТОВАРА ===== */
 .product-card {
     position: relative;
     background: white;
@@ -145,14 +171,17 @@
 }
 
 .product-info {
-    padding: 1rem 1.5rem 1.5rem;
+    padding: 1rem 1rem 1.2rem;
 }
 
 .product-title {
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 600;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.3rem;
     color: #1a2c3e;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .product-category {
@@ -176,7 +205,7 @@
 
 .star {
     color: #cbd5e1;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
 }
 
 .star.filled {
@@ -197,7 +226,7 @@
 }
 
 .current-price {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     font-weight: 700;
     color: #1f6e8c;
 }
@@ -207,7 +236,7 @@
 }
 
 .old-price {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     color: #94a3b8;
     text-decoration: line-through;
 }
@@ -238,7 +267,7 @@
     padding: 0.5rem;
     border-radius: 40px;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     transition: all 0.2s;
 }
 
@@ -281,34 +310,4 @@
 
 .benefit-item {
     color: #405d77;
-}
-
-/* Адаптация для мобильных */
-@media (max-width: 768px) {
-    .products-grid {
-        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-        gap: 1rem;
-    }
-    
-    .product-info {
-        padding: 0.8rem 1rem 1rem;
-    }
-    
-    .product-title {
-        font-size: 0.95rem;
-    }
-    
-    .current-price {
-        font-size: 1.1rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .products-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .product-img {
-        aspect-ratio: 3 / 4;
-    }
 }
