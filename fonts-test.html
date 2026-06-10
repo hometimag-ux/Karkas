@@ -5,21 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Тест шрифтов — Murano Apparel</title>
     
-    <!-- Подключаем шрифты -->
-    <!-- Вариант 1: Inter (строгий, профессиональный) -->
+    <!-- Вариант 1: Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     
-    <!-- Вариант 2: Playfair Display + Inter (элегантный) -->
+    <!-- Вариант 2: Playfair Display + Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Вариант 3: Manrope (современный, дружелюбный) -->
+    <!-- Вариант 3: Manrope -->
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Вариант 4: Montserrat (геометричный) -->
+    <!-- Вариант 4: Montserrat -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Вариант 5: Roboto Flex (вариативный, технологичный) -->
+    <!-- Вариант 5: Roboto Flex -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,300;8..144,400;8..144,500;8..144,600;8..144,700&display=swap" rel="stylesheet">
+    
+    <!-- Вариант 6: Plus Jakarta Sans (НОВЫЙ!) -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Вариант 7: DM Sans (НОВЫЙ!) -->
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+    
+    <!-- Вариант 8: Urbanist (НОВЫЙ!) -->
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Вариант 9: Clash Display (Fontshare) -->
+    <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet">
+    
+    <!-- Вариант 10: Satoshi (Fontshare) -->
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet">
+    
+    <!-- Вариант 11: General Sans (Fontshare) -->
+    <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap" rel="stylesheet">
     
     <style>
         * {
@@ -30,8 +47,6 @@
         
         body {
             background: #f5faf7;
-            color: #1a2c3e;
-            line-height: 1.5;
             padding: 2rem;
         }
         
@@ -40,258 +55,165 @@
             margin: 0 auto;
         }
         
-        /* Заголовок теста */
         .test-header {
             text-align: center;
             padding: 2rem;
             background: white;
             border-radius: 28px;
             margin-bottom: 2rem;
-            border: 1px solid #e2edf4;
+            font-family: 'Inter', sans-serif;
         }
         
-        .test-header h1 {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        /* Секция со шрифтами */
         .font-section {
             background: white;
             border-radius: 28px;
-            padding: 2rem;
-            margin-bottom: 2rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
             border: 1px solid #e2edf4;
         }
         
         .font-name {
-            font-size: 1.2rem;
+            font-size: 1rem;
             font-weight: 600;
             color: #00897b;
             padding-bottom: 0.5rem;
             border-bottom: 2px solid #4db6ac;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             display: inline-block;
-        }
-        
-        .font-demo {
-            margin-bottom: 1.5rem;
-        }
-        
-        .font-demo h2 {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
         }
         
         .font-demo h3 {
             font-size: 1.3rem;
-            margin-bottom: 0.5rem;
-            color: #1a2c3e;
+            margin-bottom: 0.3rem;
         }
         
         .font-demo p {
-            font-size: 1rem;
-            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
             color: #405d77;
-        }
-        
-        .font-demo small {
-            font-size: 0.8rem;
-            color: #94a3b8;
+            margin-bottom: 0.3rem;
         }
         
         .font-demo .price {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: 700;
             color: #00897b;
         }
         
-        /* Разделитель */
-        hr {
-            margin: 1rem 0;
-            border: none;
-            border-top: 1px solid #e2edf4;
-        }
-        
-        /* Сетка для сравнения */
         .comparison-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
         }
         
         .comparison-card {
             background: #f8fafc;
-            border-radius: 20px;
-            padding: 1.5rem;
-            border: 1px solid #e2edf4;
-        }
-        
-        .comparison-card .font-label {
-            font-size: 0.8rem;
-            color: #00897b;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            text-transform: uppercase;
-        }
-        
-        /* Рекомендация */
-        .recommendation {
-            background: linear-gradient(135deg, #e8f5e9, #e0f2f1);
-            border-radius: 28px;
-            padding: 2rem;
-            text-align: center;
-        }
-        
-        .btn {
-            background: #00897b;
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 40px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 1rem;
+            border-radius: 16px;
+            padding: 1rem;
         }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="test-header">
-        <h1>📝 Тест шрифтов для Murano Apparel</h1>
-        <p>Сравните, как выглядят разные шрифты на реальном контенте</p>
+        <h2>📝 Выберите шрифт для Murano Apparel</h2>
+        <p>Сравните 11 современных вариантов</p>
     </div>
     
-    <!-- ===== ШРИФТ 1: INTER ===== -->
-    <div class="font-section">
-        <div class="font-name">🔤 1. Inter — строгий, профессиональный</div>
-        <div style="font-family: 'Inter', sans-serif;">
-            <div class="font-demo">
-                <h2>Медицинская одежда</h2>
-                <h3>свежесть и комфорт</h3>
-                <p>Дышащие ткани, идеальная посадка, современный дизайн. Создано для вашего комфорта.</p>
-                <div class="price">3 490 ₽</div>
-                <small>Артикул: HL-001 | Размеры: XS, S, M, L, XL</small>
-            </div>
+    <!-- Все шрифты в виде сетки для быстрого сравнения -->
+    <div class="comparison-grid">
+        <div class="comparison-card" style="font-family: 'Inter', sans-serif;">
+            <div class="font-name">Inter</div>
+            <strong>Халат Aqua</strong><br>
+            3 490 ₽<br>
+            <small>дышащий, антибактериальный</small>
+        </div>
+        
+        <div class="comparison-card">
+            <div class="font-name" style="font-family: 'Inter', sans-serif;">Playfair+Inter</div>
+            <span style="font-family: 'Playfair Display', serif; font-weight: 600;">Халат Aqua</span><br>
+            <span style="font-family: 'Inter', sans-serif;">3 490 ₽</span>
+        </div>
+        
+        <div class="comparison-card" style="font-family: 'Manrope', sans-serif;">
+            <div class="font-name">Manrope</div>
+            <strong>Халат Aqua</strong><br>
+            3 490 ₽
+        </div>
+        
+        <div class="comparison-card" style="font-family: 'Montserrat', sans-serif;">
+            <div class="font-name">Montserrat</div>
+            <strong>Халат Aqua</strong><br>
+            3 490 ₽
+        </div>
+        
+        <div class="comparison-card" style="font-family: 'Roboto Flex', sans-serif;">
+            <div class="font-name">Roboto Flex</div>
+            <strong>Халат Aqua</strong><br>
+            3 490 ₽
+        </div>
+        
+        <div class="comparison-card" style="font-family: 'Plus Jakarta Sans', sans-serif;">
+            <div class="font-name">✨ Plus Jakarta Sans</div>
+            <strong>Халат Aqua</strong><br>
+            3 490 ₽<br>
+            <small style="color:#00897b;">модный, свежий, хит 2025</small>
+        </div>
+        
+        <div class="comparison-card" style="font-family: 'DM Sans', sans-serif;">
+            <div class="font-name">DM Sans</div>
+            <strong>Халат Aqua</strong><br>
+            3 490 ₽
+        </div>
+        
+        <div class="comparison-card" style="font-family: 'Urbanist', sans-serif;">
+            <div class="font-name">Urbanist</div>
+            <strong>Халат Aqua</strong><br>
+            3 490 ₽
+        </div>
+        
+        <div class="comparison-card" style="font-family: 'Clash Display', sans-serif;">
+            <div class="font-name">✨ Clash Display</div>
+            <strong>Халат Aqua</strong><br>
+            3 490 ₽<br>
+            <small style="color:#00897b;">премиальный, уникальный</small>
+        </div>
+        
+        <div class="comparison-card" style="font-family: 'Satoshi', sans-serif;">
+            <div class="font-name">Satoshi</div>
+            <strong>Халат Aqua</strong><br>
+            3 490 ₽
+        </div>
+        
+        <div class="comparison-card" style="font-family: 'General Sans', sans-serif;">
+            <div class="font-name">General Sans</div>
+            <strong>Халат Aqua</strong><br>
+            3 490 ₽
         </div>
     </div>
     
-    <!-- ===== ШРИФТ 2: PLAYFAIR DISPLAY + INTER ===== -->
-    <div class="font-section">
-        <div class="font-name">🔤 2. Playfair Display (заголовки) + Inter (текст) — элегантный</div>
-        <div>
-            <div class="font-demo">
-                <h2 style="font-family: 'Playfair Display', serif;">Медицинская одежда</h2>
-                <h3 style="font-family: 'Playfair Display', serif;">свежесть и комфорт</h3>
-                <p style="font-family: 'Inter', sans-serif;">Дышащие ткани, идеальная посадка, современный дизайн. Создано для вашего комфорта.</p>
-                <div class="price" style="font-family: 'Inter', sans-serif;">3 490 ₽</div>
-                <small style="font-family: 'Inter', sans-serif;">Артикул: HL-001 | Размеры: XS, S, M, L, XL</small>
-            </div>
-        </div>
-    </div>
-    
-    <!-- ===== ШРИФТ 3: MANROPE ===== -->
-    <div class="font-section">
-        <div class="font-name">🔤 3. Manrope — современный, дружелюбный</div>
-        <div style="font-family: 'Manrope', sans-serif;">
-            <div class="font-demo">
-                <h2>Медицинская одежда</h2>
-                <h3>свежесть и комфорт</h3>
-                <p>Дышащие ткани, идеальная посадка, современный дизайн. Создано для вашего комфорта.</p>
-                <div class="price">3 490 ₽</div>
-                <small>Артикул: HL-001 | Размеры: XS, S, M, L, XL</small>
-            </div>
-        </div>
-    </div>
-    
-    <!-- ===== ШРИФТ 4: MONTSERRAT ===== -->
-    <div class="font-section">
-        <div class="font-name">🔤 4. Montserrat — геометричный, современный</div>
-        <div style="font-family: 'Montserrat', sans-serif;">
-            <div class="font-demo">
-                <h2>Медицинская одежда</h2>
-                <h3>свежесть и комфорт</h3>
-                <p>Дышащие ткани, идеальная посадка, современный дизайн. Создано для вашего комфорта.</p>
-                <div class="price">3 490 ₽</div>
-                <small>Артикул: HL-001 | Размеры: XS, S, M, L, XL</small>
-            </div>
-        </div>
-    </div>
-    
-    <!-- ===== ШРИФТ 5: ROBOTO FLEX ===== -->
-    <div class="font-section">
-        <div class="font-name">🔤 5. Roboto Flex — технологичный, вариативный</div>
-        <div style="font-family: 'Roboto Flex', sans-serif;">
-            <div class="font-demo">
-                <h2>Медицинская одежда</h2>
-                <h3>свежесть и комфорт</h3>
-                <p>Дышащие ткани, идеальная посадка, современный дизайн. Создано для вашего комфорта.</p>
-                <div class="price">3 490 ₽</div>
-                <small>Артикул: HL-001 | Размеры: XS, S, M, L, XL</small>
-            </div>
-        </div>
-    </div>
-    
-    <!-- ===== СРАВНЕНИЕ ВСЕХ ШРИФТОВ ===== -->
-    <div class="font-section">
-        <div class="font-name">📊 Сравнение всех шрифтов в одном блоке</div>
-        <div class="comparison-grid">
-            <div class="comparison-card">
-                <div class="font-label">INTER</div>
-                <div style="font-family: 'Inter', sans-serif;">
-                    <strong>Халат Aqua</strong><br>
-                    3 490 ₽<br>
-                    <small>дышащий, антибактериальный</small>
-                </div>
-            </div>
-            <div class="comparison-card">
-                <div class="font-label">PLAYFAIR + INTER</div>
-                <div>
-                    <span style="font-family: 'Playfair Display', serif; font-weight: 600;">Халат Aqua</span><br>
-                    <span style="font-family: 'Inter', sans-serif;">3 490 ₽</span><br>
-                    <small style="font-family: 'Inter', sans-serif;">дышащий, антибактериальный</small>
-                </div>
-            </div>
-            <div class="comparison-card">
-                <div class="font-label">MANROPE</div>
-                <div style="font-family: 'Manrope', sans-serif;">
-                    <strong>Халат Aqua</strong><br>
-                    3 490 ₽<br>
-                    <small>дышащий, антибактериальный</small>
-                </div>
-            </div>
-            <div class="comparison-card">
-                <div class="font-label">MONTSERRAT</div>
-                <div style="font-family: 'Montserrat', sans-serif;">
-                    <strong>Халат Aqua</strong><br>
-                    3 490 ₽<br>
-                    <small>дышащий, антибактериальный</small>
-                </div>
-            </div>
-            <div class="comparison-card">
-                <div class="font-label">ROBOTO FLEX</div>
-                <div style="font-family: 'Roboto Flex', sans-serif;">
-                    <strong>Халат Aqua</strong><br>
-                    3 490 ₽<br>
-                    <small>дышащий, антибактериальный</small>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- ===== РЕКОМЕНДАЦИЯ ===== -->
-    <div class="recommendation">
-        <h3 style="margin-bottom: 1rem;">💡 Моя рекомендация для Murano Apparel</h3>
-        <p style="margin-bottom: 1rem;">
-            <strong>Inter</strong> — самый безопасный и профессиональный выбор для медицинского сайта.<br>
-            Он строгий, чистый, отлично читается на любых устройствах.
+    <div class="test-header" style="margin-top: 2rem;">
+        <h3>💡 Какой шрифт выбрать для медицинского сайта?</h3>
+        <p style="margin-top: 0.5rem;">
+            <strong>Plus Jakarta Sans</strong> — самый свежий и модный тренд 2025-2026<br>
+            <strong>Inter</strong> — классика, надёжный, профессиональный<br>
+            <strong>Clash Display</strong> — если хотите выделиться и показать статус
         </p>
-        <p>
-            <strong>Playfair Display + Inter</strong> — если хотите добавить элегантности и выделиться среди конкурентов.
-        </p>
-        <button class="btn" onclick="alert('Выберите понравившийся шрифт, я помогу его подключить!')">Выбрать этот шрифт</button>
+        <button class="btn" onclick="alert('Напишите мне, какой шрифт выбрали, и я помогу его подключить!')">Выбрать шрифт</button>
     </div>
 </div>
+
+<style>
+    .btn {
+        background: #00897b;
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 40px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 1rem;
+    }
+</style>
 </body>
 </html>
