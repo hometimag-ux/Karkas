@@ -93,6 +93,29 @@
     margin: 0;
 }
 
+/* Детали товара в корзине */
+.cart-item-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0.25rem 0;
+    font-size: 0.7rem;
+    color: #64748b;
+}
+
+.cart-item-article,
+.cart-item-size,
+.cart-item-color {
+    background: #f1f5f9;
+    padding: 0.15rem 0.5rem;
+    border-radius: 20px;
+}
+
+.required-star {
+    color: #f43f5e;
+    margin-left: 0.25rem;
+}
+
 #closeCart {
     background: none;
     border: none;
