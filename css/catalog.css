@@ -1,8 +1,8 @@
 /* ===== СТИЛИ ДЛЯ СТРАНИЦЫ КАТАЛОГА ===== */
 
-/* Отступ после шапки — применяем к main, а не к container */
+/* Отступ после шапки */
 .main-content {
-    padding-top: 2.5rem;
+    padding-top: 2.5rem !important;
 }
 
 /* Фильтры */
@@ -12,7 +12,6 @@
     justify-content: center;
     gap: 0.8rem;
     margin-bottom: 2rem;
-    padding-top: 2.5rem;
 }
 
 .filter-btn {
