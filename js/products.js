@@ -1,6 +1,6 @@
 // ===== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ =====
-let allProducts = [];
-let categories = [];
+window.allProducts = [];
+window.categories = [];
 let currentCategory = 'all';
 let currentSearch = '';
 
