@@ -142,9 +142,9 @@
     box-shadow: 0 20px 28px -12px rgba(0,0,0,0.1);
 }
 
-/* Фото товара — вертикальный формат 4:3 (ширина 3, высота 4) */
+/* Фото товара — чуть выше (aspect-ratio 2:3) */
 .product-img {
-    aspect-ratio: 3 / 4;
+    aspect-ratio: 2 / 3;
     width: 100%;
     background: #f4f9fe;
     overflow: hidden;
@@ -170,14 +170,14 @@
     font-size: 4rem;
 }
 
-/* Информация поверх фото (как водные знаки) */
+/* Информация поверх фото */
 .product-info {
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
     padding: 1rem 0.8rem;
-    background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0) 100%);
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
     color: white;
 }
 
@@ -205,11 +205,19 @@
     color: white;
 }
 
+/* Рейтинг — в правом верхнем углу */
 .product-rating {
+    position: absolute;
+    top: 10px;
+    right: 10px;
     display: flex;
     align-items: center;
     gap: 0.2rem;
-    margin: 0.25rem 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    padding: 0.2rem 0.5rem;
+    border-radius: 20px;
+    z-index: 10;
 }
 
 .star {
@@ -223,8 +231,8 @@
 
 .rating-value {
     font-size: 0.65rem;
-    opacity: 0.8;
     color: white;
+    margin-left: 0.2rem;
 }
 
 .product-prices {
