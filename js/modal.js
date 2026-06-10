@@ -1,4 +1,4 @@
-// ==================== МОДАЛКИ ДЛЯ ДОКУМЕНТОВ (ПРОСТАЯ ВЕРСИЯ) ====================
+// ==================== МОДАЛКИ ДЛЯ ДОКУМЕНТОВ ====================
 document.addEventListener('DOMContentLoaded', function() {
     console.log('modal.js: запущен');
     
@@ -8,35 +8,35 @@ document.addEventListener('DOMContentLoaded', function() {
     const closeBtn = document.getElementById('docModalClose');
     
     if (!modal) {
-        console.error('Модалка не найдена!');
+        console.error('❌ Модалка не найдена!');
         return;
     }
     
-    console.log('Модалка найдена');
+    console.log('✅ Модалка найдена');
     
     // Функция открытия
-    window.openModal = function(title, content) {
+    function openModal(title, content) {
         modalTitle.textContent = title;
         modalBody.innerHTML = content || '<p>Текст документа появится позже.</p>';
-        modal.style.display = 'flex';
-        modal.style.opacity = '1';
-        modal.style.visibility = 'visible';
+        modal.classList.add('active');
         document.body.style.overflow = 'hidden';
-        console.log('Модалка открыта:', title);
-    };
+        console.log('✅ Модалка открыта:', title);
+    }
     
     // Функция закрытия
-    window.closeModal = function() {
-        modal.style.display = 'none';
-        modal.style.opacity = '0';
-        modal.style.visibility = 'hidden';
+    function closeModal() {
+        modal.classList.remove('active');
         document.body.style.overflow = '';
-        console.log('Модалка закрыта');
-    };
+        console.log('✅ Модалка закрыта');
+    }
+    
+    // Делаем функции глобальными
+    window.openModal = openModal;
+    window.closeModal = closeModal;
     
     // Обработчики на ссылки в футере
     const links = document.querySelectorAll('.footer-link');
-    console.log('Найдено ссылок:', links.length);
+    console.log('Найдено ссылок в футере:', links.length);
     
     links.forEach(link => {
         link.addEventListener('click', function(e) {
@@ -57,33 +57,28 @@ document.addEventListener('DOMContentLoaded', function() {
                 default: title = 'Документ';
             }
             
-            window.openModal(title, `<p>Содержание документа "${title}" появится здесь позже.</p>`);
+            openModal(title, `<p>Содержание документа "${title}" появится здесь позже.</p>`);
         });
     });
     
     // Закрытие по крестику
     if (closeBtn) {
-        closeBtn.onclick = function() {
-            window.closeModal();
-        };
+        closeBtn.onclick = closeModal;
     }
     
     // Закрытие по клику на фон
     modal.onclick = function(e) {
         if (e.target === modal) {
-            window.closeModal();
+            closeModal();
         }
     };
     
     // Закрытие по Escape
     document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && modal.style.display === 'flex') {
-            window.closeModal();
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
         }
     });
-    
-    // Изначально скрываем модалку
-    modal.style.display = 'none';
     
     console.log('✅ Модалки готовы');
 });
