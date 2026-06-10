@@ -495,3 +495,41 @@
         justify-content: center;
     }
 }
+
+/* Описание товара в модалке */
+.product-description {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: #334155;
+    margin: 0.5rem 0;
+    padding: 0.5rem 0;
+    border-top: 1px solid #e2edf4;
+    border-bottom: 1px solid #e2edf4;
+}
+
+.product-specs {
+    margin: 0.5rem 0;
+}
+
+.product-specs h4 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #1a2c3e;
+}
+
+.product-specs ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.product-specs li {
+    font-size: 0.8rem;
+    padding: 0.2rem 0;
+    color: #475569;
+}
+
+.product-specs li strong {
+    color: #1a2c3e;
+}
