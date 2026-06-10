@@ -4,87 +4,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Murano Apparel — Медицинская одежда</title>
+    
+    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Swiper -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-
+    
+    <!-- Main Styles -->
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    
+    <!-- Page-specific styles (will be overridden) -->
     <link rel="stylesheet" href="css/hero.css">
     <link rel="stylesheet" href="css/products.css">
     <link rel="stylesheet" href="css/products-modal.css">
-    <link rel="stylesheet" href="css/mascot.css">
-    <link rel="stylesheet" href="css/responsive.css">
     <link rel="stylesheet" href="css/carousel.css">
     <link rel="stylesheet" href="css/contact-form.css">
-    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/mascot.css">
 </head>
 <body>
 
-<!-- Маскот -->
-<!--<div class="mascot" id="mascot">
-    <div class="mascot-icon">💧</div>
-    <div class="mascot-bubble" id="mascotBubble">Привет! Я Капля 💙</div>
-</div>
-
-<!-- Снэйк-бар -->
-<!--  <div class="snackbar" id="snackbar">
-    <span>🎉 Скидка 15% на первый заказ!</span>
-    <button id="closeSnackbar">✕</button>
-</div> -->
-
-<header class="header">
+<!-- ==================== ШАПКА (НАЧАЛО) ==================== -->
+<header class="main-header">
     <div class="header-container">
-        <!-- Логотип -->
-        <a href="index.html" class="header-logo">
-            <span class="header-logo-icon">🩺</span>
-            <span>MURANO APPAREL</span>
-        </a>
+        <!-- Бургер (только на мобильных) -->
+        <button class="header-burger" id="burgerBtn">
+            <span></span><span></span><span></span>
+        </button>
 
-        <!-- Десктопная навигация -->
-        <nav class="header-nav">
-            <a href="catalog.html">Каталог</a>
-            <a href="#">О компании</a>
-            <a href="#">Доставка</a>
-            <a href="#">Контакты</a>
-        </nav>
-
-        <!-- Иконки действий -->
-        <div class="header-icons">
-            <button class="header-icon" id="searchIcon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="10" cy="10" r="7"></circle>
-                    <line x1="21" y1="21" x2="15" y2="15"></line>
-                </svg>
-            </button>
-            <button class="header-icon" id="accountIcon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="12" cy="7" r="4"></circle>
-                </svg>
-            </button>
-            <button class="header-icon header-cart" id="cartBtn">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="9" cy="21" r="1"></circle>
-                    <circle cx="20" cy="21" r="1"></circle>
-                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                </svg>
-                <span id="cartCounter" class="cart-badge">0</span>
-            </button>
+        <!-- Поиск (десктоп) -->
+        <div class="header-search">
+            <input type="text" id="searchInput" placeholder="Поиск товаров...">
+            <button class="header-search__voice" id="voiceBtn">🎤</button>
         </div>
 
-        <!-- Кнопка мобильного меню (бургер) -->
-        <div class="header-mobile-menu" id="mobileMenu">
-    <span></span><span></span><span></span>
-            </button>
+        <!-- Логотип -->
+        <a href="index.html" class="header-logo">MURANO APPAREL</a>
+
+        <!-- Иконка поиска (мобильная) -->
+        <button class="header-mobile-search" id="mobileSearchIcon">🔍</button>
+
+        <!-- Иконки кабинета и корзины -->
+        <div class="header-actions">
+            <button class="header-account" id="accountBtn">👤 <span>Кабинет</span></button>
+            <button class="header-cart" id="cartBtn">🛒 <span id="cartCounter">0</span></button>
+        </div>
     </div>
 
-    <!-- Мобильное меню (выезжает) -->
-    <div class="header-overlay" id="menuOverlay"></div>
+    <!-- Мобильное меню (выезжает слева) -->
+    <div class="header-mobile-menu" id="mobileMenu">
         <div class="mobile-menu-header">
             <span>Меню</span>
-            <button id="closeMobileMenu">✕</button>
+            <button class="mobile-menu-close" id="closeMobileMenu">✕</button>
         </div>
         <nav class="mobile-nav-links">
             <a href="catalog.html">Каталог</a>
@@ -96,166 +72,26 @@
     </div>
     <div class="header-overlay" id="mobileOverlay"></div>
 
-    <!-- Модальный поиск -->
-    <div class="search-modal" id="searchModal">
-        <div class="search-modal-inner">
-            <input type="text" id="mobileSearchInput" placeholder="Поиск товаров..." autofocus>
-            <button id="closeSearchModal">✕</button>
-        </div>
+    <!-- Мобильный поиск (выезжает сверху) -->
+    <div class="mobile-search" id="mobileSearch">
+        <input type="text" id="mobileSearchInput" placeholder="Поиск...">
+        <button id="closeMobileSearch">✕</button>
     </div>
 </header>
+<!-- ==================== ШАПКА (КОНЕЦ) ==================== -->
 
-<main>
-    <div class="container">
-        <!-- Баннер-карусель -->
-        <div class="hero-banner">
-            <div class="banner-slides" id="bannerSlides">
-                <div class="banner-slide active">
-                    <div class="banner-bg" style="background-image: url('images/banner-1.jpg');">
-                        <div class="banner-overlay"></div>
-                    </div>
-                    <div class="banner-content">
-                        <div class="banner-badge">💙 НОВАЯ КОЛЛЕКЦИЯ 2025 💚</div>
-                        <h1>Медицинская одежда<br><span>свежесть и комфорт</span></h1>
-                        <p>Дышащие ткани, идеальная посадка, современный дизайн. Создано для вашего комфорта.</p>
-                        <button class="btn-primary" id="shopNowBtn2">✨ В каталог →</button>
-                    </div>
-                </div>
-                <div class="banner-slide">
-                    <div class="banner-bg" style="background-image: url('images/banner-2.jpg');">
-                        <div class="banner-overlay"></div>
-                    </div>
-                    <div class="banner-content">
-                        <div class="banner-badge">💙 ПРОФЕССИОНАЛЬНАЯ СЕРИЯ 💚</div>
-                        <h1>Свобода движений<br><span>каждый день</span></h1>
-                        <p>Эргономичный крой, эластичные ткани, продуманные детали для вашей работы.</p>
-                        <button class="btn-primary" id="catalogScrollBtn">✨ Смотреть коллекцию →</button>
-                    </div>
-                </div>
-                <div class="banner-slide">
-                    <div class="banner-bg" style="background-image: url('images/banner-3.jpg');">
-                        <div class="banner-overlay"></div>
-                    </div>
-                    <div class="banner-content">
-                        <div class="banner-badge">💙 ДОСТУПНЫЕ ЦЕНЫ 💚</div>
-                        <h1>Скидка 20%<br><span>на первый заказ</span></h1>
-                        <p>Подпишитесь на рассылку и получите промокод на скидку 20% при первом заказе.</p>
-                        <button class="btn-primary" id="subscribeBtn">📧 Получить скидку →</button>
-                    </div>
-                </div>
-            </div>
-            <button class="banner-nav prev" id="bannerPrev">‹</button>
-            <button class="banner-nav next" id="bannerNext">›</button>
-            <div class="banner-dots">
-                <span class="dot active" data-slide="0"></span>
-                <span class="dot" data-slide="1"></span>
-                <span class="dot" data-slide="2"></span>
-            </div>
-        </div>
-
-        <!-- 3D карусель коллекций -->
-        <section class="collection-section">
-            <div class="container">
-                <h2 class="collection-title">Наши <span>коллекции</span></h2>
-            </div>
-            <div class="collection-slider__wrapper swiper" id="collectionSlider">
-                <div class="swiper-wrapper">
-                    <div class="collection-slider__item swiper-slide">
-                        <article class="collection-item">
-                            <a href="#" class="collection-item__title">Аква-коллекция 2025</a>
-                            <img class="collection-item__img" src="images/collection-aqua.jpg" alt="Аква-коллекция" loading="lazy">
-                        </article>
-                    </div>
-                    <div class="collection-slider__item swiper-slide">
-                        <article class="collection-item">
-                            <a href="#" class="collection-item__title">Премиум серия</a>
-                            <img class="collection-item__img" src="images/collection-premium.jpg" alt="Премиум серия" loading="lazy">
-                        </article>
-                    </div>
-                    <div class="collection-slider__item swiper-slide">
-                        <article class="collection-item">
-                            <a href="#" class="collection-item__title">Хирургическая серия</a>
-                            <img class="collection-item__img" src="images/collection-surgical.jpg" alt="Хирургическая серия" loading="lazy">
-                        </article>
-                    </div>
-                    <div class="collection-slider__item swiper-slide">
-                        <article class="collection-item">
-                            <a href="#" class="collection-item__title">Лаборатория Hircost</a>
-                            <img class="collection-item__img" src="images/collection-lab.jpg" alt="Лаборатория" loading="lazy">
-                        </article>
-                    </div>
-                    <div class="collection-slider__item swiper-slide">
-                        <article class="collection-item">
-                            <a href="#" class="collection-item__title">Простые вещи</a>
-                            <img class="collection-item__img" src="images/collection-simple.jpg" alt="Простые вещи" loading="lazy">
-                        </article>
-                    </div>
-                </div>
-                <div class="collection-slider__nav prev" id="collectionPrev">‹</div>
-                <div class="collection-slider__nav next" id="collectionNext">›</div>
-                <div class="collection-slider__pagination swiper-pagination"></div>
-            </div>
-        </section>
-
-        <!-- Карточки преимуществ -->
-        <div class="offers">
-            <div class="offer-card"><div class="icon">💧</div><h3>Увлажняющая ткань</h3><p>Технология Cool&amp;Dry</p><div class="price">-25%</div></div>
-            <div class="offer-card"><div class="icon">🌊</div><h3>Бесплатная доставка</h3><p>При заказе от 5000₽</p><div class="price">0 ₽</div></div>
-            <div class="offer-card"><div class="icon">💎</div><h3>Подарочный набор</h3><p>При первом заказе</p><div class="price">Бесплатно</div></div>
-        </div>
-
-        <!-- Каталог товаров -->
-        <h2 class="section-title">🌟 Аква-коллекция 🌟</h2>
-        <div class="filter-categories" id="filterCategories"></div>
-        <div class="filter-search">
-            <input type="text" id="catalogSearch" placeholder="🔍 Поиск по названию...">
-        </div>
-        <div class="products-grid" id="productsGrid"></div>
-
-        <!-- Форма обратной связи -->
-        <div class="lead-form" id="optForm">
-            <div class="lead-form__inner">
-                <div class="lead-form__content">
-                    <span class="lead-form__badge">🎯 ОПТОВЫМ КЛИЕНТАМ</span>
-                    <h3 class="lead-form__title">Бесплатная <span class="accent-gradient">консультация</span> по опту</h3>
-                    <p class="lead-form__desc">Оставьте заявку — мы подберём ткани, посчитаем партию и вышлем коммерческое предложение с индивидуальной скидкой.</p>
-                    <ul class="lead-form__features">
-                        <li>✓ Подбор ткани под вашу специализацию</li>
-                        <li>✓ Расчёт стоимости партии от 5 штук</li>
-                        <li>✓ Помощь с лекалами и размерами</li>
-                        <li>✓ Подготовка документов для тендера</li>
-                    </ul>
-                </div>
-                <div class="lead-form__box">
-                    <div class="lead-form__gift">🎁 В подарок: чек-лист по выбору медодежды</div>
-                    <input type="text" id="formName" placeholder="Имя / Должность" class="lead-form__input">
-                    <input type="email" id="formEmail" placeholder="E-mail" class="lead-form__input">
-                    <input type="tel" id="formPhone" placeholder="Телефон (необязательно)" class="lead-form__input">
-                    <textarea id="formMessage" rows="3" placeholder="Кол-во сотрудников / пожелания / тираж" class="lead-form__textarea"></textarea>
-                    <button id="formSubmitBtn" class="lead-form__btn">Получить индивидуальное УТП →</button>
-                    <div class="lead-form__privacy">Нажимая на кнопку, вы соглашаетесь с политикой обработки персональных данных</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Преимущества -->
-        <div class="benefits">
-            <h3>💙 Преимущества работы с нами</h3>
-            <div class="benefits-grid">
-                <div class="benefit-item">✅ Сертифицированная продукция</div>
-                <div class="benefit-item">✅ Доставка по всей России</div>
-                <div class="benefit-item">✅ Опт от 10 штук</div>
-                <div class="benefit-item">✅ 24/7 поддержка</div>
-            </div>
-        </div>
-    </div>
+<!-- ==================== ОСНОВНОЙ КОНТЕНТ ==================== -->
+<main class="main-content">
+    <!-- Сюда будет вставляться содержимое страниц -->
 </main>
+<!-- ==================== КОНТЕНТ ЗАКОНЧЕН ==================== -->
 
-<footer>
-    <div class="container">
+<!-- ==================== ПОДВАЛ (НАЧАЛО) ==================== -->
+<footer class="main-footer">
+    <div class="footer-container">
         <div class="footer-grid">
             <div class="footer-col">
-                <div class="footer-logo">🩺 MURANO-APPAREL</div>
+                <div class="footer-logo">🩺 MURANO APPAREL</div>
                 <p>Медицинская одежда для тех, кто спасает жизни.</p>
                 <div class="footer-contacts">
                     <p>✉️ <a href="mailto:murano-apparel@bk.ru">murano-apparel@bk.ru</a></p>
@@ -295,15 +131,19 @@
         </div>
     </div>
 </footer>
+<!-- ==================== ПОДВАЛ (КОНЕЦ) ==================== -->
 
-<!-- Модальное окно для текстов -->
+<!-- ==================== МОДАЛЬНЫЕ ОКНА ==================== -->
+<!-- Модалка для документов -->
 <div class="modal-overlay" id="docModalOverlay">
-    <div class="modal-container" id="docModalContainer">
+    <div class="modal-container">
         <div class="modal-header">
-            <h3 id="modalTitle">Оферта</h3>
+            <h3 id="modalTitle">Документ</h3>
             <button class="modal-close" id="docModalClose">&times;</button>
         </div>
-        <div class="modal-body" id="modalBody"></div>
+        <div class="modal-body" id="modalBody">
+            <p>Загрузка...</p>
+        </div>
     </div>
 </div>
 
@@ -313,20 +153,20 @@
         <h3>🛒 Корзина</h3>
         <button id="closeCart">✕</button>
     </div>
-    <div id="cartItems">Корзина пуста</div>
-    <div id="cartTotal"></div>
-    <button id="checkoutBtn" class="btn-primary">Оформить заказ</button>
+    <div id="cartItems" class="cart-items">Корзина пуста</div>
+    <div id="cartTotal" class="cart-total"></div>
+    <button id="checkoutBtn" class="cart-checkout-btn">Оформить заказ</button>
 </div>
 <div class="overlay" id="overlay"></div>
 
-<script src="js/script.js"></script>
+<!-- ==================== СКРИПТЫ ==================== -->
 <script src="js/utils.js"></script>
 <script src="js/cart.js"></script>
 <script src="js/products.js"></script>
 <script src="js/quickview.js"></script>
 <script src="js/header.js"></script>
-<script src="js/main.js"></script>  
-<script src="js/contact-form.js"></script>
+<script src="js/modal.js"></script>  <!-- для модалок футера -->
+<script src="js/main.js"></script>
 
 </body>
 </html>
