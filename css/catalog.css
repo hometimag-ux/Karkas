@@ -12,6 +12,11 @@
     min-height: 50px;
 }
 
+/* Более специфичный селектор */
+main .container .filter-categories {
+    margin-top: 1.5rem;
+}
+
 .filter-btn {
     background: none;
     border: 1px solid #cbdde9;
