@@ -1,10 +1,38 @@
 /* ===== СТИЛИ ДЛЯ СТРАНИЦЫ КАТАЛОГА ===== */
 
-/* Хлебные крошки */
+/* Заголовок страницы */
+.catalog-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 1rem 0 0.5rem;
+    color: #1a2c3e;
+    text-align: center;
+}
+
+.catalog-subtitle {
+    font-size: 0.95rem;
+    color: #5e7f97;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+/* Хлебные крошки и фильтры в одной строке */
+.catalog-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e2edf4;
+}
+
+/* Хлебные крошки (слева) */
 .breadcrumbs {
-    padding: 1.5rem 0 0.5rem;
     font-size: 0.85rem;
     color: #64748b;
+    white-space: nowrap;
 }
 
 .breadcrumbs a {
@@ -18,42 +46,19 @@
     color: #00897b;
 }
 
-/* Заголовок страницы */
-.catalog-title {
-    font-size: 2.2rem;
-    font-weight: 700;
-    margin: 1rem 0 0.5rem;
-    color: #1a2c3e;
-}
-
-.catalog-subtitle {
-    font-size: 1rem;
-    color: #5e7f97;
-    margin-bottom: 2rem;
-}
-
-/* Обёртка фильтров */
-.filters-wrapper {
-    background: white;
-    border-radius: 1.5rem;
-    padding: 1.2rem;
-    margin-bottom: 2rem;
-    border: 1px solid #e2edf4;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
-}
-
+/* Фильтры (по центру) */
 .filter-categories {
     display: flex;
-    gap: 0.5rem;
+    gap: 0.8rem;
     flex-wrap: wrap;
-    margin-bottom: 1rem;
     justify-content: center;
+    flex: 1;
 }
 
 .filter-btn {
     background: none;
     border: 1px solid #cbdde9;
-    padding: 0.5rem 1.2rem;
+    padding: 0.5rem 1.5rem;
     border-radius: 40px;
     cursor: pointer;
     font-size: 0.85rem;
@@ -73,25 +78,9 @@
     border-color: transparent;
 }
 
+/* Скрываем поиск */
 .filter-search {
-    text-align: center;
-}
-
-.filter-search input {
-    padding: 0.6rem 1rem;
-    border: 1px solid #cbdde9;
-    border-radius: 40px;
-    width: 100%;
-    max-width: 320px;
-    font-size: 0.85rem;
-    outline: none;
-    transition: all 0.2s;
-    background: white;
-}
-
-.filter-search input:focus {
-    border-color: #4db6ac;
-    box-shadow: 0 0 0 3px rgba(77, 182, 172, 0.1);
+    display: none;
 }
 
 /* Сообщение о пустом каталоге */
@@ -100,38 +89,34 @@
     padding: 3rem;
     color: #5e7f97;
     grid-column: 1 / -1;
-    font-size: 1rem;
 }
 
 /* Адаптация */
 @media (max-width: 768px) {
+    .catalog-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.8rem;
+    }
+    
+    .breadcrumbs {
+        text-align: left;
+    }
+    
+    .filter-categories {
+        justify-content: center;
+    }
+    
     .catalog-title {
         font-size: 1.6rem;
     }
     
     .catalog-subtitle {
         font-size: 0.85rem;
-        margin-bottom: 1.5rem;
-    }
-    
-    .filters-wrapper {
-        padding: 1rem;
-        border-radius: 1rem;
     }
     
     .filter-btn {
         padding: 0.4rem 1rem;
         font-size: 0.75rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .catalog-title {
-        font-size: 1.4rem;
-    }
-    
-    .filter-search input {
-        max-width: 100%;
-        font-size: 0.8rem;
     }
 }
