@@ -217,68 +217,83 @@
     }
 }
 
-/* ==================== МОДАЛЬНОЕ ОКНО КУКИ ==================== */
-.cookie-modal {
+/* ==================== КУКИ (НИЖНЯЯ ПАНЕЛЬ + ЗАТЕМНЕНИЕ) ==================== */
+
+/* Затемнение фона (активно, если куки не приняты) */
+.cookie-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(8px);
-    z-index: 999999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 9998;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.4s ease, visibility 0.4s ease;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
-.cookie-modal.active {
+.cookie-overlay.active {
     opacity: 1;
     visibility: visible;
 }
 
-.cookie-modal-content {
+/* Нижняя панель куки */
+.cookie-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
     background: white;
-    border-radius: 32px;
-    max-width: 480px;
-    width: 90%;
-    padding: 2rem;
-    text-align: center;
-    transform: scale(0.9);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    transform: translateY(100%);
     transition: transform 0.4s ease;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 }
 
-.cookie-modal.active .cookie-modal-content {
-    transform: scale(1);
+.cookie-bar.active {
+    transform: translateY(0);
+}
+
+.cookie-bar-content {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.cookie-text {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    flex: 2;
+    min-width: 200px;
 }
 
 .cookie-icon {
-    font-size: 3rem;
-    margin-bottom: 1rem;
+    font-size: 1.8rem;
 }
 
-.cookie-modal-content h3 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
+.cookie-text strong {
+    font-size: 0.95rem;
     color: #1a2c3e;
+    display: block;
 }
 
-.cookie-modal-content p {
-    font-size: 0.9rem;
-    color: #405d77;
-    line-height: 1.5;
-    margin-bottom: 1.5rem;
+.cookie-text p {
+    font-size: 0.8rem;
+    color: #5e7f97;
+    margin: 0;
 }
 
 .cookie-link {
     color: #00897b;
     text-decoration: none;
-    font-weight: 500;
 }
 
 .cookie-link:hover {
@@ -287,16 +302,15 @@
 
 .cookie-buttons {
     display: flex;
-    gap: 1rem;
-    justify-content: center;
+    gap: 0.8rem;
     flex-wrap: wrap;
 }
 
 .cookie-btn {
-    padding: 0.8rem 1.5rem;
+    padding: 0.6rem 1.2rem;
     border-radius: 40px;
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     cursor: pointer;
     transition: all 0.2s;
     border: none;
@@ -309,7 +323,7 @@
 
 .cookie-btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 14px rgba(0, 137, 123, 0.3);
+    box-shadow: 0 4px 10px rgba(0, 137, 123, 0.3);
 }
 
 .cookie-btn-secondary {
@@ -323,21 +337,24 @@
 }
 
 /* Адаптация */
-@media (max-width: 480px) {
-    .cookie-modal-content {
-        padding: 1.5rem;
-        width: 95%;
+@media (max-width: 768px) {
+    .cookie-bar-content {
+        flex-direction: column;
+        text-align: center;
+        padding: 1rem;
+        gap: 0.8rem;
     }
     
-    .cookie-modal-content h3 {
-        font-size: 1.3rem;
+    .cookie-text {
+        flex-direction: column;
+        text-align: center;
     }
     
     .cookie-buttons {
-        flex-direction: column;
+        justify-content: center;
     }
     
     .cookie-btn {
-        width: 100%;
+        padding: 0.5rem 1rem;
     }
 }
