@@ -2,7 +2,7 @@
 
 /* Отступ после шапки — применяем к main, а не к container */
 .main-content {
-    padding-top: 1.5rem;
+    padding-top: 2.5rem;
 }
 
 /* Фильтры */
