@@ -1,4 +1,4 @@
-// ===== БЫСТРЫЙ ПРОСМОТР (полная версия с выбором размера и цвета) =====
+// ===== БЫСТРЫЙ ПРОСМОТР (полная версия) =====
 
 function closeQuickView() {
     const modal = document.getElementById('quickViewModal');
@@ -8,7 +8,12 @@ function closeQuickView() {
 
 function openQuickView(id) {
     const product = window.allProducts ? window.allProducts.find(p => p.id === id) : null;
-    if (!product) return;
+    if (!product) {
+        console.error('Товар не найден, id:', id);
+        return;
+    }
+    
+    console.log('Открываем товар:', product.title);
     
     const hasDiscount = product.discount_price && product.discount_price < product.price;
     const rating = product.rating || getRandomRating();
@@ -28,8 +33,29 @@ function openQuickView(id) {
     const colors = product.colors || ['#8F9E6B', '#ffffff', '#2F5D50', '#4a708b'];
     const colorNames = product.color_names || ['оливковый', 'белый', 'тёмно-зелёный', 'синий'];
     
-    // Артикул
     const article = product.article || '—';
+    
+    // Формируем описание
+    let descriptionHtml = '';
+    if (product.description) {
+        descriptionHtml = `<p class="product-description">${escapeHtml(product.description)}</p>`;
+    }
+    
+    // Характеристики
+    let specsHtml = '';
+    if (chars.material || chars.composition || chars.features) {
+        specsHtml = `
+            <div class="product-specs">
+                <h4>Характеристики</h4>
+                <ul>
+                    ${chars.material ? `<li><strong>Состав:</strong> ${escapeHtml(chars.material)}</li>` : ''}
+                    ${chars.composition ? `<li><strong>Состав:</strong> ${escapeHtml(chars.composition)}</li>` : ''}
+                    ${chars.features ? `<li><strong>Особенности:</strong> ${escapeHtml(chars.features)}</li>` : ''}
+                    ${chars.country ? `<li><strong>Страна производства:</strong> ${escapeHtml(chars.country)}</li>` : ''}
+                </ul>
+            </div>
+        `;
+    }
     
     const modalHtml = `
         <div class="quick-view-modal" id="quickViewModal">
@@ -61,6 +87,12 @@ function openQuickView(id) {
                                 ${hasDiscount ? `<span class="old-price">${product.price.toLocaleString()} ₽</span>` : ''}
                             </div>
                         </div>
+                        
+                        <!-- ОПИСАНИЕ -->
+                        ${descriptionHtml}
+                        
+                        <!-- ХАРАКТЕРИСТИКИ -->
+                        ${specsHtml}
                         
                         <!-- ВЫБОР РАЗМЕРА -->
                         ${sizesList.length > 0 ? `
@@ -107,7 +139,7 @@ function openQuickView(id) {
     document.body.insertAdjacentHTML('beforeend', modalHtml);
     document.body.style.overflow = 'hidden';
     
-    // Инициализация событий
+    // Выбранные опции
     let selectedSize = document.querySelector('#quickViewModal .size-btn.active')?.dataset.size || '—';
     let selectedColor = document.querySelector('#quickViewModal .swatch.active')?.dataset.color || '—';
     let selectedColorCode = document.querySelector('#quickViewModal .swatch.active')?.dataset.colorCode || '';
@@ -131,11 +163,15 @@ function openQuickView(id) {
         };
     });
     
-    // Кнопка "В корзину" с передачей размера и цвета
+    // Кнопка "В корзину"
     const buyBtn = document.getElementById('modalBuyBtn');
     if (buyBtn) {
         buyBtn.onclick = () => {
-            addToCartWithDetails(product.id, product.title, product.discount_price || product.price, selectedSize, selectedColor, article);
+            if (typeof addToCartWithDetails === 'function') {
+                addToCartWithDetails(product.id, product.title, product.discount_price || product.price, selectedSize, selectedColor, article);
+            } else {
+                console.error('addToCartWithDetails не определена');
+            }
             closeQuickView();
         };
     }
@@ -150,7 +186,6 @@ function openQuickView(id) {
     const closeBtn = document.querySelector('#quickViewModal .quick-view-close');
     if (closeBtn) closeBtn.onclick = () => closeQuickView();
     
-    // Закрытие по клику на фон
     const modalDiv = document.getElementById('quickViewModal');
     if (modalDiv) {
         modalDiv.onclick = (e) => {
