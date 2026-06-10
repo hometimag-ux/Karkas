@@ -45,7 +45,7 @@
 
 .products-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 2rem;
     margin-bottom: 3rem;
 }
@@ -66,7 +66,7 @@
 }
 
 .product-img {
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 3 / 4;  /* вертикальное фото: ширина 3, высота 4 */
     height: auto;
     padding: 0;
     text-align: center;
