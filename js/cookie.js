@@ -3,17 +3,28 @@ document.addEventListener('DOMContentLoaded', function() {
     const overlay = document.getElementById('cookieOverlay');
     const cookieBar = document.getElementById('cookieBar');
     const acceptBtn = document.getElementById('cookieAccept');
+    const privacyLink = document.getElementById('cookiePrivacyLink');
+    
+    console.log('🔍 Куки скрипт запущен');
     
     let timeoutId = null;
     let isAccepted = false;
     
     // Проверяем, было ли уже согласие
     if (localStorage.getItem('cookieConsent') === 'accepted') {
-        return; // Ничего не показываем
+        console.log('🍪 Куки уже приняты, панель не показываем');
+        return;
+    }
+    
+    // Проверяем наличие элементов
+    if (!cookieBar) {
+        console.error('❌ cookieBar не найден в DOM');
+        return;
     }
     
     // Показываем панель куки сразу
-    if (cookieBar) cookieBar.classList.add('active');
+    cookieBar.classList.add('active');
+    console.log('📢 Панель куки показана');
     
     // Запускаем таймер на затемнение через 7 секунд
     timeoutId = setTimeout(function() {
@@ -29,35 +40,47 @@ document.addEventListener('DOMContentLoaded', function() {
         if (isAccepted) return;
         isAccepted = true;
         
-        // Очищаем таймер
         if (timeoutId) clearTimeout(timeoutId);
-        
-        // Убираем затемнение и панель
         if (overlay) overlay.classList.remove('active');
         if (cookieBar) cookieBar.classList.remove('active');
-        
-        // Разблокируем скролл
         document.body.style.overflow = '';
-        
-        // Сохраняем согласие
         localStorage.setItem('cookieConsent', 'accepted');
         console.log('✅ Куки приняты, затемнение отменено');
     }
     
-    // Обработчик кнопки
-    if (acceptBtn) {
-        acceptBtn.addEventListener('click', acceptCookies);
+    // === НОВЫЙ КОД: Открытие модалки с политикой конфиденциальности ===
+    function openPrivacyPolicy(e) {
+        e.preventDefault();
+        console.log('🔗 Открытие политики конфиденциальности');
+        
+        // Используем глобальную функцию из modal.js
+        if (typeof window.openDocModal === 'function') {
+            window.openDocModal('privacy');
+        } else {
+            console.error('❌ openDocModal не найдена');
+            alert('Политика конфиденциальности появится позже');
+        }
     }
     
-    // Если пользователь нажимает на затемнение — не закрываем (требует явного согласия)
+    // Обработчики
+    if (acceptBtn) {
+        acceptBtn.addEventListener('click', acceptCookies);
+        console.log('🔘 Обработчик кнопки "Принять" добавлен');
+    }
+    
+    if (privacyLink) {
+        privacyLink.addEventListener('click', openPrivacyPolicy);
+        console.log('🔗 Обработчик ссылки "политикой конфиденциальности" добавлен');
+    } else {
+        console.warn('⚠️ Ссылка #cookiePrivacyLink не найдена');
+    }
+    
+    // Затемнение нельзя закрыть кликом, только напоминаем
     if (overlay) {
         overlay.addEventListener('click', function() {
-            // Ничего не делаем, только напоминаем
             if (typeof showToast === 'function') {
                 showToast('🍪 Пожалуйста, примите условия использования куки');
             }
         });
     }
-    
-    console.log('✅ Куки панель активирована, затемнение через 7 секунд');
 });
