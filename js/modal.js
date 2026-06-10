@@ -1,49 +1,96 @@
-// ==================== МОДАЛКИ ДЛЯ ФУТЕРА ====================
+// ==================== МОДАЛКИ ДЛЯ ДОКУМЕНТОВ ====================
 document.addEventListener('DOMContentLoaded', function() {
-    const overlay = document.getElementById('docModalOverlay');
+    // Элементы модалки
+    const modalOverlay = document.getElementById('docModalOverlay');
     const modalTitle = document.getElementById('modalTitle');
     const modalBody = document.getElementById('modalBody');
-    const closeBtn = document.getElementById('docModalClose');
+    const modalClose = document.getElementById('docModalClose');
     
-    // Контент для модалок
-    const contentMap = {
-        offer: { title: "Договор оферты", content: "<p>Текст договора оферты...</p>" },
-        privacy: { title: "Политика конфиденциальности", content: "<p>Текст политики конфиденциальности...</p>" },
-        agreement: { title: "Пользовательское соглашение", content: "<p>Текст пользовательского соглашения...</p>" },
-        return: { title: "Условия обмена и возврата", content: "<p>Текст условий обмена и возврата...</p>" },
-        about: { title: "О компании", content: "<p>Информация о компании...</p>" },
-        delivery: { title: "Доставка и оплата", content: "<p>Информация о доставке и оплате...</p>" },
-        contacts: { title: "Контакты", content: "<p>Контактная информация...</p>" },
-        wholesale: { title: "Оптовым клиентам", content: "<p>Информация для оптовых клиентов...</p>" }
-    };
-    
-    function openModal(docId) {
-        const data = contentMap[docId];
-        if (!data || !overlay) return;
-        modalTitle.textContent = data.title;
-        modalBody.innerHTML = data.content;
-        overlay.classList.add('active');
-        document.body.style.overflow = 'hidden';
+    // Проверяем, что все элементы существуют
+    if (!modalOverlay) {
+        console.error('Ошибка: не найден #docModalOverlay');
+        return;
     }
     
+    // Функция открытия модалки
+    window.openDocModal = function(docId) {
+        let title = '';
+        let content = '<p>Информация готовится...</p>';
+        
+        // Заголовки для разных документов
+        switch(docId) {
+            case 'offer':
+                title = 'Договор оферты';
+                break;
+            case 'privacy':
+                title = 'Политика конфиденциальности';
+                break;
+            case 'agreement':
+                title = 'Пользовательское соглашение';
+                break;
+            case 'return':
+                title = 'Условия обмена и возврата';
+                break;
+            case 'about':
+                title = 'О компании';
+                break;
+            case 'delivery':
+                title = 'Доставка и оплата';
+                break;
+            case 'contacts':
+                title = 'Контакты';
+                break;
+            case 'wholesale':
+                title = 'Оптовым клиентам';
+                break;
+            default:
+                title = 'Документ';
+        }
+        
+        modalTitle.textContent = title;
+        modalBody.innerHTML = `<p>Содержание документа "${title}" появится здесь позже.</p>`;
+        modalOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    };
+    
+    // Функция закрытия модалки
     function closeModal() {
-        if (!overlay) return;
-        overlay.classList.remove('active');
+        modalOverlay.classList.remove('active');
         document.body.style.overflow = '';
     }
     
-    // Навешиваем обработчики на ссылки футера
-    document.querySelectorAll('.footer-link').forEach(link => {
+    // Навешиваем обработчики на ссылки в футере
+    const footerLinks = document.querySelectorAll('.footer-link');
+    console.log('Найдено ссылок в футере:', footerLinks.length);
+    
+    footerLinks.forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
             const docId = this.getAttribute('data-doc');
-            if (docId) openModal(docId);
+            console.log('Клик по ссылке, docId:', docId);
+            if (docId) {
+                window.openDocModal(docId);
+            }
         });
     });
     
-    if (closeBtn) closeBtn.addEventListener('click', closeModal);
-    if (overlay) overlay.addEventListener('click', function(e) {
-        if (e.target === overlay) closeModal();
+    // Закрытие по крестику
+    if (modalClose) {
+        modalClose.addEventListener('click', closeModal);
+    }
+    
+    // Закрытие по клику на оверлей
+    modalOverlay.addEventListener('click', function(e) {
+        if (e.target === modalOverlay) {
+            closeModal();
+        }
+    });
+    
+    // Закрытие по Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
+            closeModal();
+        }
     });
     
     console.log('✅ Модалки футера инициализированы');
