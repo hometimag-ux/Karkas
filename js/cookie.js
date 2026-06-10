@@ -1,40 +1,31 @@
-// ==================== МОДАЛЬНОЕ ОКНО КУКИ ====================
+// ==================== КУКИ (НИЖНЯЯ ПАНЕЛЬ + ЗАТЕМНЕНИЕ) ====================
 document.addEventListener('DOMContentLoaded', function() {
-    const cookieModal = document.getElementById('cookieModal');
+    const overlay = document.getElementById('cookieOverlay');
+    const cookieBar = document.getElementById('cookieBar');
     const acceptBtn = document.getElementById('cookieAccept');
     const settingsBtn = document.getElementById('cookieSettings');
     
     // Проверяем, было ли уже согласие
     if (localStorage.getItem('cookieConsent') === 'accepted') {
-        return; // Модалку не показываем
+        return; // Ничего не показываем
     }
     
-    let timeoutId = null;
-    let isBlocked = false;
+    // Показываем затемнение и панель сразу
+    if (overlay) overlay.classList.add('active');
+    if (cookieBar) cookieBar.classList.add('active');
     
-    // Функция блокировки экрана
-    function blockScreen() {
-        if (isBlocked) return;
-        isBlocked = true;
-        
-        if (cookieModal) {
-            cookieModal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-    }
+    // Блокируем скролл фона
+    document.body.style.overflow = 'hidden';
     
-    // Функция разблокировки и сохранения согласия
+    // Функция принятия куки
     function acceptCookies() {
-        if (timeoutId) clearTimeout(timeoutId);
-        if (cookieModal) {
-            cookieModal.classList.remove('active');
-            document.body.style.overflow = '';
-        }
+        if (overlay) overlay.classList.remove('active');
+        if (cookieBar) cookieBar.classList.remove('active');
+        document.body.style.overflow = '';
         localStorage.setItem('cookieConsent', 'accepted');
-        isBlocked = false;
     }
     
-    // Функция для настроек (показываем уведомление)
+    // Функция для настроек
     function openSettings() {
         if (typeof showToast === 'function') {
             showToast('⚙️ Настройки куки появятся позже');
@@ -42,9 +33,6 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('⚙️ Настройки куки появятся позже');
         }
     }
-    
-    // Показываем модалку через 10 секунд
-    timeoutId = setTimeout(blockScreen, 10000);
     
     // Обработчики кнопок
     if (acceptBtn) {
@@ -55,17 +43,6 @@ document.addEventListener('DOMContentLoaded', function() {
         settingsBtn.addEventListener('click', openSettings);
     }
     
-    // Если пользователь нажимает на фон — не закрываем (требует явного согласия)
-    if (cookieModal) {
-        cookieModal.addEventListener('click', function(e) {
-            if (e.target === cookieModal) {
-                // Не закрываем, просто напоминаем
-                if (typeof showToast === 'function') {
-                    showToast('🍪 Пожалуйста, примите условия использования куки');
-                }
-            }
-        });
-    }
-    
-    console.log('✅ Модалка куки загружена, блокировка через 10 секунд');
+    // Затемнение нельзя закрыть кликом — только кнопкой
+    console.log('✅ Куки панель активирована');
 });
