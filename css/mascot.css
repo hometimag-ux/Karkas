@@ -1,4 +1,4 @@
-/* ==================== МАСКОТ — БЬЮЩЕЕСЯ КРАСНОЕ СЕРДЦЕ ==================== */
+/* ==================== МАСКОТ — РЕАЛИСТИЧНОЕ ЧЕЛОВЕЧЕСКОЕ СЕРДЦЕ ==================== */
 .mascot {
     position: fixed;
     bottom: 20px;
@@ -7,39 +7,38 @@
     z-index: 1000;
     background: transparent;
     border-radius: 50%;
-    padding: 8px;
+    padding: 5px;
     transition: all 0.3s;
-    /* Только для десктопа — скрыто на мобильных */
 }
 
-/* Анимация биения сердца */
+/* Анимация реалистичного биения */
 .mascot-icon {
     display: inline-block;
-    animation: heartbeat 1s ease-in-out infinite;
+    animation: heartbeatReal 1.2s ease-in-out infinite;
     transform-origin: center;
-    filter: drop-shadow(0 4px 10px rgba(227, 27, 35, 0.3));
+    filter: drop-shadow(0 4px 12px rgba(199, 0, 0, 0.4));
 }
 
 .mascot-icon svg {
     display: block;
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
 }
 
-@keyframes heartbeat {
+@keyframes heartbeatReal {
     0% {
         transform: scale(1);
     }
-    25% {
-        transform: scale(1.2);
+    14% {
+        transform: scale(1.12);
     }
-    35% {
-        transform: scale(1.1);
+    28% {
+        transform: scale(1);
     }
-    45% {
-        transform: scale(1.2);
+    42% {
+        transform: scale(1.06);
     }
-    55% {
+    70% {
         transform: scale(1);
     }
     100% {
@@ -47,23 +46,45 @@
     }
 }
 
+/* Более быстрое биение при наведении */
 .mascot:hover .mascot-icon {
-    animation: heartbeat 0.6s ease-in-out infinite;
-    filter: drop-shadow(0 6px 15px rgba(227, 27, 35, 0.4));
+    animation: heartbeatFast 0.8s ease-in-out infinite;
+    filter: drop-shadow(0 6px 18px rgba(199, 0, 0, 0.5));
+}
+
+@keyframes heartbeatFast {
+    0% {
+        transform: scale(1);
+    }
+    15% {
+        transform: scale(1.15);
+    }
+    30% {
+        transform: scale(1);
+    }
+    45% {
+        transform: scale(1.08);
+    }
+    60% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(1);
+    }
 }
 
 /* Пузырёк с цитатой */
 .mascot-bubble {
     position: absolute;
-    bottom: 55px;
-    left: 50px;
-    background: white;
+    bottom: 60px;
+    left: 55px;
+    background: linear-gradient(135deg, #fff, #fff5f5);
     padding: 10px 16px;
-    border-radius: 20px;
+    border-radius: 24px;
     font-size: 0.85rem;
     font-weight: 500;
     color: #1a2c3e;
-    max-width: 230px;
+    max-width: 240px;
     white-space: normal;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     opacity: 0;
@@ -72,7 +93,6 @@
     border: 1px solid #ffcdd2;
     line-height: 1.4;
     text-align: center;
-    background: linear-gradient(135deg, #fff, #fff5f5);
 }
 
 .mascot-bubble::before {
@@ -93,8 +113,14 @@
     visibility: visible;
 }
 
-/* Скрываем на мобильных устройствах */
+/* Скрываем на мобильных */
 @media (max-width: 768px) {
+    .mascot {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
     .mascot {
         display: none;
     }
