@@ -142,7 +142,7 @@
     box-shadow: 0 20px 28px -12px rgba(0,0,0,0.1);
 }
 
-/* Фото товара — чуть выше (aspect-ratio 2:3) */
+/* Фото товара — вертикальное, чуть выше */
 .product-img {
     aspect-ratio: 2 / 3;
     width: 100%;
@@ -170,7 +170,7 @@
     font-size: 4rem;
 }
 
-/* Информация поверх фото */
+/* Информация поверх фото (снизу) */
 .product-info {
     position: absolute;
     bottom: 0;
@@ -205,17 +205,17 @@
     color: white;
 }
 
-/* Рейтинг — в правом верхнем углу */
+/* Рейтинг — правый верхний угол (симметрично скидке) */
 .product-rating {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 12px;
+    right: 12px;
     display: flex;
     align-items: center;
     gap: 0.2rem;
-    background: rgba(0,0,0,0.6);
+    background: rgba(0, 0, 0, 0.65);
     backdrop-filter: blur(4px);
-    padding: 0.2rem 0.5rem;
+    padding: 0.25rem 0.6rem;
     border-radius: 20px;
     z-index: 10;
 }
@@ -230,9 +230,24 @@
 }
 
 .rating-value {
-    font-size: 0.65rem;
+    font-size: 0.7rem;
+    font-weight: 500;
     color: white;
     margin-left: 0.2rem;
+}
+
+/* Скидка — левый верхний угол */
+.discount-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: #f43f5e;
+    color: white;
+    padding: 0.25rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    z-index: 10;
 }
 
 .product-prices {
@@ -257,19 +272,6 @@
     font-size: 0.7rem;
     color: #cbd5e1;
     text-decoration: line-through;
-}
-
-.discount-badge {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background: #f43f5e;
-    color: white;
-    padding: 0.2rem 0.6rem;
-    border-radius: 20px;
-    font-size: 0.65rem;
-    font-weight: 600;
-    z-index: 10;
 }
 
 .product-actions {
