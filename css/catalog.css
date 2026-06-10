@@ -1,15 +1,15 @@
 /* ===== СТИЛИ ДЛЯ СТРАНИЦЫ КАТАЛОГА ===== */
 
-/* Контейнер для фильтров — гарантированный отступ */
+/* Контейнер фильтров — принудительный отступ */
 #filterCategories,
 .filter-categories {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 0.8rem;
-    margin-top: 1rem;   /* ← отступ сверху */
+    margin-top: 1.5rem !important;   /* !important чтобы перебить другие стили */
     margin-bottom: 2rem;
-    min-height: 50px;   /* ← чтобы контейнер точно был виден, даже если пуст */
+    min-height: 50px;
 }
 
 .filter-btn {
