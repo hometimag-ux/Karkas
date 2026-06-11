@@ -28,18 +28,27 @@ function showToast(msg) {
 
 // Обновить счётчик
 function updateCartCount() {
-    const total = getCart().reduce((s, i) => s + i.quantity, 0);
+    const cart = getCart();
+    let total = 0;
+    for (let i = 0; i < cart.length; i++) {
+        total += cart[i].quantity;
+    }
     const c = document.getElementById('cartCounter');
     if (c) c.textContent = total;
 }
 
-// Добавить товар (прямой вызов)
+// Добавить товар
 function addToCart(product) {
     const cart = getCart();
-    const existing = cart.findIndex(i => i.id === product.id && i.size === product.size && i.color === product.color);
-    if (existing !== -1) {
-        cart[existing].quantity += product.quantity || 1;
-    } else {
+    let found = false;
+    for (let i = 0; i < cart.length; i++) {
+        if (cart[i].id === product.id && cart[i].size === product.size && cart[i].color === product.color) {
+            cart[i].quantity += (product.quantity || 1);
+            found = true;
+            break;
+        }
+    }
+    if (!found) {
         cart.push({
             id: product.id,
             title: product.title,
@@ -51,27 +60,34 @@ function addToCart(product) {
         });
     }
     saveCart(cart);
-    showToast(`✅ ${product.title} добавлен`);
+    showToast('✅ ' + product.title + ' добавлен');
 }
 
-// Добавить товар по ID (для кнопок в каталоге)
+// Добавить по ID
 function addToCartById(id) {
-    // Ищем товар в глобальном массиве allProducts
     if (!window.allProducts || window.allProducts.length === 0) {
-        console.error('Каталог не загружен');
         showToast('Ошибка: каталог не загружен');
         return;
     }
-    
-    const product = window.allProducts.find(p => p.id === id);
+    let product = null;
+    for (let i = 0; i < window.allProducts.length; i++) {
+        if (window.allProducts[i].id === id) {
+            product = window.allProducts[i];
+            break;
+        }
+    }
     if (!product) {
         showToast('Товар не найден');
         return;
     }
-    
-    const price = product.discount_price && product.discount_price < product.price ? product.discount_price : product.price;
-    const image = product.images && product.images.length > 0 ? product.images[0] : null;
-    
+    let price = product.price;
+    if (product.discount_price && product.discount_price < product.price) {
+        price = product.discount_price;
+    }
+    let image = null;
+    if (product.images && product.images.length > 0) {
+        image = product.images[0];
+    }
     addToCart({
         id: product.id,
         title: product.title,
@@ -98,13 +114,14 @@ function updateCartDisplay() {
 
     let html = '';
     let total = 0;
-    cart.forEach(item => {
+    for (let i = 0; i < cart.length; i++) {
+        const item = cart[i];
         const itemTotal = item.price * item.quantity;
         total += itemTotal;
         html += `
             <div class="cart-item" data-id="${item.id}" data-size="${item.size}" data-color="${item.color}" style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #eee;">
                 <div style="width:60px;height:60px;background:#f5f5f5;border-radius:12px;display:flex;align-items:center;justify-content:center;">
-                    ${item.image ? `<img src="${item.image}" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">` : '👕'}
+                    ${item.image ? '<img src="' + item.image + '" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">' : '👕'}
                 </div>
                 <div style="flex:1;">
                     <div style="font-weight:600;">${item.title}</div>
@@ -122,60 +139,96 @@ function updateCartDisplay() {
                 </div>
             </div>
         `;
-    });
+    }
     container.innerHTML = html;
     if (totalDiv) {
-        totalDiv.innerHTML = `<div style="display:flex;justify-content:space-between;font-weight:700;padding:15px 0;border-top:1px solid #eee;"><span>Итого:</span><strong style="color:#00897b;">${total.toLocaleString()} ₽</strong></div>`;
+        totalDiv.innerHTML = '<div style="display:flex;justify-content:space-between;font-weight:700;padding:15px 0;border-top:1px solid #eee;"><span>Итого:</span><strong style="color:#00897b;">' + total.toLocaleString() + ' ₽</strong></div>';
     }
 
-    document.querySelectorAll('.cart-item').forEach(el => {
-        const id = parseInt(el.dataset.id);
-        const size = el.dataset.size;
-        const color = el.dataset.color;
+    const cartItems = document.querySelectorAll('.cart-item');
+    for (let i = 0; i < cartItems.length; i++) {
+        const el = cartItems[i];
+        const id = parseInt(el.getAttribute('data-id'));
+        const size = el.getAttribute('data-size');
+        const color = el.getAttribute('data-color');
         
-        el.querySelector('.qty-minus')?.addEventListener('click', () => {
-            let cart = getCart();
-            const i = cart.findIndex(x => x.id === id && x.size === size && x.color === color);
-            if (i !== -1) {
-                cart[i].quantity--;
-                if (cart[i].quantity <= 0) cart.splice(i, 1);
-                saveCart(cart);
-            }
-        });
+        const minusBtn = el.querySelector('.qty-minus');
+        const plusBtn = el.querySelector('.qty-plus');
+        const removeBtn = el.querySelector('.remove-item');
         
-        el.querySelector('.qty-plus')?.addEventListener('click', () => {
-            let cart = getCart();
-            const i = cart.findIndex(x => x.id === id && x.size === size && x.color === color);
-            if (i !== -1) {
-                cart[i].quantity++;
-                saveCart(cart);
-            }
-        });
+        if (minusBtn) {
+            minusBtn.onclick = function() {
+                let cart = getCart();
+                let index = -1;
+                for (let j = 0; j < cart.length; j++) {
+                    if (cart[j].id === id && cart[j].size === size && cart[j].color === color) {
+                        index = j;
+                        break;
+                    }
+                }
+                if (index !== -1) {
+                    cart[index].quantity--;
+                    if (cart[index].quantity <= 0) {
+                        cart.splice(index, 1);
+                    }
+                    saveCart(cart);
+                }
+            };
+        }
         
-        el.querySelector('.remove-item')?.addEventListener('click', () => {
-            let cart = getCart();
-            saveCart(cart.filter(x => !(x.id === id && x.size === size && x.color === color)));
-            showToast('Товар удалён');
-        });
-    });
+        if (plusBtn) {
+            plusBtn.onclick = function() {
+                let cart = getCart();
+                let index = -1;
+                for (let j = 0; j < cart.length; j++) {
+                    if (cart[j].id === id && cart[j].size === size && cart[j].color === color) {
+                        index = j;
+                        break;
+                    }
+                }
+                if (index !== -1) {
+                    cart[index].quantity++;
+                    saveCart(cart);
+                }
+            };
+        }
+        
+        if (removeBtn) {
+            removeBtn.onclick = function() {
+                let cart = getCart();
+                let newCart = [];
+                for (let j = 0; j < cart.length; j++) {
+                    if (!(cart[j].id === id && cart[j].size === size && cart[j].color === color)) {
+                        newCart.push(cart[j]);
+                    }
+                }
+                saveCart(newCart);
+                showToast('Товар удалён');
+            };
+        }
+    }
 }
 
 // Открыть корзину
 function openCart() {
-    document.getElementById('cartSidebar')?.classList.add('open');
-    document.getElementById('cartOverlay')?.classList.add('active');
+    const sidebar = document.getElementById('cartSidebar');
+    const overlay = document.getElementById('cartOverlay');
+    if (sidebar) sidebar.classList.add('open');
+    if (overlay) overlay.classList.add('active');
     document.body.style.overflow = 'hidden';
 }
 
 // Закрыть корзину
 function closeCart() {
-    document.getElementById('cartSidebar')?.classList.remove('open');
-    document.getElementById('cartOverlay')?.classList.remove('active');
+    const sidebar = document.getElementById('cartSidebar');
+    const overlay = document.getElementById('cartOverlay');
+    if (sidebar) sidebar.classList.remove('open');
+    if (overlay) overlay.classList.remove('active');
     document.body.style.overflow = '';
 }
 
 // Инициализация
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
     const cartBtn = document.getElementById('cartBtn');
     const closeCartBtn = document.getElementById('closeCartBtn');
     const overlay = document.getElementById('cartOverlay');
@@ -184,9 +237,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (cartBtn) cartBtn.addEventListener('click', openCart);
     if (closeCartBtn) closeCartBtn.addEventListener('click', closeCart);
     if (overlay) overlay.addEventListener('click', closeCart);
-    if (checkoutBtn) checkoutBtn.addEventListener('click', () => {
-        if (typeof openCheckout === 'function') openCheckout();
-    });
+    if (checkoutBtn) {
+        checkoutBtn.addEventListener('click', function() {
+            if (typeof openCheckout === 'function') openCheckout();
+        });
+    }
     
     updateCartCount();
 });
