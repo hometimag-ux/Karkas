@@ -1,0 +1,60 @@
+/* ===== МОДАЛЬНОЕ ОКНО ДОКУМЕНТОВ ===== */
+.docs-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 99999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.docs-modal.active {
+    display: flex;
+}
+
+.docs-modal-content {
+    background: white;
+    border-radius: 28px;
+    width: 90%;
+    max-width: 550px;
+    max-height: 80vh;
+    overflow: hidden;
+}
+
+.docs-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e2edf4;
+}
+
+.docs-modal-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.docs-modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #94a3b8;
+}
+
+.docs-modal-close:hover {
+    color: #dc2626;
+}
+
+.docs-modal-body {
+    padding: 1.5rem;
+    overflow-y: auto;
+    max-height: 60vh;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
