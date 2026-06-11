@@ -287,3 +287,18 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
 });
+
+// Обработчик кнопки оформления (после загрузки DOM)
+document.addEventListener('DOMContentLoaded', function() {
+    const btn = document.getElementById('cartCheckoutBtn');
+    if (btn) {
+        btn.onclick = function() {
+            console.log('🔘 Нажата кнопка оформления');
+            if (typeof openCheckout === 'function') {
+                openCheckout();
+            } else {
+                showToast('Модуль оформления не загружен');
+            }
+        };
+    }
+});
