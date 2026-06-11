@@ -1,24 +1,4 @@
-// ===== ПОДСТРАХОВКА: Если utils.js не загрузился =====
-if (typeof escapeHtml !== 'function') {
-    window.escapeHtml = function(str) {
-        if (!str) return '';
-        return String(str).replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
-    };
-}
-
-if (typeof showToast !== 'function') {
-    window.showToast = function(msg) {
-        alert(msg);
-    };
-}
-
-if (typeof getRandomRating !== 'function') {
-    window.getRandomRating = function() {
-        return (3 + Math.random() * 2).toFixed(1);
-    };
-}
-
-// ===== БЫСТРЫЙ ПРОСМОТР =====
+// ===== БЫСТРЫЙ ПРОСМОТР (ПОЛНАЯ ВЕРСИЯ) =====
 
 function closeQuickView() {
     const modal = document.getElementById('quickViewModal');
@@ -39,6 +19,7 @@ function openQuickView(id) {
     const stars = '★'.repeat(Math.floor(rating)) + '☆'.repeat(5 - Math.floor(rating));
     const mainImg = product.images && product.images.length > 0 ? product.images[0] : null;
     const chars = product.characteristics || {};
+    const pack = product.packaging || {};
     const article = product.article || '—';
 
     // Размеры
@@ -232,12 +213,13 @@ function openQuickView(id) {
         };
     }
 
-    console.log('✅ Модалка готова, размер:', selectedSize, 'цвет:', selectedColor);
+    console.log('✅ Модалка готова');
 }
 
 // ===== ФУНКЦИЯ ДЛЯ БЫСТРОГО ЗАКАЗА (МОДАЛЬНОЕ ОКНО) =====
+// ВАЖНО: эта функция должна быть СНАРУЖИ, а не внутри openQuickView!
 function openQuickOrderForm(productTitle, size, color, article, productImage, productPrice) {
-    // Удаляем старую форму
+    // Удаляем старую форму, если есть
     const oldForm = document.getElementById('quickOrderModal');
     if (oldForm) oldForm.remove();
 
@@ -317,12 +299,12 @@ function openQuickOrderForm(productTitle, size, color, article, productImage, pr
             const comment = document.getElementById('orderComment')?.value.trim();
 
             if (!name || !phone) {
-                if (typeof showToast === 'function') {
-                    showToast('❌ Пожалуйста, укажите имя и телефон');
-                }
+                if (typeof showToast === 'function') showToast('❌ Пожалуйста, укажите имя и телефон');
+                else alert('❌ Пожалуйста, укажите имя и телефон');
                 return;
             }
 
+            // Формируем данные заказа
             const orderData = {
                 product: productTitle,
                 size: size,
