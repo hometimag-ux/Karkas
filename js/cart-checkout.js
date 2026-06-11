@@ -1,24 +1,5 @@
 // ===== js/cart-checkout.js - ОФОРМЛЕНИЕ ЗАКАЗА =====
 
-// Сохранить незавершённый заказ
-function savePendingOrder(orderData) {
-    localStorage.setItem('pendingOrder', JSON.stringify(orderData));
-}
-
-// Получить незавершённый заказ
-function getPendingOrder() {
-    try {
-        return JSON.parse(localStorage.getItem('pendingOrder') || 'null');
-    } catch (e) {
-        return null;
-    }
-}
-
-// Очистить незавершённый заказ
-function clearPendingOrder() {
-    localStorage.removeItem('pendingOrder');
-}
-
 // Проверить наличие незавершённого заказа
 function checkPendingOrder() {
     const pending = getPendingOrder();
@@ -36,6 +17,8 @@ function checkPendingOrder() {
 // Открыть модальное окно оформления заказа
 function openCheckoutModal() {
     const cart = getCart();
+    
+    console.log('🛒 Открытие оформления, товаров в корзине:', cart.length);
     
     if (cart.length === 0) {
         if (!checkPendingOrder()) {
@@ -93,7 +76,6 @@ function openCheckoutModal() {
                 </div>
                 
                 <div style="padding: 20px;">
-                    <!-- Список товаров -->
                     <div style="background: #f8fafc; border-radius: 16px; padding: 15px; margin-bottom: 20px;">
                         <h4 style="margin:0 0 10px 0; font-size:14px;">Ваш заказ</h4>
                         ${cart.map(item => `
@@ -115,7 +97,6 @@ function openCheckoutModal() {
                         </div>
                     </div>
                     
-                    <!-- Форма -->
                     <div style="display: flex; flex-direction: column; gap: 12px;">
                         <div style="display: flex; gap: 12px;">
                             <input type="text" id="checkoutName" placeholder="Ваше имя *" style="flex:1; padding: 12px 16px; border:1px solid #ddd; border-radius: 40px; font-size:14px;">
@@ -136,7 +117,6 @@ function openCheckoutModal() {
                         
                         <textarea id="checkoutComment" rows="2" placeholder="Комментарий к заказу" style="padding: 12px 16px; border:1px solid #ddd; border-radius: 20px; font-size:14px; resize:vertical;"></textarea>
                         
-                        <!-- Итого -->
                         <div style="background: #f6faf7; border-radius: 16px; padding: 15px;">
                             <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
                                 <span>Товары:</span>
@@ -152,7 +132,6 @@ function openCheckoutModal() {
                             </div>
                         </div>
                         
-                        <!-- Способы оплаты -->
                         <div>
                             <h4 style="margin:0 0 10px 0; font-size:14px;">Способ оплаты</h4>
                             <div style="display: flex; gap: 20px; flex-wrap: wrap;">
@@ -192,7 +171,6 @@ function openCheckoutModal() {
     document.body.insertAdjacentHTML('beforeend', modalHtml);
     document.body.style.overflow = 'hidden';
     
-    // Закрытие модального окна
     const closeBtn = document.getElementById('closeCheckoutModal');
     const modal = document.getElementById('checkoutModal');
     
@@ -212,7 +190,6 @@ function openCheckoutModal() {
         };
     }
     
-    // Обновление суммы при смене доставки
     const deliverySelect = document.getElementById('checkoutDelivery');
     const deliveryCostSpan = document.getElementById('deliveryCost');
     const finalTotalSpan = document.getElementById('finalTotal');
@@ -236,7 +213,6 @@ function openCheckoutModal() {
     deliverySelect.onchange = updateTotal;
     updateTotal();
     
-    // Обработчик отправки заказа
     const submitBtn = document.getElementById('submitOrderBtn');
     submitBtn.onclick = () => {
         const name = document.getElementById('checkoutName').value.trim();
@@ -255,10 +231,13 @@ function openCheckoutModal() {
         const email = document.getElementById('checkoutEmail')?.value.trim() || '';
         const comment = document.getElementById('checkoutComment')?.value.trim() || '';
         
+        // ВАЖНО: берём актуальную корзину на момент оплаты
+        const currentCart = getCart();
+        
         const orderData = {
             orderId: 'ORDER_' + Date.now(),
             date: new Date().toLocaleString(),
-            items: cart,
+            items: currentCart,
             subtotal: subtotal,
             delivery: {
                 method: deliverySelect.value,
@@ -276,15 +255,13 @@ function openCheckoutModal() {
         };
         
         console.log('📦 Заказ сформирован:', orderData);
+        console.log('Товаров в заказе:', currentCart.length);
         
-        // Сохраняем заказ
         savePendingOrder(orderData);
         
-        // Закрываем окно оформления
         modal.remove();
         document.body.style.overflow = '';
         
-        // Передаём в модуль оплаты
         if (typeof processPayment === 'function') {
             processPayment(orderData);
         } else {
@@ -294,18 +271,11 @@ function openCheckoutModal() {
     };
 }
 
-// Добавляем анимацию
 const style = document.createElement('style');
 style.textContent = `
     @keyframes modalSlideIn {
-        from {
-            opacity: 0;
-            transform: scale(0.95);
-        }
-        to {
-            opacity: 1;
-            transform: scale(1);
-        }
+        from { opacity: 0; transform: scale(0.95); }
+        to { opacity: 1; transform: scale(1); }
     }
 `;
 document.head.appendChild(style);
