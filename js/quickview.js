@@ -201,19 +201,23 @@ function openQuickView(id) {
     }
 
     // КНОПКА "БЫСТРЫЙ ЗАКАЗ" — открывает модальное окно с формой оплаты
-const oneClickBtn = document.getElementById('modalOneClickBtn');
-if (oneClickBtn) {
-    oneClickBtn.onclick = () => {
-        const productImage = mainImg || null;
-        const productPrice = hasDiscount ? product.discount_price : product.price;
-        closeQuickView();
-        setTimeout(() => {
-            openQuickOrderForm(product.title, selectedSize, selectedColor, article, productImage, productPrice);
-        }, 300);
-    };
+    const oneClickBtn = document.getElementById('modalOneClickBtn');
+    if (oneClickBtn) {
+        oneClickBtn.onclick = () => {
+            const productImage = mainImg || null;
+            const productPrice = hasDiscount ? product.discount_price : product.price;
+            closeQuickView();
+            setTimeout(() => {
+                openQuickOrderForm(product.title, selectedSize, selectedColor, article, productImage, productPrice);
+            }, 300);
+        };
+    }
+
+    console.log('✅ Модалка готова');
 }
 
 // ===== ФУНКЦИЯ ДЛЯ БЫСТРОГО ЗАКАЗА (МОДАЛЬНОЕ ОКНО) =====
+// ВАЖНО: эта функция должна быть СНАРУЖИ, а не внутри openQuickView!
 function openQuickOrderForm(productTitle, size, color, article, productImage, productPrice) {
     // Удаляем старую форму, если есть
     const oldForm = document.getElementById('quickOrderModal');
@@ -295,7 +299,8 @@ function openQuickOrderForm(productTitle, size, color, article, productImage, pr
             const comment = document.getElementById('orderComment')?.value.trim();
 
             if (!name || !phone) {
-                showToast('❌ Пожалуйста, укажите имя и телефон');
+                if (typeof showToast === 'function') showToast('❌ Пожалуйста, укажите имя и телефон');
+                else alert('❌ Пожалуйста, укажите имя и телефон');
                 return;
             }
 
@@ -314,7 +319,9 @@ function openQuickOrderForm(productTitle, size, color, article, productImage, pr
             };
             
             console.log('📦 Заказ на оплату:', orderData);
-            showToast(`💳 Спасибо, ${name}! Ссылка на оплату отправлена на ${phone || email}`);
+            if (typeof showToast === 'function') {
+                showToast(`💳 Спасибо, ${name}! Ссылка на оплату отправлена на ${phone || email}`);
+            }
             
             modalForm.remove();
             document.body.style.overflow = '';
