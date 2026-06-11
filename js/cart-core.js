@@ -187,14 +187,6 @@ function removeCartItem(id, size, color) {
     showToast('Товар удалён из корзины', 'info');
 }
 
-// Очистить корзину (вызывается ТОЛЬКО после успешной оплаты)
-function clearCart() {
-    localStorage.setItem('cart', '[]');
-    if (typeof updateCartCount === 'function') {
-        updateCartCount();
-    }
-}
-
 // Получить общую сумму корзины
 function getCartTotal() {
     const cart = getCart();
