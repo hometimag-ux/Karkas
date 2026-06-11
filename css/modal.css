@@ -940,3 +940,131 @@
         margin-left: auto;
     }
 }
+
+/* ===== КОРЗИНА С ФОТО ===== */
+.cart-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f8fafc;
+    border-radius: 16px;
+    margin-bottom: 1rem;
+    align-items: center;
+}
+
+.cart-item-image {
+    width: 70px;
+    height: 70px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #f4f9fe;
+    flex-shrink: 0;
+}
+
+.cart-item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.cart-item-image .no-image {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+}
+
+.cart-item-info {
+    flex: 2;
+}
+
+.cart-item-title {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.cart-item-details {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    font-size: 0.7rem;
+    color: #64748b;
+    margin-bottom: 0.25rem;
+}
+
+.cart-item-price {
+    font-size: 0.8rem;
+    color: #00897b;
+}
+
+.cart-item-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.cart-item-actions button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 8px;
+}
+
+.cart-item-actions button:hover {
+    background: #e2edf4;
+}
+
+.cart-item-quantity {
+    min-width: 30px;
+    text-align: center;
+}
+
+.cart-item-total {
+    font-weight: 600;
+    min-width: 80px;
+    text-align: right;
+}
+
+/* Товары в модалке оформления */
+.checkout-product-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #f4f9fe;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.checkout-product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.checkout-product {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e2edf4;
+}
+
+.checkout-product-info {
+    flex: 1;
+}
+
+.checkout-product-title {
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.checkout-product-details {
+    font-size: 0.7rem;
+    color: #64748b;
+}
