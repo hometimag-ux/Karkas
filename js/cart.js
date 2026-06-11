@@ -1,5 +1,13 @@
 // ===== КОРЗИНА =====
 
+// Гарантия наличия escapeHtml
+if (typeof escapeHtml !== 'function') {
+    window.escapeHtml = function(str) {
+        if (!str) return '';
+        return String(str).replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
+    };
+}
+
 function updateCartCount() {
     const cart = JSON.parse(localStorage.getItem('cart') || '[]');
     const total = cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -91,7 +99,6 @@ function updateCartDisplay() {
         totalContainer.innerHTML = `Итого: <strong>${total.toLocaleString()} ₽</strong>`;
     }
     
-    // Навешиваем обработчики на кнопки
     document.querySelectorAll('.cart-qty-btn').forEach(btn => {
         btn.onclick = () => {
             const id = parseInt(btn.dataset.id);
@@ -181,6 +188,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Обновляем отображение при загрузке
+    // Закрытие по Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const sidebar = document.getElementById('cartSidebar');
+            if (sidebar && sidebar.classList.contains('open')) {
+                closeCartSidebar();
+            }
+        }
+    });
+    
     updateCartCount();
 });
