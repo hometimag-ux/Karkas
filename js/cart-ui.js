@@ -259,21 +259,7 @@ function closeCart() {
     document.body.style.overflow = '';
 }
 
-// Инициализация
-document.addEventListener('DOMContentLoaded', function() {
-    const cartBtn = document.getElementById('cartBtn');
-    const closeCartBtn = document.getElementById('closeCartBtn');
-    const overlay = document.getElementById('cartOverlay');
-    
-    if (cartBtn) cartBtn.addEventListener('click', openCart);
-    if (closeCartBtn) closeCartBtn.addEventListener('click', closeCart);
-    if (overlay) overlay.addEventListener('click', closeCart);
-    
-    updateCartCount();
-    updateCartDisplay();
-});
-
-// Инициализация
+// ===== ИНИЦИАЛИЗАЦИЯ (ОДИН РАЗ) =====
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🛒 Инициализация корзины');
     
@@ -286,7 +272,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (closeCartBtn) closeCartBtn.addEventListener('click', closeCart);
     if (overlay) overlay.addEventListener('click', closeCart);
     
-    // Обновляем счётчик
+    // Обновляем счётчик и отображение
     updateCartCount();
     updateCartDisplay();
     
