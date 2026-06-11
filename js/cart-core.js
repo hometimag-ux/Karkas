@@ -1,4 +1,4 @@
-// ===== js/cart-core.js - ЯДРО КОРЗИНЫ =====
+// ===== js/cart-core.js - ЯДРО КОРЗИНЫ (ИСПРАВЛЕННЫЙ) =====
 
 // Корзина хранится в localStorage, НЕ ОЧИЩАЕТСЯ до успешной оплаты
 
@@ -110,31 +110,47 @@ function addToCart(product) {
     return true;
 }
 
-// Добавить товар в корзину по ID
+// Добавить товар в корзину по ID (исправлено - использует window.allProducts)
 function addToCartById(id, quantity = 1, size = '—', color = '—') {
-    if (typeof products === 'undefined' || !products) {
-        console.error('Ошибка: массив products не найден');
+    console.log('🔍 addToCartById вызван, id:', id);
+    console.log('window.allProducts:', window.allProducts);
+    
+    // Проверяем наличие массива товаров
+    if (!window.allProducts || window.allProducts.length === 0) {
+        console.error('Ошибка: массив window.allProducts пуст или не загружен');
         showToast('Ошибка: каталог товаров не загружен', 'error');
         return false;
     }
     
-    const product = products.find(p => p.id === id);
+    // Ищем товар в window.allProducts
+    const product = window.allProducts.find(p => p.id === id);
     
     if (!product) {
-        console.error(`Товар с id ${id} не найден в каталоге`);
+        console.error(`Товар с id ${id} не найден в window.allProducts`);
+        console.log('Доступные id товаров:', window.allProducts.map(p => p.id));
         showToast('Ошибка: товар не найден', 'error');
         return false;
     }
     
+    console.log('✅ Товар найден:', product);
+    
+    // Получаем цену (с учётом скидки)
+    const price = product.discount_price && product.discount_price < product.price 
+        ? product.discount_price 
+        : product.price;
+    
+    // Получаем изображение
+    const image = product.images && product.images.length > 0 ? product.images[0] : null;
+    
     return addToCart({
         id: product.id,
         title: product.title,
-        price: product.discount_price || product.price,
+        price: price,
         quantity: quantity,
         size: size,
         color: color,
-        image: product.images ? product.images[0] : null,
-        article: product.article
+        image: image,
+        article: product.article || '—'
     });
 }
 
