@@ -1,0 +1,115 @@
+/* ==================== КУКИ ==================== */
+
+/* Затемнение */
+.cookie-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 9998;
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.3s;
+}
+
+.cookie-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Нижняя панель */
+.cookie-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    transform: translateY(100%);
+    transition: transform 0.4s ease;
+}
+
+.cookie-bar.active {
+    transform: translateY(0);
+}
+
+.cookie-bar-content {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.cookie-text {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    flex: 2;
+    min-width: 200px;
+}
+
+.cookie-icon {
+    font-size: 1.8rem;
+}
+
+.cookie-text strong {
+    font-size: 0.95rem;
+    color: #1a2c3e;
+    display: block;
+}
+
+.cookie-text p {
+    font-size: 0.8rem;
+    color: #5e7f97;
+    margin: 0;
+}
+
+.cookie-link {
+    color: #00897b;
+    text-decoration: none;
+}
+
+.cookie-btn {
+    padding: 0.6rem 1.2rem;
+    border-radius: 40px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+}
+
+.cookie-btn-primary {
+    background: linear-gradient(135deg, #00897b, #4db6ac);
+    color: white;
+}
+
+.cookie-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 137, 123, 0.3);
+}
+
+@media (max-width: 768px) {
+    .cookie-bar-content {
+        flex-direction: column;
+        text-align: center;
+        padding: 1rem;
+    }
+    
+    .cookie-text {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .cookie-btn {
+        padding: 0.5rem 1rem;
+    }
+}
