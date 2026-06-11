@@ -1,50 +1,32 @@
 // ===== js/cart-init.js - ИНИЦИАЛИЗАЦИЯ =====
 
-// Инициализация корзины
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🛒 Корзина инициализирована');
-    
-    // Находим элементы
+    // Кнопка корзины
     const cartBtn = document.getElementById('cartBtn');
-    const closeCartBtn = document.getElementById('closeCartBtn');
-    const cartOverlay = document.getElementById('cartOverlay');
-    const checkoutBtn = document.getElementById('cartCheckoutBtn');
+    if (cartBtn) cartBtn.addEventListener('click', openCartSidebar);
     
-    // Обработчики для открытия/закрытия корзины
-    if (cartBtn) {
-        cartBtn.addEventListener('click', openCartSidebar);
-    }
+    // Закрытие корзины
+    const closeCart = document.getElementById('closeCartBtn');
+    if (closeCart) closeCart.addEventListener('click', closeCartSidebar);
     
-    if (closeCartBtn) {
-        closeCartBtn.addEventListener('click', closeCartSidebar);
-    }
-    
-    if (cartOverlay) {
-        cartOverlay.addEventListener('click', closeCartSidebar);
-    }
-    
-    if (checkoutBtn) {
-        checkoutBtn.addEventListener('click', openCheckoutModal);
-    }
+    // Затемнение
+    const overlay = document.getElementById('cartOverlay');
+    if (overlay) overlay.addEventListener('click', closeCartSidebar);
     
     // Обновляем счётчик
     updateCartCount();
     
-    // Проверяем незавершённый заказ
-    checkPendingOrder();
+    // Добавляем анимацию
+    const style = document.createElement('style');
+    style.textContent = `@keyframes modalSlideIn{from{opacity:0;transform:scale(0.95)}to{opacity:1;transform:scale(1)}}`;
+    document.head.appendChild(style);
 });
 
 // Закрытие по ESC
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
         closeCartSidebar();
-        
-        const modal = document.getElementById('checkoutModal');
-        if (modal) modal.remove();
-        
-        const sbpModal = document.getElementById('sbpModal');
-        if (sbpModal) sbpModal.remove();
-        
+        document.querySelectorAll('#checkoutModal, #paymentModal').forEach(m => m?.remove());
         document.body.style.overflow = '';
     }
 });
