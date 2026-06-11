@@ -120,7 +120,6 @@ function updateCartDisplay() {
         totalContainer.innerHTML = `<div class="cart-total-row"><span>Итого:</span><strong>${total.toLocaleString()} ₽</strong></div>`;
     }
     
-    // Обработчики
     document.querySelectorAll('.cart-item').forEach(itemDiv => {
         const id = parseInt(itemDiv.dataset.id);
         const size = itemDiv.dataset.size;
@@ -225,6 +224,7 @@ function openCheckoutModal() {
                     
                     <!-- Форма заказа -->
                     <form id="checkoutForm">
+                        <!-- Строка: имя и телефон -->
                         <div class="form-row">
                             <div class="form-group">
                                 <input type="text" id="checkoutName" placeholder="Ваше имя *" required>
@@ -234,26 +234,48 @@ function openCheckoutModal() {
                             </div>
                         </div>
                         
+                        <!-- Email -->
                         <div class="form-group">
                             <input type="email" id="checkoutEmail" placeholder="Email">
                         </div>
                         
-                        <div class="form-group">
-                            <select id="checkoutDelivery" class="delivery-select">
-                                <option value="courier" data-price="350">🚚 Курьерская доставка — 350 ₽</option>
-                                <option value="pickup" data-price="0">📦 Самовывоз (ПВЗ) — Бесплатно</option>
-                                <option value="express" data-price="990">⚡ Экспресс-доставка — 990 ₽</option>
-                            </select>
-                        </div>
-                        
+                        <!-- Адрес доставки -->
                         <div class="form-group" id="addressGroup">
                             <input type="text" id="checkoutAddress" placeholder="Адрес доставки">
                         </div>
                         
+                        <!-- Способ доставки (выпадающий список) -->
+                        <div class="form-group">
+                            <label class="form-label">Способ доставки</label>
+                            <div class="styled-select-wrapper">
+                                <select id="checkoutDelivery" class="styled-select">
+                                    <option value="courier" data-price="350">🚚 Курьерская доставка — 350 ₽</option>
+                                    <option value="pickup" data-price="0">📦 Самовывоз (ПВЗ) — Бесплатно</option>
+                                    <option value="express" data-price="990">⚡ Экспресс-доставка — 990 ₽</option>
+                                </select>
+                                <span class="select-arrow">▼</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Способ оплаты (выпадающий список) -->
+                        <div class="form-group">
+                            <label class="form-label">Способ оплаты</label>
+                            <div class="styled-select-wrapper">
+                                <select id="checkoutPayment" class="styled-select">
+                                    <option value="card">💳 Банковская карта</option>
+                                    <option value="sbp">📱 СБП (по номеру телефона)</option>
+                                    <option value="cash">💰 Наличные при получении</option>
+                                </select>
+                                <span class="select-arrow">▼</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Комментарий -->
                         <div class="form-group">
                             <textarea id="checkoutComment" rows="2" placeholder="Комментарий к заказу"></textarea>
                         </div>
                         
+                        <!-- Итого -->
                         <div class="checkout-total" id="checkoutTotal">
                             <div class="total-row">
                                 <span>Товары:</span>
@@ -266,24 +288,6 @@ function openCheckoutModal() {
                             <div class="total-row grand-total">
                                 <span>Итого к оплате:</span>
                                 <strong id="finalTotal">${(subtotal + 350).toLocaleString()} ₽</strong>
-                            </div>
-                        </div>
-                        
-                        <div class="payment-methods">
-                            <h4>Способ оплаты</h4>
-                            <div class="payment-options">
-                                <label class="payment-option">
-                                    <input type="radio" name="payment" value="card" checked>
-                                    <span>💳 Банковской картой</span>
-                                </label>
-                                <label class="payment-option">
-                                    <input type="radio" name="payment" value="sbp">
-                                    <span>📱 СБП (по номеру телефона)</span>
-                                </label>
-                                <label class="payment-option">
-                                    <input type="radio" name="payment" value="cash">
-                                    <span>💰 Наличными при получении</span>
-                                </label>
                             </div>
                         </div>
                         
@@ -339,7 +343,8 @@ function openCheckoutModal() {
         const selectedDelivery = deliverySelect.options[deliverySelect.selectedIndex];
         const deliveryPrice = parseInt(selectedDelivery.dataset.price);
         const total = subtotal + deliveryPrice;
-        const paymentMethod = document.querySelector('input[name="payment"]:checked')?.value || 'card';
+        const paymentMethod = document.getElementById('checkoutPayment').value;
+        const address = document.getElementById('checkoutAddress')?.value.trim() || '';
         
         const orderData = {
             items: cart,
@@ -348,7 +353,7 @@ function openCheckoutModal() {
                 method: deliverySelect.value,
                 price: deliveryPrice
             },
-            address: document.getElementById('checkoutAddress')?.value.trim() || '',
+            address: address,
             total: total,
             customer: {
                 name: name,
@@ -361,17 +366,12 @@ function openCheckoutModal() {
         };
         
         console.log('📦 ЗАКАЗ:', orderData);
-        
-        // Здесь можно отправить данные на сервер
         showToast(`💳 Спасибо, ${name}! Сумма к оплате: ${total.toLocaleString()} ₽`);
         
         localStorage.removeItem('cart');
         updateCartCount();
         modalOverlay.remove();
         document.body.style.overflow = '';
-        
-        // Здесь можно добавить переход на страницу оплаты
-        // window.location.href = '/payment.html';
     };
 }
 
