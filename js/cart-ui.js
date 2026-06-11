@@ -259,7 +259,7 @@ function closeCart() {
     document.body.style.overflow = '';
 }
 
-// ===== ИНИЦИАЛИЗАЦИЯ (ОДИН РАЗ) =====
+// ===== ИНИЦИАЛИЗАЦИЯ (ОДНА) =====
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🛒 Инициализация корзины');
     
@@ -272,15 +272,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (closeCartBtn) closeCartBtn.addEventListener('click', closeCart);
     if (overlay) overlay.addEventListener('click', closeCart);
     
-    // Обновляем счётчик и отображение
-    updateCartCount();
-    updateCartDisplay();
-    
-    console.log('✅ Корзина инициализирована');
-});
-
-// ===== ОБРАБОТЧИК КНОПКИ ОФОРМЛЕНИЯ =====
-document.addEventListener('DOMContentLoaded', function() {
+    // Кнопка оформления заказа
     const checkoutBtn = document.getElementById('cartCheckoutBtn');
     if (checkoutBtn) {
         checkoutBtn.onclick = function(e) {
@@ -297,4 +289,10 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
         console.error('❌ Кнопка #cartCheckoutBtn не найдена');
     }
+    
+    // Обновляем счётчик и отображение
+    updateCartCount();
+    updateCartDisplay();
+    
+    console.log('✅ Корзина инициализирована');
 });
