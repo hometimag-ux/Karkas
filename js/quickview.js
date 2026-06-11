@@ -1,3 +1,23 @@
+// ===== ПОДСТРАХОВКА: Если utils.js не загрузился =====
+if (typeof escapeHtml !== 'function') {
+    window.escapeHtml = function(str) {
+        if (!str) return '';
+        return String(str).replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
+    };
+}
+
+if (typeof showToast !== 'function') {
+    window.showToast = function(msg) {
+        alert(msg);
+    };
+}
+
+if (typeof getRandomRating !== 'function') {
+    window.getRandomRating = function() {
+        return (3 + Math.random() * 2).toFixed(1);
+    };
+}
+
 // ===== БЫСТРЫЙ ПРОСМОТР (ПОЛНАЯ ВЕРСИЯ) =====
 
 function closeQuickView() {
@@ -217,9 +237,8 @@ function openQuickView(id) {
 }
 
 // ===== ФУНКЦИЯ ДЛЯ БЫСТРОГО ЗАКАЗА (МОДАЛЬНОЕ ОКНО) =====
-// ВАЖНО: эта функция должна быть СНАРУЖИ, а не внутри openQuickView!
 function openQuickOrderForm(productTitle, size, color, article, productImage, productPrice) {
-    // Удаляем старую форму, если есть
+    // Удаляем старую форму
     const oldForm = document.getElementById('quickOrderModal');
     if (oldForm) oldForm.remove();
 
@@ -299,12 +318,12 @@ function openQuickOrderForm(productTitle, size, color, article, productImage, pr
             const comment = document.getElementById('orderComment')?.value.trim();
 
             if (!name || !phone) {
-                if (typeof showToast === 'function') showToast('❌ Пожалуйста, укажите имя и телефон');
-                else alert('❌ Пожалуйста, укажите имя и телефон');
+                if (typeof showToast === 'function') {
+                    showToast('❌ Пожалуйста, укажите имя и телефон');
+                }
                 return;
             }
 
-            // Формируем данные заказа
             const orderData = {
                 product: productTitle,
                 size: size,
