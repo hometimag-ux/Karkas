@@ -448,6 +448,92 @@ function openCheckoutModal() {
     };
 }
 
+
+// ===== ОПЛАТА ЧЕРЕЗ СБП (с иконкой вместо QR) =====
+function openPaymentModal(orderData) {
+    const oldModal = document.getElementById('paymentModal');
+    if (oldModal) oldModal.remove();
+    
+    const orderId = 'ORDER_' + Date.now();
+    const amount = orderData.total;
+    
+    const paymentHtml = `
+        <div class="payment-modal" id="paymentModal">
+            <div class="payment-content">
+                <div class="payment-header">
+                    <h3>💳 Оплата по СБП</h3>
+                    <button class="payment-close" id="closePaymentModal">&times;</button>
+                </div>
+                <div class="payment-body">
+                    <div class="payment-order-info">
+                        <div>Заказ №${orderId}</div>
+                        <div class="payment-amount">${amount.toLocaleString()} ₽</div>
+                    </div>
+                    
+                    <div style="text-align: center; padding: 20px;">
+                        <div style="font-size: 5rem; margin-bottom: 10px;">📱</div>
+                        <div style="font-size: 1.2rem; font-weight: 600; margin-bottom: 10px;">Сканируйте QR-код</div>
+                        <div style="font-size: 0.9rem; color: #64748b; margin-bottom: 20px;">в приложении вашего банка</div>
+                        
+                        <!-- Временная заглушка вместо QR -->
+                        <div style="background: #f8fafc; border-radius: 20px; padding: 30px; margin: 10px 0;">
+                            <div style="font-size: 3rem; margin-bottom: 10px;">🏦</div>
+                            <div style="font-weight: 600;">Сумма к оплате: ${amount.toLocaleString()} ₽</div>
+                            <div style="font-size: 0.8rem; color: #64748b; margin-top: 10px;">Номер заказа: ${orderId}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="payment-actions">
+                        <button class="payment-success-btn" id="paymentSuccessBtn">✅ Я оплатил</button>
+                        <button class="payment-cancel-btn" id="paymentCancelBtn">❌ Отмена</button>
+                    </div>
+                    
+                    <div class="payment-info">
+                        <small>Оплата через Систему Быстрых Платежей (СБП). Комиссия не взимается.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', paymentHtml);
+    document.body.style.overflow = 'hidden';
+    
+    const closePaymentBtn = document.getElementById('closePaymentModal');
+    const paymentModal = document.getElementById('paymentModal');
+    const cancelBtn = document.getElementById('paymentCancelBtn');
+    
+    const closePaymentModal = () => {
+        paymentModal.remove();
+        document.body.style.overflow = '';
+    };
+    
+    if (closePaymentBtn) closePaymentBtn.onclick = closePaymentModal;
+    if (cancelBtn) cancelBtn.onclick = closePaymentModal;
+    if (paymentModal) paymentModal.onclick = (e) => { if (e.target === paymentModal) closePaymentModal(); };
+    
+    const successBtn = document.getElementById('paymentSuccessBtn');
+    if (successBtn) {
+        successBtn.onclick = () => {
+            localStorage.removeItem('cart');
+            updateCartCount();
+            
+            // Очищаем сохранённые данные формы
+            const formInputs = ['checkoutName', 'checkoutPhone', 'checkoutEmail', 'checkoutAddress', 'checkoutComment'];
+            formInputs.forEach(id => localStorage.removeItem(`checkout_${id}`));
+            localStorage.removeItem('pendingOrder');
+            
+            if (typeof showToast === 'function') {
+                showToast(`✅ Заказ №${orderId} оплачен! Спасибо за покупку!`);
+            } else {
+                alert(`✅ Заказ №${orderId} оплачен! Спасибо за покупку!`);
+            }
+            closePaymentModal();
+        };
+    }
+}
+
+
 // Инициализация
 document.addEventListener('DOMContentLoaded', function() {
     const cartBtn = document.getElementById('cartBtn');
