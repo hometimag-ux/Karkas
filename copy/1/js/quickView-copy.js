@@ -1,4 +1,4 @@
-// ===== БЫСТРЫЙ ПРОСМОТР (ПОЛНАЯ ВЕРСИЯ) =====
+// ===== БЫСТРЫЙ ПРОСМОТР И БЫСТРЫЙ ЗАКАЗ =====
 
 function closeQuickView() {
     const modal = document.getElementById('quickViewModal');
@@ -7,6 +7,8 @@ function closeQuickView() {
 }
 
 function openQuickView(id) {
+    console.log('openQuickView вызвана, id:', id);
+    
     const product = window.allProducts ? window.allProducts.find(p => p.id === id) : null;
     if (!product) {
         console.error('Товар не найден, id:', id);
@@ -14,12 +16,13 @@ function openQuickView(id) {
         return;
     }
 
+    console.log('Открываем товар:', product.title);
+
     const hasDiscount = product.discount_price && product.discount_price < product.price;
     const rating = product.rating || (typeof getRandomRating === 'function' ? getRandomRating() : 4.5);
     const stars = '★'.repeat(Math.floor(rating)) + '☆'.repeat(5 - Math.floor(rating));
     const mainImg = product.images && product.images.length > 0 ? product.images[0] : null;
     const chars = product.characteristics || {};
-    const pack = product.packaging || {};
     const article = product.article || '—';
 
     // Размеры
@@ -42,7 +45,7 @@ function openQuickView(id) {
                     <!-- ЛЕВАЯ КОЛОНКА: ГАЛЕРЕЯ -->
                     <div class="quick-view-left">
                         <div class="main-visual">
-                            ${mainImg ? `<img src="${mainImg}" alt="${escapeHtml(product.title)}" id="modalMainImage">` : `<div style="font-size: 6rem;">${product.emoji || '👕'}</div>`}
+                            ${mainImg ? `<img src="${mainImg}" alt="${escapeHtml(product.title)}" id="modalMainImage" style="width:100%; border-radius: 28px;">` : `<div style="font-size: 6rem;">${product.emoji || '👕'}</div>`}
                         </div>
                         ${product.images && product.images.length > 1 ? `
                         <div class="thumbnail-list" id="modalThumbnails">
@@ -113,14 +116,67 @@ function openQuickView(id) {
                             <span>🧵 логотип за 48ч</span>
                         </div>
                         
-                        <div class="footer-note">✓ гарантия 12 месяцев ✓ помощь с выбором размера ✓ возврат по стандартам РФ</div>
+                        <div class="tabs">
+                            <button class="tab-btn active" data-tab="desc">описание</button>
+                            <button class="tab-btn" data-tab="specs">характеристики</button>
+                            <button class="tab-btn" data-tab="reviews">отзывы</button>
+                            <button class="tab-btn" data-tab="b2b">для клиник и опта</button>
+                        </div>
+                        
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="desc">
+                                <p>${escapeHtml(product.description || 'Профессиональная медицинская одежда...')}</p>
+                                <ul class="feature-list">
+                                    <li>Анатомическая посадка: не стесняет движений</li>
+                                    <li>Материал «дышит», отводит влагу</li>
+                                    <li>Сохраняет форму и цвет после частых стирок</li>
+                                    <li>Гипоаллергенно, одобрено дерматологами</li>
+                                </ul>
+                            </div>
+                            <div class="tab-pane" id="specs">
+                                <table style="width:100%; border-collapse: collapse; font-size:0.85rem;">
+                                    <tbody>
+                                        ${chars.brand ? `<tr><td style="padding:6px 0;">Бренд</td><td>${escapeHtml(chars.brand)}</td>` : ''}
+                                        ${chars.material ? `<tr><td style="padding:6px 0;">Состав</td><td>${escapeHtml(chars.material)}</td>` : ''}
+                                        ${chars.collar ? `<td><td style="padding:6px 0;">Воротник</td><td>${escapeHtml(chars.collar)}</td>` : ''}
+                                        ${chars.sleeves ? `<td><td style="padding:6px 0;">Рукава</td><td>${escapeHtml(chars.sleeves)}</td>` : ''}
+                                        ${chars.pockets ? `<tr><td style="padding:6px 0;">Карманы</td><td>${escapeHtml(chars.pockets)}</td>` : ''}
+                                        ${chars.country ? `<td><td style="padding:6px 0;">Страна</td><td>${escapeHtml(chars.country)}</td>` : ''}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="tab-pane" id="reviews">
+                                <div style="background:#F9FCF9; border-radius: 20px; padding: 12px; margin-bottom: 12px;">⭐ <strong>Екатерина, терапевт:</strong> «Отличное качество, комфортно в работе».</div>
+                                <div style="background:#F9FCF9; border-radius: 20px; padding: 12px; margin-bottom: 12px;">⭐ <strong>Анна, заведующая:</strong> «Заказали для всего персонала — все довольны».</div>
+                            </div>
+                            <div class="tab-pane" id="b2b">
+                                <p><strong>Преимущества для клиник и оптовых заказчиков:</strong></p>
+                                <ul class="feature-list">
+                                    <li>Специальные цены при заказе от 5 штук</li>
+                                    <li>Нанесение логотипа (вышивка / трафарет)</li>
+                                    <li>Отсрочка платежа для юридических лиц</li>
+                                </ul>
+                                <button class="btn-primary" id="modalB2bBtn" style="margin-top:16px; width:100%; background:#3f6e58;">📩 Запросить коммерческое предложение</button>
+                            </div>
+                        </div>
+                        
+                        <div class="lead-magnet">
+                            <div><strong>📏 Как точно подобрать размер?</strong> Скачайте чек-лист примерки.</div>
+                            <button class="small-outline" id="modalLeadMagnetBtn">Получить PDF</button>
+                        </div>
+                        
+                        <div class="b2b-note">
+                            <span>🏥 Корпоративным клиентам: скидка от объёма, образцы ткани бесплатно.</span>
+                            <button class="small-outline" id="modalCorpBtn">Связаться с менеджером</button>
+                        </div>
+                        
+                        <div class="footer-note">✓ гарантия 12 месяцев ✓ помощь с выбором размера</div>
                     </div>
                 </div>
             </div>
         </div>
     `;
 
-    // Вставляем модалку
     const oldModal = document.getElementById('quickViewModal');
     if (oldModal) oldModal.remove();
     document.body.insertAdjacentHTML('beforeend', modalHtml);
@@ -132,11 +188,9 @@ function openQuickView(id) {
 
     // === ОБРАБОТЧИКИ ===
 
-    // Закрытие
     const closeBtn = document.querySelector('#quickViewModal .quick-view-close');
     if (closeBtn) closeBtn.onclick = () => closeQuickView();
 
-    // Закрытие по клику на фон
     const modalDiv = document.getElementById('quickViewModal');
     if (modalDiv) {
         modalDiv.onclick = (e) => {
@@ -184,7 +238,21 @@ function openQuickView(id) {
         };
     });
 
-    // КНОПКА "ДОБАВИТЬ В КОРЗИНУ"
+    // Табы
+    const tabBtns = document.querySelectorAll('#quickViewModal .tab-btn');
+    const panes = document.querySelectorAll('#quickViewModal .tab-pane');
+    tabBtns.forEach(btn => {
+        btn.onclick = () => {
+            const tabId = btn.getAttribute('data-tab');
+            tabBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            panes.forEach(p => p.classList.remove('active'));
+            const activePane = document.getElementById(tabId);
+            if (activePane) activePane.classList.add('active');
+        };
+    });
+
+    // Кнопка "Добавить в корзину"
     const buyBtn = document.getElementById('modalBuyBtn');
     if (buyBtn) {
         buyBtn.onclick = () => {
@@ -193,33 +261,43 @@ function openQuickView(id) {
                 addToCartWithDetails(product.id, product.title, price, selectedSize, selectedColor, article);
             } else if (typeof addToCartById === 'function') {
                 addToCartById(product.id);
-            } else {
-                showToast(`✅ ${product.title} (${selectedSize}, ${selectedColor}) добавлен в корзину`);
             }
             closeQuickView();
         };
     }
 
-    // КНОПКА "БЫСТРЫЙ ЗАКАЗ" — открывает модальное окно с формой оплаты
+    // Быстрый заказ
     const oneClickBtn = document.getElementById('modalOneClickBtn');
     if (oneClickBtn) {
         oneClickBtn.onclick = () => {
-            const productImage = mainImg || null;
-            const productPrice = hasDiscount ? product.discount_price : product.price;
             closeQuickView();
             setTimeout(() => {
-                openQuickOrderForm(product.title, selectedSize, selectedColor, article, productImage, productPrice);
+                if (typeof openQuickOrderForm === 'function') {
+                    openQuickOrderForm(product.title, selectedSize, selectedColor, article, mainImg, product.discount_price || product.price);
+                } else {
+                    showToast('📞 Оставьте номер телефона — менеджер перезвонит через 5 минут');
+                }
             }, 300);
         };
     }
 
+    // Лид-магнит
+    const leadBtn = document.getElementById('modalLeadMagnetBtn');
+    if (leadBtn) leadBtn.onclick = () => showToast('📧 Чек-лист примерки отправлен на ваш email');
+
+    // B2B
+    const b2bBtn = document.getElementById('modalB2bBtn');
+    if (b2bBtn) b2bBtn.onclick = () => showToast('📩 Запрос для B2B принят');
+
+    // Корпоративная
+    const corpBtn = document.getElementById('modalCorpBtn');
+    if (corpBtn) corpBtn.onclick = () => showToast('📩 Свяжитесь с B2B-отделом: b2b@murano-apparel.ru');
+
     console.log('✅ Модалка готова');
 }
 
-// ===== ФУНКЦИЯ ДЛЯ БЫСТРОГО ЗАКАЗА (МОДАЛЬНОЕ ОКНО) =====
-// ВАЖНО: эта функция должна быть СНАРУЖИ, а не внутри openQuickView!
+// Функция быстрого заказа
 function openQuickOrderForm(productTitle, size, color, article, productImage, productPrice) {
-    // Удаляем старую форму, если есть
     const oldForm = document.getElementById('quickOrderModal');
     if (oldForm) oldForm.remove();
 
@@ -251,8 +329,8 @@ function openQuickOrderForm(productTitle, size, color, article, productImage, pr
                             <input type="text" id="orderName" placeholder="Ваше имя *" required>
                             <input type="tel" id="orderPhone" placeholder="Телефон *" required>
                         </div>
-                        <input type="email" id="orderEmail" placeholder="Email (для чека)">
-                        <textarea id="orderComment" rows="2" placeholder="Комментарий к заказу (адрес, пожелания)"></textarea>
+                        <input type="email" id="orderEmail" placeholder="Email">
+                        <textarea id="orderComment" rows="2" placeholder="Комментарий"></textarea>
                         <div class="order-total">
                             <span>К оплате:</span>
                             <strong>${productPrice ? productPrice.toLocaleString() + ' ₽' : ''}</strong>
@@ -268,63 +346,29 @@ function openQuickOrderForm(productTitle, size, color, article, productImage, pr
     document.body.insertAdjacentHTML('beforeend', formHtml);
     document.body.style.overflow = 'hidden';
 
-    // Закрытие формы
     const closeForm = document.getElementById('closeOrderModal');
     const modalForm = document.getElementById('quickOrderModal');
     
-    if (closeForm) {
-        closeForm.onclick = () => {
-            modalForm.remove();
-            document.body.style.overflow = '';
-        };
-    }
-    
-    if (modalForm) {
-        modalForm.onclick = (e) => {
-            if (e.target === modalForm) {
-                modalForm.remove();
-                document.body.style.overflow = '';
-            }
-        };
-    }
+    if (closeForm) closeForm.onclick = () => { modalForm.remove(); document.body.style.overflow = ''; };
+    if (modalForm) modalForm.onclick = (e) => { if (e.target === modalForm) { modalForm.remove(); document.body.style.overflow = ''; } };
 
-    // Отправка формы
     const form = document.getElementById('quickOrderForm');
     if (form) {
         form.onsubmit = (e) => {
             e.preventDefault();
             const name = document.getElementById('orderName')?.value.trim();
             const phone = document.getElementById('orderPhone')?.value.trim();
-            const email = document.getElementById('orderEmail')?.value.trim();
-            const comment = document.getElementById('orderComment')?.value.trim();
-
             if (!name || !phone) {
-                if (typeof showToast === 'function') showToast('❌ Пожалуйста, укажите имя и телефон');
-                else alert('❌ Пожалуйста, укажите имя и телефон');
+                showToast('❌ Пожалуйста, укажите имя и телефон');
                 return;
             }
-
-            // Формируем данные заказа
-            const orderData = {
-                product: productTitle,
-                size: size,
-                color: color,
-                article: article,
-                price: productPrice,
-                name: name,
-                phone: phone,
-                email: email,
-                comment: comment,
-                date: new Date().toLocaleString()
-            };
-            
-            console.log('📦 Заказ на оплату:', orderData);
-            if (typeof showToast === 'function') {
-                showToast(`💳 Спасибо, ${name}! Ссылка на оплату отправлена на ${phone || email}`);
-            }
-            
+            showToast(`💳 Спасибо, ${name}! Ссылка на оплату отправлена на ${phone}`);
             modalForm.remove();
             document.body.style.overflow = '';
         };
     }
 }
+
+// Делаем функции глобальными
+window.openQuickView = openQuickView;
+window.closeQuickView = closeQuickView;
