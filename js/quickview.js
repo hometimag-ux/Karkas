@@ -18,7 +18,7 @@ if (typeof getRandomRating !== 'function') {
     };
 }
 
-// ===== БЫСТРЫЙ ПРОСМОТР (ПОЛНАЯ ВЕРСИЯ) =====
+// ===== БЫСТРЫЙ ПРОСМОТР =====
 
 function closeQuickView() {
     const modal = document.getElementById('quickViewModal');
@@ -39,7 +39,6 @@ function openQuickView(id) {
     const stars = '★'.repeat(Math.floor(rating)) + '☆'.repeat(5 - Math.floor(rating));
     const mainImg = product.images && product.images.length > 0 ? product.images[0] : null;
     const chars = product.characteristics || {};
-    const pack = product.packaging || {};
     const article = product.article || '—';
 
     // Размеры
@@ -233,7 +232,7 @@ function openQuickView(id) {
         };
     }
 
-    console.log('✅ Модалка готова');
+    console.log('✅ Модалка готова, размер:', selectedSize, 'цвет:', selectedColor);
 }
 
 // ===== ФУНКЦИЯ ДЛЯ БЫСТРОГО ЗАКАЗА (МОДАЛЬНОЕ ОКНО) =====
