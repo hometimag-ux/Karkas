@@ -258,7 +258,7 @@ function openQuickView(id) {
         buyBtn.onclick = () => {
             const price = product.discount_price || product.price;
             if (typeof addToCartWithDetails === 'function') {
-                addToCartWithDetails(product.id, product.title, price, selectedSize, selectedColor, article);
+                addToCartWithDetails(product.id, product.title, price, selectedSize, selectedColor, article, mainImg);
             } else if (typeof addToCartById === 'function') {
                 addToCartById(product.id);
             }
