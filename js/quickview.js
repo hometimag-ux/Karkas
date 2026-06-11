@@ -200,22 +200,21 @@ function openQuickView(id) {
         };
     }
 
-    // КНОПКА "БЫСТРЫЙ ЗАКАЗ" — открывает модальное окно с формой
-    const oneClickBtn = document.getElementById('modalOneClickBtn');
-    if (oneClickBtn) {
-        oneClickBtn.onclick = () => {
-            closeQuickView();
-            setTimeout(() => {
-                openQuickOrderForm(product.title, selectedSize, selectedColor, article);
-            }, 300);
-        };
-    }
-
-    console.log('✅ Модалка готова, размер:', selectedSize, 'цвет:', selectedColor);
+    // КНОПКА "БЫСТРЫЙ ЗАКАЗ" — открывает модальное окно с формой оплаты
+const oneClickBtn = document.getElementById('modalOneClickBtn');
+if (oneClickBtn) {
+    oneClickBtn.onclick = () => {
+        const productImage = mainImg || null;
+        const productPrice = hasDiscount ? product.discount_price : product.price;
+        closeQuickView();
+        setTimeout(() => {
+            openQuickOrderForm(product.title, selectedSize, selectedColor, article, productImage, productPrice);
+        }, 300);
+    };
 }
 
 // ===== ФУНКЦИЯ ДЛЯ БЫСТРОГО ЗАКАЗА (МОДАЛЬНОЕ ОКНО) =====
-function openQuickOrderForm(productTitle, size, color, article) {
+function openQuickOrderForm(productTitle, size, color, article, productImage, productPrice) {
     // Удаляем старую форму, если есть
     const oldForm = document.getElementById('quickOrderModal');
     if (oldForm) oldForm.remove();
@@ -224,22 +223,37 @@ function openQuickOrderForm(productTitle, size, color, article) {
         <div class="quick-order-modal" id="quickOrderModal">
             <div class="quick-order-content">
                 <div class="quick-order-header">
-                    <h3>🚀 Быстрый заказ</h3>
+                    <h3>🚀 Оформление заказа</h3>
                     <button class="quick-order-close" id="closeOrderModal">&times;</button>
                 </div>
                 <div class="quick-order-body">
-                    <div class="order-product-info">
-                        <strong>${escapeHtml(productTitle)}</strong>
-                        <span>Размер: ${escapeHtml(size)}</span>
-                        <span>Цвет: ${escapeHtml(color)}</span>
-                        <span>Артикул: ${escapeHtml(article)}</span>
+                    <div class="order-product-card">
+                        <div class="order-product-image">
+                            ${productImage ? `<img src="${productImage}" alt="${escapeHtml(productTitle)}">` : `<div style="font-size: 3rem;">👕</div>`}
+                        </div>
+                        <div class="order-product-details">
+                            <div class="order-product-title">${escapeHtml(productTitle)}</div>
+                            <div class="order-product-price">${productPrice ? productPrice.toLocaleString() + ' ₽' : ''}</div>
+                            <div class="order-product-specs">
+                                <span>Размер: ${escapeHtml(size)}</span>
+                                <span>Цвет: ${escapeHtml(color)}</span>
+                                <span>Арт: ${escapeHtml(article)}</span>
+                            </div>
+                        </div>
                     </div>
+                    
                     <form id="quickOrderForm">
-                        <input type="text" id="orderName" placeholder="Ваше имя *" required>
-                        <input type="tel" id="orderPhone" placeholder="Телефон *" required>
-                        <input type="email" id="orderEmail" placeholder="Email">
-                        <textarea id="orderComment" rows="2" placeholder="Комментарий к заказу"></textarea>
-                        <button type="submit" class="order-submit-btn">📞 Отправить заказ</button>
+                        <div class="form-row">
+                            <input type="text" id="orderName" placeholder="Ваше имя *" required>
+                            <input type="tel" id="orderPhone" placeholder="Телефон *" required>
+                        </div>
+                        <input type="email" id="orderEmail" placeholder="Email (для чека)">
+                        <textarea id="orderComment" rows="2" placeholder="Комментарий к заказу (адрес, пожелания)"></textarea>
+                        <div class="order-total">
+                            <span>К оплате:</span>
+                            <strong>${productPrice ? productPrice.toLocaleString() + ' ₽' : ''}</strong>
+                        </div>
+                        <button type="submit" class="order-submit-btn">💳 Оплатить</button>
                     </form>
                     <div class="order-privacy">Нажимая кнопку, вы соглашаетесь с политикой обработки данных</div>
                 </div>
@@ -254,49 +268,56 @@ function openQuickOrderForm(productTitle, size, color, article) {
     const closeForm = document.getElementById('closeOrderModal');
     const modalForm = document.getElementById('quickOrderModal');
     
-    closeForm.onclick = () => {
-        modalForm.remove();
-        document.body.style.overflow = '';
-    };
-    
-    modalForm.onclick = (e) => {
-        if (e.target === modalForm) {
+    if (closeForm) {
+        closeForm.onclick = () => {
             modalForm.remove();
             document.body.style.overflow = '';
-        }
-    };
+        };
+    }
+    
+    if (modalForm) {
+        modalForm.onclick = (e) => {
+            if (e.target === modalForm) {
+                modalForm.remove();
+                document.body.style.overflow = '';
+            }
+        };
+    }
 
     // Отправка формы
     const form = document.getElementById('quickOrderForm');
-    form.onsubmit = (e) => {
-        e.preventDefault();
-        const name = document.getElementById('orderName')?.value.trim();
-        const phone = document.getElementById('orderPhone')?.value.trim();
-        const email = document.getElementById('orderEmail')?.value.trim();
-        const comment = document.getElementById('orderComment')?.value.trim();
+    if (form) {
+        form.onsubmit = (e) => {
+            e.preventDefault();
+            const name = document.getElementById('orderName')?.value.trim();
+            const phone = document.getElementById('orderPhone')?.value.trim();
+            const email = document.getElementById('orderEmail')?.value.trim();
+            const comment = document.getElementById('orderComment')?.value.trim();
 
-        if (!name || !phone) {
-            showToast('❌ Пожалуйста, укажите имя и телефон');
-            return;
-        }
+            if (!name || !phone) {
+                showToast('❌ Пожалуйста, укажите имя и телефон');
+                return;
+            }
 
-        // Формируем сообщение для отправки
-        const orderData = {
-            product: productTitle,
-            size: size,
-            color: color,
-            article: article,
-            name: name,
-            phone: phone,
-            email: email,
-            comment: comment,
-            date: new Date().toLocaleString()
+            // Формируем данные заказа
+            const orderData = {
+                product: productTitle,
+                size: size,
+                color: color,
+                article: article,
+                price: productPrice,
+                name: name,
+                phone: phone,
+                email: email,
+                comment: comment,
+                date: new Date().toLocaleString()
+            };
+            
+            console.log('📦 Заказ на оплату:', orderData);
+            showToast(`💳 Спасибо, ${name}! Ссылка на оплату отправлена на ${phone || email}`);
+            
+            modalForm.remove();
+            document.body.style.overflow = '';
         };
-        
-        console.log('📦 Заказ:', orderData);
-        showToast(`✅ Спасибо, ${name}! Менеджер свяжется с вами в ближайшее время`);
-        
-        modalForm.remove();
-        document.body.style.overflow = '';
-    };
+    }
 }
