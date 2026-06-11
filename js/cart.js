@@ -224,7 +224,6 @@ function openCheckoutModal() {
                     
                     <!-- Форма заказа -->
                     <form id="checkoutForm">
-                        <!-- Строка: имя и телефон -->
                         <div class="form-row">
                             <div class="form-group">
                                 <input type="text" id="checkoutName" placeholder="Ваше имя *" required>
@@ -234,17 +233,14 @@ function openCheckoutModal() {
                             </div>
                         </div>
                         
-                        <!-- Email -->
                         <div class="form-group">
                             <input type="email" id="checkoutEmail" placeholder="Email">
                         </div>
                         
-                        <!-- Адрес доставки -->
                         <div class="form-group" id="addressGroup">
                             <input type="text" id="checkoutAddress" placeholder="Адрес доставки">
                         </div>
                         
-                        <!-- Способ доставки (выпадающий список) -->
                         <div class="form-group">
                             <label class="form-label">Способ доставки</label>
                             <div class="styled-select-wrapper">
@@ -257,7 +253,6 @@ function openCheckoutModal() {
                             </div>
                         </div>
                         
-                        <!-- Способ оплаты (выпадающий список) -->
                         <div class="form-group">
                             <label class="form-label">Способ оплаты</label>
                             <div class="styled-select-wrapper">
@@ -270,12 +265,10 @@ function openCheckoutModal() {
                             </div>
                         </div>
                         
-                        <!-- Комментарий -->
                         <div class="form-group">
                             <textarea id="checkoutComment" rows="2" placeholder="Комментарий к заказу"></textarea>
                         </div>
                         
-                        <!-- Итого -->
                         <div class="checkout-total" id="checkoutTotal">
                             <div class="total-row">
                                 <span>Товары:</span>
@@ -328,7 +321,21 @@ function openCheckoutModal() {
     deliverySelect.addEventListener('change', updateTotal);
     updateTotal();
     
-    // Отправка формы
+    // Сохранение данных формы в localStorage (чтобы не потерять при случайном закрытии)
+    const formInputs = ['checkoutName', 'checkoutPhone', 'checkoutEmail', 'checkoutAddress', 'checkoutComment'];
+    formInputs.forEach(id => {
+        const input = document.getElementById(id);
+        if (input) {
+            const saved = localStorage.getItem(`checkout_${id}`);
+            if (saved) input.value = saved;
+            
+            input.addEventListener('input', () => {
+                localStorage.setItem(`checkout_${id}`, input.value);
+            });
+        }
+    });
+    
+    // Отправка формы (БЕЗ УДАЛЕНИЯ ТОВАРОВ ИЗ КОРЗИНЫ)
     const form = document.getElementById('checkoutForm');
     form.onsubmit = (e) => {
         e.preventDefault();
@@ -366,14 +373,37 @@ function openCheckoutModal() {
         };
         
         console.log('📦 ЗАКАЗ:', orderData);
-        showToast(`💳 Спасибо, ${name}! Сумма к оплате: ${total.toLocaleString()} ₽`);
         
-        localStorage.removeItem('cart');
-        updateCartCount();
+        // Сохраняем данные заказа для страницы оплаты
+        localStorage.setItem('pendingOrder', JSON.stringify(orderData));
+        
+        // Закрываем модалку, НО НЕ ОЧИЩАЕМ КОРЗИНУ
         modalOverlay.remove();
         document.body.style.overflow = '';
+        
+        // Показываем сообщение
+        showToast(`💳 Спасибо, ${name}! Сумма к оплате: ${total.toLocaleString()} ₽`);
+        
+        // ОПЦИОНАЛЬНО: редирект на страницу оплаты
+        // window.location.href = '/payment.html';
     };
 }
+
+// Функция для очистки корзины ПОСЛЕ УСПЕШНОЙ ОПЛАТЫ
+function clearCartAfterPayment() {
+    localStorage.removeItem('cart');
+    updateCartCount();
+    // Очищаем сохранённые данные формы
+    const formInputs = ['checkoutName', 'checkoutPhone', 'checkoutEmail', 'checkoutAddress', 'checkoutComment'];
+    formInputs.forEach(id => {
+        localStorage.removeItem(`checkout_${id}`);
+    });
+    localStorage.removeItem('pendingOrder');
+    if (typeof showToast === 'function') showToast('✅ Заказ оплачен! Спасибо за покупку!');
+}
+
+// Делаем функцию глобальной
+window.clearCartAfterPayment = clearCartAfterPayment;
 
 // Инициализация
 document.addEventListener('DOMContentLoaded', function() {
