@@ -1,4 +1,5 @@
 // ===== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ =====
+
 function escapeHtml(str) {
     if (!str) return '';
     return String(str).replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
@@ -23,9 +24,3 @@ function renderStars(rating) {
     for (let i = 0; i < 5 - Math.ceil(rating); i++) stars += '<span class="star">★</span>';
     return stars;
 }
-
-// Делаем функции глобальными
-window.escapeHtml = escapeHtml;
-window.showToast = showToast;
-window.getRandomRating = getRandomRating;
-window.renderStars = renderStars;
