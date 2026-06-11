@@ -693,3 +693,250 @@
         text-align: center;
     }
 }
+
+/* ===== МОДАЛЬНОЕ ОКНО ОФОРМЛЕНИЯ ЗАКАЗА ===== */
+.checkout-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10002;
+}
+
+.checkout-content {
+    background: white;
+    border-radius: 28px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: modalSlideIn 0.3s ease;
+}
+
+.checkout-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 1.5rem;
+    border-bottom: 1px solid #e2edf4;
+}
+
+.checkout-header h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.checkout-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #94a3b8;
+}
+
+.checkout-close:hover {
+    color: #1a2c3e;
+}
+
+.checkout-body {
+    padding: 1.5rem;
+}
+
+/* Товары в заказе */
+.checkout-products {
+    background: #f8fafc;
+    border-radius: 16px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.checkout-products h4 {
+    font-size: 0.9rem;
+    margin-bottom: 0.8rem;
+    color: #1a2c3e;
+}
+
+.checkout-product {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e2edf4;
+    font-size: 0.85rem;
+}
+
+.checkout-product-title {
+    flex: 2;
+}
+
+.checkout-product-quantity {
+    margin: 0 1rem;
+    color: #5e7f97;
+}
+
+.checkout-product-price {
+    font-weight: 600;
+    color: #00897b;
+}
+
+.checkout-subtotal {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 0.8rem;
+    font-weight: 600;
+    border-top: 1px solid #e2edf4;
+    margin-top: 0.5rem;
+}
+
+/* Форма */
+#checkoutForm {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #1a2c3e;
+}
+
+#checkoutForm input,
+#checkoutForm textarea {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid #cbdde9;
+    border-radius: 40px;
+    font-size: 0.9rem;
+    outline: none;
+}
+
+#checkoutForm textarea {
+    border-radius: 20px;
+    resize: vertical;
+}
+
+#checkoutForm input:focus,
+#checkoutForm textarea:focus {
+    border-color: #4db6ac;
+    box-shadow: 0 0 0 3px rgba(77, 182, 172, 0.1);
+}
+
+/* Доставка */
+.delivery-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.delivery-option {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.8rem;
+    border: 1px solid #e2edf4;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.delivery-option:hover {
+    border-color: #4db6ac;
+    background: #f8fafc;
+}
+
+.delivery-option input {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+}
+
+.delivery-option span:first-of-type {
+    flex: 1;
+    font-size: 0.9rem;
+}
+
+.delivery-price {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #00897b;
+}
+
+/* Итого */
+.checkout-total {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: #f6faf7;
+    border-radius: 16px;
+    text-align: right;
+    margin-top: 0.5rem;
+}
+
+.checkout-total strong {
+    font-size: 1.3rem;
+    color: #00897b;
+}
+
+.checkout-submit-btn {
+    background: linear-gradient(135deg, #00897b, #4db6ac);
+    color: white;
+    border: none;
+    padding: 1rem;
+    border-radius: 40px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.2s;
+    margin-top: 1rem;
+}
+
+.checkout-submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0, 137, 123, 0.25);
+}
+
+.checkout-privacy {
+    font-size: 0.7rem;
+    color: #94a3b8;
+    text-align: center;
+    margin-top: 1rem;
+}
+
+@media (max-width: 480px) {
+    .checkout-content {
+        width: 95%;
+        border-radius: 20px;
+    }
+    
+    .checkout-header {
+        padding: 1rem;
+    }
+    
+    .checkout-body {
+        padding: 1rem;
+    }
+    
+    .checkout-product {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
+    .checkout-product-quantity {
+        margin-left: auto;
+    }
+}
