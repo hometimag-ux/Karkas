@@ -27,9 +27,17 @@ function showCard(orderData) {
     document.body.appendChild(modal);
     document.body.style.overflow = 'hidden';
     
-    document.getElementById('payConfirmBtn').onclick = () => { modal.remove(); document.body.style.overflow = ''; finalizeOrder(orderData); };
-    document.getElementById('payCancelBtn').onclick = () => { modal.remove(); document.body.style.overflow = ''; showToast('Оплата отменена'); };
-    modal.onclick = (e) => { if (e.target === modal) { modal.remove(); document.body.style.overflow = ''; } };
+    document.getElementById('payConfirmBtn').onclick = function() { 
+        modal.remove(); 
+        document.body.style.overflow = ''; 
+        finalizeOrder(orderData); 
+    };
+    document.getElementById('payCancelBtn').onclick = function() { 
+        modal.remove(); 
+        document.body.style.overflow = ''; 
+        showToast('Оплата отменена'); 
+    };
+    modal.onclick = function(e) { if (e.target === modal) { modal.remove(); document.body.style.overflow = ''; } };
 }
 
 function showSbp(orderData) {
@@ -53,9 +61,17 @@ function showSbp(orderData) {
     document.body.appendChild(modal);
     document.body.style.overflow = 'hidden';
     
-    document.getElementById('payConfirmBtn').onclick = () => { modal.remove(); document.body.style.overflow = ''; finalizeOrder(orderData); };
-    document.getElementById('payCancelBtn').onclick = () => { modal.remove(); document.body.style.overflow = ''; showToast('Оплата отменена'); };
-    modal.onclick = (e) => { if (e.target === modal) { modal.remove(); document.body.style.overflow = ''; } };
+    document.getElementById('payConfirmBtn').onclick = function() { 
+        modal.remove(); 
+        document.body.style.overflow = ''; 
+        finalizeOrder(orderData); 
+    };
+    document.getElementById('payCancelBtn').onclick = function() { 
+        modal.remove(); 
+        document.body.style.overflow = ''; 
+        showToast('Оплата отменена'); 
+    };
+    modal.onclick = function(e) { if (e.target === modal) { modal.remove(); document.body.style.overflow = ''; } };
 }
 
 function showCash(orderData) {
@@ -78,24 +94,33 @@ function showCash(orderData) {
     document.body.appendChild(modal);
     document.body.style.overflow = 'hidden';
     
-    document.getElementById('payConfirmBtn').onclick = () => { modal.remove(); document.body.style.overflow = ''; finalizeOrder(orderData); };
-    document.getElementById('payCancelBtn').onclick = () => { modal.remove(); document.body.style.overflow = ''; showToast('Заказ отменён'); };
-    modal.onclick = (e) => { if (e.target === modal) { modal.remove(); document.body.style.overflow = ''; } };
+    document.getElementById('payConfirmBtn').onclick = function() { 
+        modal.remove(); 
+        document.body.style.overflow = ''; 
+        finalizeOrder(orderData); 
+    };
+    document.getElementById('payCancelBtn').onclick = function() { 
+        modal.remove(); 
+        document.body.style.overflow = ''; 
+        showToast('Заказ отменён'); 
+    };
+    modal.onclick = function(e) { if (e.target === modal) { modal.remove(); document.body.style.overflow = ''; } };
 }
 
-// ФИНАЛИЗАЦИЯ - ДАННЫЕ КОРЗИНЫ НЕ ОЧИЩАЮТСЯ!
+// ФИНАЛИЗАЦИЯ - ТОЛЬКО БЛАГОДАРНОСТЬ, КОРЗИНА НЕ ОЧИЩАЕТСЯ!
 function finalizeOrder(orderData) {
     // Отправка в CRM
     fetch('https://your-crm.com/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(orderData)
-    }).catch(e => console.error('CRM error:', e));
+    }).catch(function(e) { console.error('CRM error:', e); });
     
-    // Благодарность (корзина НЕ очищается!)
-    showToast(`🎉 Заказ №${orderData.orderId} оформлен! Спасибо за покупку!`);
+    // Только благодарность, корзина НЕ очищается!
+    showToast('🎉 Спасибо за заказ! Мы свяжемся с вами');
     
-    // Закрываем все окна
-    document.querySelectorAll('#paymentModal, #checkoutModal').forEach(m => m?.remove());
+    // Закрываем окна
+    const paymentModal = document.getElementById('paymentModal');
+    if (paymentModal) paymentModal.remove();
     document.body.style.overflow = '';
 }
