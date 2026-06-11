@@ -17,18 +17,27 @@ function restorePendingOrder() {
 
 // Открыть модальное окно оформления заказа
 function openCheckoutModal() {
+    // ВАЖНО:每次都重新获取最新的购物车数据
     const cart = getCart();
     
+    console.log('🛒 Открытие формы заказа, корзина:', cart);
+    console.log('📊 Количество товаров в корзине:', cart.length);
+    
     if (cart.length === 0) {
+        // Проверяем незавершённый заказ
         if (!restorePendingOrder()) {
             showToast('Корзина пуста');
         }
         return;
     }
     
-    closeCartSidebar();
+    // Закрываем сайдбар корзины
+    if (typeof closeCartSidebar === 'function') closeCartSidebar();
     
-    const subtotal = getCartTotal();
+    // ВАЖНО: пересчитываем сумму на основе актуальной корзины
+    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    
+    console.log('💰 Сумма заказа:', subtotal);
     
     const modalHtml = `
         <div id="checkoutModalWindow" style="
@@ -186,6 +195,18 @@ function openCheckoutModal() {
     // Обработчик отправки
     const submitBtn = document.getElementById('submitCheckoutBtn');
     submitBtn.onclick = () => {
+        // ВАЖНО: снова получаем актуальную корзину на момент оплаты
+        const currentCart = getCart();
+        
+        console.log('🛒 На момент оплаты, корзина:', currentCart);
+        
+        if (currentCart.length === 0) {
+            showToast('❌ Корзина пуста. Добавьте товары');
+            modalWindow.remove();
+            document.body.style.overflow = '';
+            return;
+        }
+        
         const name = document.getElementById('checkoutName').value.trim();
         const phone = document.getElementById('checkoutPhone').value.trim();
         
@@ -196,15 +217,16 @@ function openCheckoutModal() {
         
         const selectedDelivery = deliverySelect.options[deliverySelect.selectedIndex];
         const deliveryPrice = parseInt(selectedDelivery.dataset.price);
-        const total = subtotal + deliveryPrice;
+        const currentSubtotal = currentCart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        const total = currentSubtotal + deliveryPrice;
         const paymentMethod = document.querySelector('input[name="payment"]:checked')?.value || 'card';
         const address = document.getElementById('checkoutAddress')?.value.trim() || '';
         const email = document.getElementById('checkoutEmail')?.value.trim() || '';
         const comment = document.getElementById('checkoutComment')?.value.trim() || '';
         
         const orderData = {
-            items: cart,
-            subtotal: subtotal,
+            items: currentCart,
+            subtotal: currentSubtotal,
             delivery: { method: deliverySelect.value, price: deliveryPrice },
             address: address,
             total: total,
@@ -216,6 +238,7 @@ function openCheckoutModal() {
         };
         
         console.log('📦 ЗАКАЗ:', orderData);
+        console.log('💳 Способ оплаты:', paymentMethod);
         
         // Сохраняем заказ
         localStorage.setItem('pendingOrder', JSON.stringify(orderData));
