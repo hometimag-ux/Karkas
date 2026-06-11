@@ -1,13 +1,5 @@
 // ===== КОРЗИНА =====
 
-// Гарантия наличия escapeHtml
-if (typeof escapeHtml !== 'function') {
-    window.escapeHtml = function(str) {
-        if (!str) return '';
-        return String(str).replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
-    };
-}
-
 function updateCartCount() {
     const cart = JSON.parse(localStorage.getItem('cart') || '[]');
     const total = cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -25,7 +17,6 @@ function addToCartWithDetails(id, title, price, size, color, article) {
     
     if (existingIndex !== -1) {
         cart[existingIndex].quantity++;
-        console.log('Товар уже есть, увеличили количество');
     } else {
         cart.push({
             id: id,
@@ -36,12 +27,13 @@ function addToCartWithDetails(id, title, price, size, color, article) {
             color: color || '—',
             article: article || '—'
         });
-        console.log('Новый товар добавлен');
     }
     
     localStorage.setItem('cart', JSON.stringify(cart));
     updateCartCount();
-    if (typeof showToast === 'function') showToast(`✅ ${title} (${size}, ${color}) добавлен в корзину`);
+    if (typeof showToast === 'function') {
+        showToast(`✅ ${title} (${size}, ${color}) добавлен в корзину`);
+    }
 }
 
 function updateCartDisplay() {
@@ -51,11 +43,8 @@ function updateCartDisplay() {
     const container = document.getElementById('cartItems');
     const totalContainer = document.getElementById('cartTotal');
     
-    console.log('cart.length:', cart.length);
-    console.log('container найден:', !!container);
-    
     if (!container) {
-        console.error('Контейнер #cartItems не найден в DOM');
+        console.error('Контейнер #cartItems не найден');
         return;
     }
     
@@ -68,12 +57,12 @@ function updateCartDisplay() {
     let html = '';
     let total = 0;
     
-    cart.forEach((item, index) => {
+    cart.forEach((item) => {
         const itemTotal = item.price * item.quantity;
         total += itemTotal;
         
         html += `
-            <div class="cart-item" data-index="${index}">
+            <div class="cart-item">
                 <div class="cart-item-info">
                     <div class="cart-item-title">${escapeHtml(item.title)}</div>
                     <div class="cart-item-details">
@@ -81,8 +70,8 @@ function updateCartDisplay() {
                         <span class="cart-item-size">Размер: ${escapeHtml(item.size)}</span>
                         <span class="cart-item-color">Цвет: ${escapeHtml(item.color)}</span>
                     </div>
-                    <div class="cart-item-price">${item.price.toLocaleString()} ₽ × ${item.quantity}</div>
                 </div>
+                <div class="cart-item-price">${item.price.toLocaleString()} ₽ × ${item.quantity}</div>
                 <div class="cart-item-actions">
                     <button class="cart-qty-btn" data-id="${item.id}" data-size="${escapeHtml(item.size)}" data-color="${escapeHtml(item.color)}" data-delta="-1">−</button>
                     <span class="cart-item-quantity">${item.quantity}</span>
@@ -99,6 +88,7 @@ function updateCartDisplay() {
         totalContainer.innerHTML = `Итого: <strong>${total.toLocaleString()} ₽</strong>`;
     }
     
+    // Обработчики кнопок
     document.querySelectorAll('.cart-qty-btn').forEach(btn => {
         btn.onclick = () => {
             const id = parseInt(btn.dataset.id);
@@ -117,12 +107,9 @@ function updateCartDisplay() {
             removeFromCart(id, size, color);
         };
     });
-    
-    console.log('✅ Отображение обновлено, итого:', total);
 }
 
-window.updateQuantity = function(id, delta, size, color) {
-    console.log('updateQuantity:', {id, delta, size, color});
+function updateQuantity(id, delta, size, color) {
     let cart = JSON.parse(localStorage.getItem('cart') || '[]');
     const index = cart.findIndex(item => item.id === id && item.size === size && item.color === color);
     
@@ -134,16 +121,15 @@ window.updateQuantity = function(id, delta, size, color) {
         localStorage.setItem('cart', JSON.stringify(cart));
         updateCartCount();
     }
-};
+}
 
-window.removeFromCart = function(id, size, color) {
-    console.log('removeFromCart:', {id, size, color});
+function removeFromCart(id, size, color) {
     let cart = JSON.parse(localStorage.getItem('cart') || '[]');
     cart = cart.filter(item => !(item.id === id && item.size === size && item.color === color));
     localStorage.setItem('cart', JSON.stringify(cart));
     updateCartCount();
     if (typeof showToast === 'function') showToast('Товар удалён из корзины');
-};
+}
 
 function closeCartSidebar() {
     const sidebar = document.getElementById('cartSidebar');
@@ -188,15 +174,20 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Закрытие по Escape
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            const sidebar = document.getElementById('cartSidebar');
-            if (sidebar && sidebar.classList.contains('open')) {
-                closeCartSidebar();
-            }
-        }
-    });
-    
     updateCartCount();
 });
+
+// Закрытие по Escape
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        const sidebar = document.getElementById('cartSidebar');
+        if (sidebar && sidebar.classList.contains('open')) {
+            closeCartSidebar();
+        }
+    }
+});
+
+// Делаем функции глобальными
+window.updateQuantity = updateQuantity;
+window.removeFromCart = removeFromCart;
+window.addToCartWithDetails = addToCartWithDetails;
