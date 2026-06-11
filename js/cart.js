@@ -1,8 +1,5 @@
 // ===== КОРЗИНА =====
 
-// Флаг для защиты от двойного открытия модалки
-let isCheckoutModalOpen = false;
-
 // БАЗОВАЯ ФУНКЦИЯ ДЛЯ КАРТОЧЕК ТОВАРОВ
 function addToCartById(id) {
     const product = window.allProducts ? window.allProducts.find(p => p.id === id) : null;
@@ -180,20 +177,104 @@ function openCartSidebar() {
     document.body.style.overflow = 'hidden';
 }
 
+// ===== ОПЛАТА ЧЕРЕЗ QR (СБП) =====
+function openPaymentModal(orderData) {
+    const oldModal = document.getElementById('paymentModal');
+    if (oldModal) oldModal.remove();
+    
+    const orderId = 'ORDER_' + Date.now();
+    const amount = orderData.total;
+    
+    const paymentHtml = `
+        <div class="payment-modal" id="paymentModal">
+            <div class="payment-content">
+                <div class="payment-header">
+                    <h3>💳 Оплата по СБП</h3>
+                    <button class="payment-close" id="closePaymentModal">&times;</button>
+                </div>
+                <div class="payment-body">
+                    <div class="payment-order-info">
+                        <div>Заказ №${orderId}</div>
+                        <div class="payment-amount">${amount.toLocaleString()} ₽</div>
+                    </div>
+                    
+                    <div class="payment-qr" id="paymentQr">
+                        <div style="text-align: center; padding: 20px;">
+                            <div style="font-size: 3rem; margin-bottom: 10px;">📱</div>
+                            <div>Сканируйте QR-код в приложении банка</div>
+                            <div style="margin-top: 20px; padding: 20px; background: white; display: inline-block; border-radius: 16px;">
+                                <svg width="200" height="200" viewBox="0 0 200 200" style="display: block; margin: 0 auto;">
+                                    <rect width="200" height="200" fill="white"/>
+                                    <rect x="40" y="40" width="120" height="120" fill="black"/>
+                                    <rect x="50" y="50" width="20" height="20" fill="white"/>
+                                    <rect x="80" y="50" width="40" height="20" fill="white"/>
+                                    <rect x="130" y="50" width="20" height="20" fill="white"/>
+                                    <rect x="50" y="80" width="20" height="40" fill="white"/>
+                                    <rect x="130" y="80" width="20" height="40" fill="white"/>
+                                    <rect x="50" y="130" width="20" height="20" fill="white"/>
+                                    <rect x="80" y="130" width="40" height="20" fill="white"/>
+                                    <rect x="130" y="130" width="20" height="20" fill="white"/>
+                                </svg>
+                            </div>
+                            <div style="margin-top: 20px; font-size: 0.8rem; color: #64748b;">
+                                Отсканируйте код в приложении банка
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="payment-actions">
+                        <button class="payment-success-btn" id="paymentSuccessBtn">✅ Я оплатил</button>
+                        <button class="payment-cancel-btn" id="paymentCancelBtn">❌ Отмена</button>
+                    </div>
+                    
+                    <div class="payment-info">
+                        <small>Оплата через Систему Быстрых Платежей (СБП). Комиссия не взимается.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', paymentHtml);
+    document.body.style.overflow = 'hidden';
+    
+    const closePaymentBtn = document.getElementById('closePaymentModal');
+    const paymentModal = document.getElementById('paymentModal');
+    const cancelBtn = document.getElementById('paymentCancelBtn');
+    
+    const closePaymentModal = () => {
+        paymentModal.remove();
+        document.body.style.overflow = '';
+    };
+    
+    if (closePaymentBtn) closePaymentBtn.onclick = closePaymentModal;
+    if (cancelBtn) cancelBtn.onclick = closePaymentModal;
+    if (paymentModal) paymentModal.onclick = (e) => { if (e.target === paymentModal) closePaymentModal(); };
+    
+    const successBtn = document.getElementById('paymentSuccessBtn');
+    if (successBtn) {
+        successBtn.onclick = () => {
+            localStorage.removeItem('cart');
+            updateCartCount();
+            
+            const formInputs = ['checkoutName', 'checkoutPhone', 'checkoutEmail', 'checkoutAddress', 'checkoutComment'];
+            formInputs.forEach(id => localStorage.removeItem(`checkout_${id}`));
+            localStorage.removeItem('pendingOrder');
+            
+            showToast(`✅ Заказ №${orderId} оплачен! Спасибо за покупку!`);
+            closePaymentModal();
+        };
+    }
+}
+
 // ===== ОФОРМЛЕНИЕ ЗАКАЗА =====
 function openCheckoutModal() {
-    if (isCheckoutModalOpen) {
-        console.log('Модалка уже открыта');
-        return;
-    }
-    
     const cart = JSON.parse(localStorage.getItem('cart') || '[]');
     if (cart.length === 0) {
-        if (typeof showToast === 'function') showToast('Корзина пуста');
+        showToast('Корзина пуста');
         return;
     }
     
-    isCheckoutModalOpen = true;
     closeCartSidebar();
     
     const oldModal = document.getElementById('checkoutModal');
@@ -209,7 +290,6 @@ function openCheckoutModal() {
                     <button class="checkout-close" id="closeCheckoutModal">&times;</button>
                 </div>
                 <div class="checkout-body">
-                    <!-- Товары в заказе -->
                     <div class="checkout-products">
                         <h4>Ваш заказ</h4>
                         ${cart.map(item => `
@@ -245,32 +325,16 @@ function openCheckoutModal() {
                             <input type="email" id="checkoutEmail" placeholder="Email">
                         </div>
                         
+                        <div class="form-group">
+                            <select id="checkoutDelivery" class="styled-select">
+                                <option value="courier" data-price="350">🚚 Курьерская доставка — 350 ₽</option>
+                                <option value="pickup" data-price="0">📦 Самовывоз — Бесплатно</option>
+                                <option value="express" data-price="990">⚡ Экспресс-доставка — 990 ₽</option>
+                            </select>
+                        </div>
+                        
                         <div class="form-group" id="addressGroup">
                             <input type="text" id="checkoutAddress" placeholder="Адрес доставки">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Способ доставки</label>
-                            <div class="styled-select-wrapper">
-                                <select id="checkoutDelivery" class="styled-select">
-                                    <option value="courier" data-price="350">🚚 Курьерская доставка — 350 ₽</option>
-                                    <option value="pickup" data-price="0">📦 Самовывоз (ПВЗ) — Бесплатно</option>
-                                    <option value="express" data-price="990">⚡ Экспресс-доставка — 990 ₽</option>
-                                </select>
-                                <span class="select-arrow">▼</span>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Способ оплаты</label>
-                            <div class="styled-select-wrapper">
-                                <select id="checkoutPayment" class="styled-select">
-                                    <option value="card">💳 Банковская карта</option>
-                                    <option value="sbp">📱 СБП</option>
-                                    <option value="cash">💰 Наличные</option>
-                                </select>
-                                <span class="select-arrow">▼</span>
-                            </div>
                         </div>
                         
                         <div class="form-group">
@@ -281,6 +345,24 @@ function openCheckoutModal() {
                             <div class="total-row"><span>Товары:</span><span>${subtotal.toLocaleString()} ₽</span></div>
                             <div class="total-row" id="deliveryRow"><span>Доставка:</span><span id="deliveryCost">350 ₽</span></div>
                             <div class="total-row grand-total"><span>Итого к оплате:</span><strong id="finalTotal">${(subtotal + 350).toLocaleString()} ₽</strong></div>
+                        </div>
+                        
+                        <div class="payment-methods">
+                            <h4>Способ оплаты</h4>
+                            <div class="payment-options">
+                                <label class="payment-option">
+                                    <input type="radio" name="payment" value="card" checked>
+                                    <span>💳 Банковской картой</span>
+                                </label>
+                                <label class="payment-option">
+                                    <input type="radio" name="payment" value="sbp">
+                                    <span>📱 СБП (по номеру телефона)</span>
+                                </label>
+                                <label class="payment-option">
+                                    <input type="radio" name="payment" value="cash">
+                                    <span>💰 Наличными при получении</span>
+                                </label>
+                            </div>
                         </div>
                         
                         <button type="submit" class="checkout-submit-btn">💳 Перейти к оплате</button>
@@ -295,20 +377,11 @@ function openCheckoutModal() {
     document.body.insertAdjacentHTML('beforeend', modalHtml);
     document.body.style.overflow = 'hidden';
     
-    // Закрытие модалки
     const closeModal = document.getElementById('closeCheckoutModal');
     const modalOverlay = document.getElementById('checkoutModal');
+    if (closeModal) closeModal.onclick = () => { modalOverlay.remove(); document.body.style.overflow = ''; };
+    if (modalOverlay) modalOverlay.onclick = (e) => { if (e.target === modalOverlay) { modalOverlay.remove(); document.body.style.overflow = ''; } };
     
-    const closeModalHandler = () => {
-        modalOverlay.remove();
-        document.body.style.overflow = '';
-        isCheckoutModalOpen = false;
-    };
-    
-    if (closeModal) closeModal.onclick = closeModalHandler;
-    if (modalOverlay) modalOverlay.onclick = (e) => { if (e.target === modalOverlay) closeModalHandler(); };
-    
-    // Обновление суммы при выборе доставки
     const deliverySelect = document.getElementById('checkoutDelivery');
     const addressGroup = document.getElementById('addressGroup');
     const deliveryCostSpan = document.getElementById('deliveryCost');
@@ -326,18 +399,6 @@ function openCheckoutModal() {
     deliverySelect.addEventListener('change', updateTotal);
     updateTotal();
     
-    // Сохранение данных формы
-    const formInputs = ['checkoutName', 'checkoutPhone', 'checkoutEmail', 'checkoutAddress', 'checkoutComment'];
-    formInputs.forEach(id => {
-        const input = document.getElementById(id);
-        if (input) {
-            const saved = localStorage.getItem(`checkout_${id}`);
-            if (saved) input.value = saved;
-            input.addEventListener('input', () => localStorage.setItem(`checkout_${id}`, input.value));
-        }
-    });
-    
-    // Отправка формы — ТОЛЬКО ПЕРЕХОД К ОПЛАТЕ, КОРЗИНУ НЕ ОЧИЩАЕМ
     const form = document.getElementById('checkoutForm');
     form.onsubmit = (e) => {
         e.preventDefault();
@@ -345,14 +406,14 @@ function openCheckoutModal() {
         const phone = document.getElementById('checkoutPhone').value.trim();
         
         if (!name || !phone) {
-            if (typeof showToast === 'function') showToast('❌ Пожалуйста, укажите имя и телефон');
+            showToast('❌ Пожалуйста, укажите имя и телефон');
             return;
         }
         
         const selectedDelivery = deliverySelect.options[deliverySelect.selectedIndex];
         const deliveryPrice = parseInt(selectedDelivery.dataset.price);
         const total = subtotal + deliveryPrice;
-        const paymentMethod = document.getElementById('checkoutPayment').value;
+        const paymentMethod = document.querySelector('input[name="payment"]:checked')?.value || 'card';
         const address = document.getElementById('checkoutAddress')?.value.trim() || '';
         
         const orderData = {
@@ -371,36 +432,21 @@ function openCheckoutModal() {
             date: new Date().toLocaleString()
         };
         
-        console.log('📦 ЗАКАЗ ДЛЯ ОПЛАТЫ:', orderData);
+        console.log('📦 ЗАКАЗ:', orderData);
         localStorage.setItem('pendingOrder', JSON.stringify(orderData));
         
-        // Закрываем модалку, НО НЕ ОЧИЩАЕМ КОРЗИНУ
         modalOverlay.remove();
         document.body.style.overflow = '';
-        isCheckoutModalOpen = false;
         
-        if (typeof showToast === 'function') {
-            showToast(`💳 Перенаправление на оплату... Сумма: ${total.toLocaleString()} ₽`);
+        if (paymentMethod === 'sbp') {
+            openPaymentModal(orderData);
+        } else {
+            showToast(`💳 Спасибо, ${name}! Сумма к оплате: ${total.toLocaleString()} ₽`);
+            localStorage.removeItem('cart');
+            updateCartCount();
         }
-        
-        // РЕДИРЕКТ НА СТРАНИЦУ ОПЛАТЫ
-        // window.location.href = '/payment.html';
     };
 }
-
-// Функция для очистки корзины ПОСЛЕ УСПЕШНОЙ ОПЛАТЫ
-function clearCartAfterPayment() {
-    localStorage.removeItem('cart');
-    if (typeof updateCartCount === 'function') updateCartCount();
-    
-    const formInputs = ['checkoutName', 'checkoutPhone', 'checkoutEmail', 'checkoutAddress', 'checkoutComment'];
-    formInputs.forEach(id => localStorage.removeItem(`checkout_${id}`));
-    localStorage.removeItem('pendingOrder');
-    
-    if (typeof showToast === 'function') showToast('✅ Заказ оплачен! Спасибо за покупку!');
-}
-
-window.clearCartAfterPayment = clearCartAfterPayment;
 
 // Инициализация
 document.addEventListener('DOMContentLoaded', function() {
@@ -414,7 +460,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (overlay) overlay.addEventListener('click', closeCartSidebar);
     if (checkoutBtn) checkoutBtn.addEventListener('click', openCheckoutModal);
     
-    if (typeof updateCartCount === 'function') updateCartCount();
+    updateCartCount();
 });
 
 document.addEventListener('keydown', function(e) {
@@ -422,10 +468,7 @@ document.addEventListener('keydown', function(e) {
         const sidebar = document.getElementById('cartSidebar');
         if (sidebar && sidebar.classList.contains('open')) closeCartSidebar();
         const modal = document.getElementById('checkoutModal');
-        if (modal) {
-            modal.remove();
-            isCheckoutModalOpen = false;
-        }
+        if (modal) modal.remove();
         document.body.style.overflow = '';
     }
 });
