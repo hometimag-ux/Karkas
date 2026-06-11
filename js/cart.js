@@ -1,184 +1,3 @@
-// ===== КОРЗИНА =====
-
-// БАЗОВАЯ ФУНКЦИЯ ДЛЯ КАРТОЧЕК ТОВАРОВ
-function addToCartById(id) {
-    const product = window.allProducts ? window.allProducts.find(p => p.id === id) : null;
-    if (!product) {
-        console.error('Товар не найден, id:', id);
-        if (typeof showToast === 'function') showToast('Ошибка: товар не найден');
-        return;
-    }
-    
-    let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    const existing = cart.find(item => item.id === id);
-    
-    if (existing) {
-        existing.quantity++;
-    } else {
-        cart.push({
-            id: product.id,
-            title: product.title,
-            price: product.discount_price || product.price,
-            quantity: 1,
-            size: '—',
-            color: '—',
-            article: product.article || '—',
-            image: product.images?.[0] || null
-        });
-    }
-    
-    localStorage.setItem('cart', JSON.stringify(cart));
-    if (typeof updateCartCount === 'function') updateCartCount();
-    if (typeof showToast === 'function') showToast(`✅ ${product.title} добавлен в корзину`);
-}
-
-function updateCartCount() {
-    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    const total = cart.reduce((sum, item) => sum + item.quantity, 0);
-    const counter = document.getElementById('cartCounter');
-    if (counter) counter.textContent = total;
-    updateCartDisplay();
-    console.log('Корзина обновлена, товаров:', total);
-}
-
-function addToCartWithDetails(id, title, price, size, color, article, image) {
-    console.log('Добавление в корзину:', {id, title, price, size, color, article});
-    
-    let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    const existingIndex = cart.findIndex(item => item.id === id && item.size === size && item.color === color);
-    
-    if (existingIndex !== -1) {
-        cart[existingIndex].quantity++;
-    } else {
-        cart.push({
-            id: id,
-            title: title,
-            price: price,
-            quantity: 1,
-            size: size || '—',
-            color: color || '—',
-            article: article || '—',
-            image: image || null
-        });
-    }
-    
-    localStorage.setItem('cart', JSON.stringify(cart));
-    updateCartCount();
-    if (typeof showToast === 'function') showToast(`✅ ${title} (${size}, ${color}) добавлен в корзину`);
-}
-
-function updateCartDisplay() {
-    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    const container = document.getElementById('cartItems');
-    const totalContainer = document.getElementById('cartTotal');
-    
-    if (!container) return;
-    
-    if (cart.length === 0) {
-        container.innerHTML = '<div class="empty-cart">Корзина пуста</div>';
-        if (totalContainer) totalContainer.innerHTML = '';
-        return;
-    }
-    
-    let html = '';
-    let total = 0;
-    
-    cart.forEach((item) => {
-        const itemTotal = item.price * item.quantity;
-        total += itemTotal;
-        
-        html += `
-            <div class="cart-item" data-id="${item.id}" data-size="${escapeHtml(item.size)}" data-color="${escapeHtml(item.color)}">
-                <div class="cart-item-image">
-                    ${item.image ? `<img src="${item.image}" alt="${escapeHtml(item.title)}">` : '<div class="no-image">👕</div>'}
-                </div>
-                <div class="cart-item-info">
-                    <div class="cart-item-title">${escapeHtml(item.title)}</div>
-                    <div class="cart-item-details">
-                        <span class="cart-item-size">Размер: ${escapeHtml(item.size)}</span>
-                        <span class="cart-item-color">Цвет: ${escapeHtml(item.color)}</span>
-                    </div>
-                </div>
-                <div class="cart-item-quantity-cell">
-                    <button class="cart-qty-btn" data-delta="-1">−</button>
-                    <span class="cart-item-quantity">${item.quantity}</span>
-                    <button class="cart-qty-btn" data-delta="1">+</button>
-                </div>
-                <div class="cart-item-price-cell">
-                    <div class="cart-item-price">${item.price.toLocaleString()} ₽</div>
-                    <div class="cart-item-total">${itemTotal.toLocaleString()} ₽</div>
-                </div>
-                <div class="cart-item-remove">
-                    <button class="cart-remove-btn">🗑️</button>
-                </div>
-            </div>
-        `;
-    });
-    
-    container.innerHTML = html;
-    if (totalContainer) {
-        totalContainer.innerHTML = `<div class="cart-total-row"><span>Итого:</span><strong>${total.toLocaleString()} ₽</strong></div>`;
-    }
-    
-    // Обработчики
-    document.querySelectorAll('.cart-item').forEach(itemDiv => {
-        const id = parseInt(itemDiv.dataset.id);
-        const size = itemDiv.dataset.size;
-        const color = itemDiv.dataset.color;
-        
-        itemDiv.querySelectorAll('.cart-qty-btn').forEach(btn => {
-            btn.onclick = () => {
-                const delta = parseInt(btn.dataset.delta);
-                updateQuantity(id, delta, size, color);
-            };
-        });
-        
-        const removeBtn = itemDiv.querySelector('.cart-remove-btn');
-        if (removeBtn) {
-            removeBtn.onclick = () => removeFromCart(id, size, color);
-        }
-    });
-}
-
-function updateQuantity(id, delta, size, color) {
-    let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    const index = cart.findIndex(item => item.id === id && item.size === size && item.color === color);
-    
-    if (index !== -1) {
-        cart[index].quantity += delta;
-        if (cart[index].quantity <= 0) {
-            cart.splice(index, 1);
-        }
-        localStorage.setItem('cart', JSON.stringify(cart));
-        updateCartCount();
-    }
-}
-
-function removeFromCart(id, size, color) {
-    let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    cart = cart.filter(item => !(item.id === id && item.size === size && item.color === color));
-    localStorage.setItem('cart', JSON.stringify(cart));
-    updateCartCount();
-    if (typeof showToast === 'function') showToast('Товар удалён из корзины');
-}
-
-function closeCartSidebar() {
-    const sidebar = document.getElementById('cartSidebar');
-    const overlay = document.getElementById('overlay');
-    if (sidebar) sidebar.classList.remove('open');
-    if (overlay) overlay.classList.remove('active');
-    document.body.style.overflow = '';
-}
-
-function openCartSidebar() {
-    const sidebar = document.getElementById('cartSidebar');
-    const overlay = document.getElementById('overlay');
-    if (sidebar) sidebar.classList.add('open');
-    if (overlay) overlay.classList.add('active');
-    document.body.style.overflow = 'hidden';
-}
-
-// ===== ОФОРМЛЕНИЕ ЗАКАЗА =====
 function openCheckoutModal() {
     const cart = JSON.parse(localStorage.getItem('cart') || '[]');
     if (cart.length === 0) {
@@ -239,11 +58,15 @@ function openCheckoutModal() {
                         </div>
                         
                         <div class="form-group">
-                            <select id="checkoutDelivery" class="delivery-select">
-                                <option value="courier" data-price="350">🚚 Курьерская доставка — 350 ₽</option>
-                                <option value="pickup" data-price="0">📦 Самовывоз (ПВЗ) — Бесплатно</option>
-                                <option value="express" data-price="990">⚡ Экспресс-доставка — 990 ₽</option>
-                            </select>
+                            <label class="form-label">Способ доставки</label>
+                            <div class="delivery-select-wrapper">
+                                <select id="checkoutDelivery" class="delivery-select">
+                                    <option value="courier" data-price="350">🚚 Курьерская доставка — 350 ₽</option>
+                                    <option value="pickup" data-price="0">📦 Самовывоз (ПВЗ) — Бесплатно</option>
+                                    <option value="express" data-price="990">⚡ Экспресс-доставка — 990 ₽</option>
+                                </select>
+                                <span class="select-arrow">▼</span>
+                            </div>
                         </div>
                         
                         <div class="form-group" id="addressGroup">
@@ -270,19 +93,18 @@ function openCheckoutModal() {
                         </div>
                         
                         <div class="payment-methods">
-                            <h4>Способ оплаты</h4>
                             <div class="payment-options">
                                 <label class="payment-option">
                                     <input type="radio" name="payment" value="card" checked>
-                                    <span>💳 Банковской картой</span>
+                                    <span>💳 Банковская карта</span>
                                 </label>
                                 <label class="payment-option">
                                     <input type="radio" name="payment" value="sbp">
-                                    <span>📱 СБП (по номеру телефона)</span>
+                                    <span>📱 СБП</span>
                                 </label>
                                 <label class="payment-option">
                                     <input type="radio" name="payment" value="cash">
-                                    <span>💰 Наличными при получении</span>
+                                    <span>💰 Наличные</span>
                                 </label>
                             </div>
                         </div>
@@ -336,8 +158,8 @@ function openCheckoutModal() {
             return;
         }
         
-        const selectedDelivery = deliverySelect.options[deliverySelect.selectedIndex];
-        const deliveryPrice = parseInt(selectedDelivery.dataset.price);
+        const selectedOption = deliverySelect.options[deliverySelect.selectedIndex];
+        const deliveryPrice = parseInt(selectedOption.dataset.price);
         const total = subtotal + deliveryPrice;
         const paymentMethod = document.querySelector('input[name="payment"]:checked')?.value || 'card';
         
@@ -361,41 +183,11 @@ function openCheckoutModal() {
         };
         
         console.log('📦 ЗАКАЗ:', orderData);
-        
-        // Здесь можно отправить данные на сервер
         showToast(`💳 Спасибо, ${name}! Сумма к оплате: ${total.toLocaleString()} ₽`);
         
         localStorage.removeItem('cart');
         updateCartCount();
         modalOverlay.remove();
         document.body.style.overflow = '';
-        
-        // Здесь можно добавить переход на страницу оплаты
-        // window.location.href = '/payment.html';
     };
 }
-
-// Инициализация
-document.addEventListener('DOMContentLoaded', function() {
-    const cartBtn = document.getElementById('cartBtn');
-    const closeCart = document.getElementById('closeCart');
-    const overlay = document.getElementById('overlay');
-    const checkoutBtn = document.getElementById('checkoutBtn');
-    
-    if (cartBtn) cartBtn.addEventListener('click', openCartSidebar);
-    if (closeCart) closeCart.addEventListener('click', closeCartSidebar);
-    if (overlay) overlay.addEventListener('click', closeCartSidebar);
-    if (checkoutBtn) checkoutBtn.addEventListener('click', openCheckoutModal);
-    
-    updateCartCount();
-});
-
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        const sidebar = document.getElementById('cartSidebar');
-        if (sidebar && sidebar.classList.contains('open')) closeCartSidebar();
-        const modal = document.getElementById('checkoutModal');
-        if (modal) modal.remove();
-        document.body.style.overflow = '';
-    }
-});
