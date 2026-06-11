@@ -182,8 +182,7 @@
 }
 
 #checkoutForm input,
-#checkoutForm textarea,
-.delivery-select {
+#checkoutForm textarea {
     width: 100%;
     padding: 0.8rem 1rem;
     border: 1px solid #cbdde9;
@@ -200,22 +199,34 @@
 }
 
 #checkoutForm input:focus,
-#checkoutForm textarea:focus,
-.delivery-select:focus {
+#checkoutForm textarea:focus {
     border-color: #4db6ac;
     box-shadow: 0 0 0 3px rgba(77, 182, 172, 0.1);
 }
 
-/* Стилизованный выпадающий список */
-.delivery-select-wrapper {
+/* Стилизованные выпадающие списки */
+.styled-select-wrapper {
     position: relative;
+    width: 100%;
 }
 
-.delivery-select {
+.styled-select {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid #cbdde9;
+    border-radius: 40px;
+    font-size: 0.9rem;
+    outline: none;
+    transition: 0.2s;
+    background: white;
     appearance: none;
     -webkit-appearance: none;
     cursor: pointer;
-    background: white;
+}
+
+.styled-select:focus {
+    border-color: #4db6ac;
+    box-shadow: 0 0 0 3px rgba(77, 182, 172, 0.1);
 }
 
 .select-arrow {
@@ -253,46 +264,6 @@
 
 .grand-total strong {
     color: #00897b;
-}
-
-/* Способы оплаты */
-.payment-methods {
-    margin: 0.5rem 0;
-}
-
-.payment-options {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-    margin-top: 0.5rem;
-}
-
-.payment-option {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    background: #f8fafc;
-    border-radius: 40px;
-    cursor: pointer;
-    transition: 0.2s;
-    border: 1px solid #e2edf4;
-}
-
-.payment-option:hover {
-    border-color: #4db6ac;
-    background: #f0faf7;
-}
-
-.payment-option input {
-    width: 16px;
-    height: 16px;
-    margin: 0;
-    cursor: pointer;
-}
-
-.payment-option span {
-    font-size: 0.85rem;
 }
 
 /* Кнопка оплаты */
@@ -354,15 +325,6 @@
     
     .checkout-product-quantity {
         margin-left: auto;
-    }
-    
-    .payment-options {
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-    
-    .payment-option {
-        padding: 0.5rem 0.8rem;
     }
 }
 
