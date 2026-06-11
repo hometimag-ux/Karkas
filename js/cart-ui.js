@@ -273,32 +273,22 @@ document.addEventListener('DOMContentLoaded', function() {
     updateCartDisplay();
 });
 
-// Обработчик кнопки оформления заказа
+// Инициализация
 document.addEventListener('DOMContentLoaded', function() {
-    const checkoutBtn = document.getElementById('cartCheckoutBtn');
-    if (checkoutBtn) {
-        checkoutBtn.onclick = function() {
-            console.log('Кнопка оформления нажата');
-            if (typeof openCheckout === 'function') {
-                openCheckout();
-            } else {
-                showToast('Модуль оформления не загружен');
-            }
-        };
-    }
-});
-
-// Обработчик кнопки оформления (после загрузки DOM)
-document.addEventListener('DOMContentLoaded', function() {
-    const btn = document.getElementById('cartCheckoutBtn');
-    if (btn) {
-        btn.onclick = function() {
-            console.log('🔘 Нажата кнопка оформления');
-            if (typeof openCheckout === 'function') {
-                openCheckout();
-            } else {
-                showToast('Модуль оформления не загружен');
-            }
-        };
-    }
+    console.log('🛒 Инициализация корзины');
+    
+    // Кнопки корзины
+    const cartBtn = document.getElementById('cartBtn');
+    const closeCartBtn = document.getElementById('closeCartBtn');
+    const overlay = document.getElementById('cartOverlay');
+    
+    if (cartBtn) cartBtn.addEventListener('click', openCart);
+    if (closeCartBtn) closeCartBtn.addEventListener('click', closeCart);
+    if (overlay) overlay.addEventListener('click', closeCart);
+    
+    // Обновляем счётчик
+    updateCartCount();
+    updateCartDisplay();
+    
+    console.log('✅ Корзина инициализирована');
 });
