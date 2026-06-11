@@ -1,4 +1,4 @@
-// ===== БЫСТРЫЙ ПРОСМОТР (СТИЛЬ КАРТОЧКИ ТОВАРА) =====
+// ===== БЫСТРЫЙ ПРОСМОТР (ПОЛНАЯ ВЕРСИЯ) =====
 
 function closeQuickView() {
     const modal = document.getElementById('quickViewModal');
@@ -10,14 +10,12 @@ function openQuickView(id) {
     const product = window.allProducts ? window.allProducts.find(p => p.id === id) : null;
     if (!product) {
         console.error('Товар не найден, id:', id);
-        showToast('Ошибка: товар не найден');
+        if (typeof showToast === 'function') showToast('Ошибка: товар не найден');
         return;
     }
 
-    console.log('Открыт товар:', product.title);
-
     const hasDiscount = product.discount_price && product.discount_price < product.price;
-    const rating = product.rating || getRandomRating();
+    const rating = product.rating || (typeof getRandomRating === 'function' ? getRandomRating() : 4.5);
     const stars = '★'.repeat(Math.floor(rating)) + '☆'.repeat(5 - Math.floor(rating));
     const mainImg = product.images && product.images.length > 0 ? product.images[0] : null;
     const chars = product.characteristics || {};
@@ -115,67 +113,6 @@ function openQuickView(id) {
                             <span>🧵 логотип за 48ч</span>
                         </div>
                         
-                        <!-- ТАБЫ -->
-                        <div class="tabs">
-                            <button class="tab-btn active" data-tab="desc">описание</button>
-                            <button class="tab-btn" data-tab="specs">характеристики</button>
-                            <button class="tab-btn" data-tab="packaging">упаковка</button>
-                            <button class="tab-btn" data-tab="b2b">для клиник и опта</button>
-                        </div>
-                        
-                        <div class="tab-content">
-                            <div class="tab-pane active" id="desc">
-                                <p>${escapeHtml(product.description || 'Профессиональная медицинская одежда, разработанная с учётом пожеланий медицинских работников. Эргономичный крой, эластичная ткань и продуманные детали.')}</p>
-                                <ul class="feature-list">
-                                    <li>Анатомическая посадка: не стесняет движений</li>
-                                    <li>Материал «дышит», отводит влагу в течение смены</li>
-                                    <li>Сохраняет форму и цвет после частых стирок (до 95°C)</li>
-                                    <li>Гипоаллергенно, одобрено дерматологами</li>
-                                </ul>
-                            </div>
-                            <div class="tab-pane" id="specs">
-                                <table class="chars-table">
-                                    <tbody>
-                                        ${chars.brand ? `<tr><td style="padding:6px 0;">Бренд</td><td>${escapeHtml(chars.brand)}</td></tr>` : ''}
-                                        ${chars.material ? `<tr><td style="padding:6px 0;">Состав</td><td>${escapeHtml(chars.material)}</td></tr>` : ''}
-                                        ${chars.collar ? `<tr><td style="padding:6px 0;">Воротник</td><td>${escapeHtml(chars.collar)}</td></tr>` : ''}
-                                        ${chars.sleeves ? `<tr><td style="padding:6px 0;">Рукава</td><td>${escapeHtml(chars.sleeves)}</td></tr>` : ''}
-                                        ${chars.pockets ? `<tr><td style="padding:6px 0;">Карманы</td><td>${escapeHtml(chars.pockets)}</td></tr>` : ''}
-                                        ${chars.country ? `<tr><td style="padding:6px 0;">Страна</td><td>${escapeHtml(chars.country)}</td></tr>` : ''}
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="tab-pane" id="packaging">
-                                <div class="packaging-grid">
-                                    ${pack.length ? `<div>📏 Длина: ${pack.length} см</div>` : ''}
-                                    ${pack.width ? `<div>📐 Ширина: ${pack.width} см</div>` : ''}
-                                    ${pack.height ? `<div>📦 Высота: ${pack.height} см</div>` : ''}
-                                    ${pack.weight ? `<div>⚖️ Вес: ${pack.weight} кг</div>` : ''}
-                                </div>
-                                ${!pack.length && !pack.width && !pack.height && !pack.weight ? '<p>Информация о габаритах упаковки отсутствует</p>' : ''}
-                            </div>
-                            <div class="tab-pane" id="b2b">
-                                <p><strong>Преимущества для клиник, медцентров и оптовых заказчиков:</strong></p>
-                                <ul class="feature-list">
-                                    <li>Специальные цены при заказе от 5 штук</li>
-                                    <li>Разработка лекал по индивидуальным замерам</li>
-                                    <li>Нанесение логотипа (вышивка / трафарет)</li>
-                                    <li>Отсрочка платежа для юридических лиц</li>
-                                </ul>
-                                <button class="btn-primary" id="modalB2bBtn" style="margin-top:16px; width:100%; background:#3f6e58;">📩 Запросить коммерческое предложение</button>
-                            </div>
-                        </div>
-                        
-                        <div class="lead-magnet">
-                            <div><strong>📏 Как точно подобрать размер?</strong> Скачайте чек-лист примерки.</div>
-                            <button class="small-outline" id="modalLeadMagnetBtn">Получить PDF</button>
-                        </div>
-                        
-                        <div class="b2b-note">
-                            <span>🏥 Корпоративным клиентам: скидка от объёма, образцы ткани бесплатно.</span>
-                            <button class="small-outline" id="modalCorpBtn">Связаться с менеджером</button>
-                        </div>
-                        
                         <div class="footer-note">✓ гарантия 12 месяцев ✓ помощь с выбором размера ✓ возврат по стандартам РФ</div>
                     </div>
                 </div>
@@ -183,7 +120,7 @@ function openQuickView(id) {
         </div>
     `;
 
-    // Удаляем старую модалку и вставляем новую
+    // Вставляем модалку
     const oldModal = document.getElementById('quickViewModal');
     if (oldModal) oldModal.remove();
     document.body.insertAdjacentHTML('beforeend', modalHtml);
@@ -192,7 +129,6 @@ function openQuickView(id) {
     // Выбранные опции
     let selectedSize = document.querySelector('#quickViewModal .size-btn.active')?.dataset.size || '—';
     let selectedColor = document.querySelector('#quickViewModal .swatch.active')?.dataset.color || '—';
-    let selectedColorCode = document.querySelector('#quickViewModal .swatch.active')?.dataset.colorCode || '';
 
     // === ОБРАБОТЧИКИ ===
 
@@ -245,52 +181,150 @@ function openQuickView(id) {
             document.querySelectorAll('#quickViewModal .swatch').forEach(s => s.classList.remove('active'));
             this.classList.add('active');
             selectedColor = this.dataset.color;
-            selectedColorCode = this.dataset.colorCode;
         };
     });
 
-    // Табы
-    const tabBtns = document.querySelectorAll('#quickViewModal .tab-btn');
-    const panes = document.querySelectorAll('#quickViewModal .tab-pane');
-    tabBtns.forEach(btn => {
-        btn.onclick = () => {
-            const tabId = btn.getAttribute('data-tab');
-            tabBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            panes.forEach(p => p.classList.remove('active'));
-            const activePane = document.getElementById(tabId);
-            if (activePane) activePane.classList.add('active');
-        };
-    });
-
-    // Кнопка "В корзину"
+    // КНОПКА "ДОБАВИТЬ В КОРЗИНУ"
     const buyBtn = document.getElementById('modalBuyBtn');
     if (buyBtn) {
         buyBtn.onclick = () => {
+            const price = product.discount_price || product.price;
             if (typeof addToCartWithDetails === 'function') {
-                addToCartWithDetails(product.id, product.title, product.discount_price || product.price, selectedSize, selectedColor, article);
+                addToCartWithDetails(product.id, product.title, price, selectedSize, selectedColor, article);
             } else if (typeof addToCartById === 'function') {
                 addToCartById(product.id);
+            } else {
+                showToast(`✅ ${product.title} (${selectedSize}, ${selectedColor}) добавлен в корзину`);
             }
             closeQuickView();
         };
     }
 
-    // Быстрый заказ
+    // КНОПКА "БЫСТРЫЙ ЗАКАЗ" — открывает модальное окно с формой оплаты
     const oneClickBtn = document.getElementById('modalOneClickBtn');
-    if (oneClickBtn) oneClickBtn.onclick = () => showToast('📞 Оставьте номер телефона — менеджер перезвонит через 5 минут');
+    if (oneClickBtn) {
+        oneClickBtn.onclick = () => {
+            const productImage = mainImg || null;
+            const productPrice = hasDiscount ? product.discount_price : product.price;
+            closeQuickView();
+            setTimeout(() => {
+                openQuickOrderForm(product.title, selectedSize, selectedColor, article, productImage, productPrice);
+            }, 300);
+        };
+    }
 
-    // Лид-магнит
-    const leadBtn = document.getElementById('modalLeadMagnetBtn');
-    if (leadBtn) leadBtn.onclick = () => showToast('📧 Чек-лист примерки отправлен на ваш email');
+    console.log('✅ Модалка готова');
+}
 
-    // B2B кнопка
-    const b2bBtn = document.getElementById('modalB2bBtn');
-    if (b2bBtn) b2bBtn.onclick = () => showToast('📩 Запрос для B2B принят');
+// ===== ФУНКЦИЯ ДЛЯ БЫСТРОГО ЗАКАЗА (МОДАЛЬНОЕ ОКНО) =====
+// ВАЖНО: эта функция должна быть СНАРУЖИ, а не внутри openQuickView!
+function openQuickOrderForm(productTitle, size, color, article, productImage, productPrice) {
+    // Удаляем старую форму, если есть
+    const oldForm = document.getElementById('quickOrderModal');
+    if (oldForm) oldForm.remove();
 
-    // Корпоративная кнопка
-    const corpBtn = document.getElementById('modalCorpBtn');
-    if (corpBtn) corpBtn.onclick = () => showToast('📩 Свяжитесь с B2B-отделом: b2b@murano-apparel.ru');
+    const formHtml = `
+        <div class="quick-order-modal" id="quickOrderModal">
+            <div class="quick-order-content">
+                <div class="quick-order-header">
+                    <h3>🚀 Оформление заказа</h3>
+                    <button class="quick-order-close" id="closeOrderModal">&times;</button>
+                </div>
+                <div class="quick-order-body">
+                    <div class="order-product-card">
+                        <div class="order-product-image">
+                            ${productImage ? `<img src="${productImage}" alt="${escapeHtml(productTitle)}">` : `<div style="font-size: 3rem;">👕</div>`}
+                        </div>
+                        <div class="order-product-details">
+                            <div class="order-product-title">${escapeHtml(productTitle)}</div>
+                            <div class="order-product-price">${productPrice ? productPrice.toLocaleString() + ' ₽' : ''}</div>
+                            <div class="order-product-specs">
+                                <span>Размер: ${escapeHtml(size)}</span>
+                                <span>Цвет: ${escapeHtml(color)}</span>
+                                <span>Арт: ${escapeHtml(article)}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <form id="quickOrderForm">
+                        <div class="form-row">
+                            <input type="text" id="orderName" placeholder="Ваше имя *" required>
+                            <input type="tel" id="orderPhone" placeholder="Телефон *" required>
+                        </div>
+                        <input type="email" id="orderEmail" placeholder="Email (для чека)">
+                        <textarea id="orderComment" rows="2" placeholder="Комментарий к заказу (адрес, пожелания)"></textarea>
+                        <div class="order-total">
+                            <span>К оплате:</span>
+                            <strong>${productPrice ? productPrice.toLocaleString() + ' ₽' : ''}</strong>
+                        </div>
+                        <button type="submit" class="order-submit-btn">💳 Оплатить</button>
+                    </form>
+                    <div class="order-privacy">Нажимая кнопку, вы соглашаетесь с политикой обработки данных</div>
+                </div>
+            </div>
+        </div>
+    `;
 
-    console.log('✅ Модалка быстрого просмотра готова');
+    document.body.insertAdjacentHTML('beforeend', formHtml);
+    document.body.style.overflow = 'hidden';
+
+    // Закрытие формы
+    const closeForm = document.getElementById('closeOrderModal');
+    const modalForm = document.getElementById('quickOrderModal');
+    
+    if (closeForm) {
+        closeForm.onclick = () => {
+            modalForm.remove();
+            document.body.style.overflow = '';
+        };
+    }
+    
+    if (modalForm) {
+        modalForm.onclick = (e) => {
+            if (e.target === modalForm) {
+                modalForm.remove();
+                document.body.style.overflow = '';
+            }
+        };
+    }
+
+    // Отправка формы
+    const form = document.getElementById('quickOrderForm');
+    if (form) {
+        form.onsubmit = (e) => {
+            e.preventDefault();
+            const name = document.getElementById('orderName')?.value.trim();
+            const phone = document.getElementById('orderPhone')?.value.trim();
+            const email = document.getElementById('orderEmail')?.value.trim();
+            const comment = document.getElementById('orderComment')?.value.trim();
+
+            if (!name || !phone) {
+                if (typeof showToast === 'function') showToast('❌ Пожалуйста, укажите имя и телефон');
+                else alert('❌ Пожалуйста, укажите имя и телефон');
+                return;
+            }
+
+            // Формируем данные заказа
+            const orderData = {
+                product: productTitle,
+                size: size,
+                color: color,
+                article: article,
+                price: productPrice,
+                name: name,
+                phone: phone,
+                email: email,
+                comment: comment,
+                date: new Date().toLocaleString()
+            };
+            
+            console.log('📦 Заказ на оплату:', orderData);
+            if (typeof showToast === 'function') {
+                showToast(`💳 Спасибо, ${name}! Ссылка на оплату отправлена на ${phone || email}`);
+            }
+            
+            modalForm.remove();
+            document.body.style.overflow = '';
+        };
+    }
 }
