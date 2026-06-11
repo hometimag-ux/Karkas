@@ -278,3 +278,23 @@ document.addEventListener('DOMContentLoaded', function() {
     
     console.log('✅ Корзина инициализирована');
 });
+
+// ===== ОБРАБОТЧИК КНОПКИ ОФОРМЛЕНИЯ =====
+document.addEventListener('DOMContentLoaded', function() {
+    const checkoutBtn = document.getElementById('cartCheckoutBtn');
+    if (checkoutBtn) {
+        checkoutBtn.onclick = function(e) {
+            e.preventDefault();
+            console.log('🔘 Нажата кнопка оформления заказа');
+            if (typeof openCheckout === 'function') {
+                openCheckout();
+            } else {
+                console.error('❌ openCheckout не определена');
+                showToast('Модуль оформления не загружен');
+            }
+        };
+        console.log('✅ Обработчик кнопки оформления установлен');
+    } else {
+        console.error('❌ Кнопка #cartCheckoutBtn не найдена');
+    }
+});
