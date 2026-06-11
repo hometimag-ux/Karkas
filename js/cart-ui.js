@@ -12,7 +12,28 @@ function saveCart(cart) {
     updateCartCount();
 }
 
-// Добавить товар
+// Показать уведомление
+function showToast(msg) {
+    let t = document.getElementById('cartToast');
+    if (!t) {
+        t = document.createElement('div');
+        t.id = 'cartToast';
+        t.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1a2c3e;color:white;padding:12px 24px;border-radius:40px;z-index:100000;font-size:14px;opacity:0;transition:0.3s';
+        document.body.appendChild(t);
+    }
+    t.textContent = msg;
+    t.style.opacity = '1';
+    setTimeout(() => t.style.opacity = '0', 3000);
+}
+
+// Обновить счётчик
+function updateCartCount() {
+    const total = getCart().reduce((s, i) => s + i.quantity, 0);
+    const c = document.getElementById('cartCounter');
+    if (c) c.textContent = total;
+}
+
+// Добавить товар (прямой вызов)
 function addToCart(product) {
     const cart = getCart();
     const existing = cart.findIndex(i => i.id === product.id && i.size === product.size && i.color === product.color);
@@ -33,25 +54,33 @@ function addToCart(product) {
     showToast(`✅ ${product.title} добавлен`);
 }
 
-// Показать уведомление
-function showToast(msg) {
-    let t = document.getElementById('cartToast');
-    if (!t) {
-        t = document.createElement('div');
-        t.id = 'cartToast';
-        t.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1a2c3e;color:white;padding:12px 24px;border-radius:40px;z-index:100000;font-size:14px;opacity:0;transition:0.3s';
-        document.body.appendChild(t);
+// Добавить товар по ID (для кнопок в каталоге)
+function addToCartById(id) {
+    // Ищем товар в глобальном массиве allProducts
+    if (!window.allProducts || window.allProducts.length === 0) {
+        console.error('Каталог не загружен');
+        showToast('Ошибка: каталог не загружен');
+        return;
     }
-    t.textContent = msg;
-    t.style.opacity = '1';
-    setTimeout(() => t.style.opacity = '0', 3000);
-}
-
-// Обновить счётчик
-function updateCartCount() {
-    const total = getCart().reduce((s, i) => s + i.quantity, 0);
-    const c = document.getElementById('cartCounter');
-    if (c) c.textContent = total;
+    
+    const product = window.allProducts.find(p => p.id === id);
+    if (!product) {
+        showToast('Товар не найден');
+        return;
+    }
+    
+    const price = product.discount_price && product.discount_price < product.price ? product.discount_price : product.price;
+    const image = product.images && product.images.length > 0 ? product.images[0] : null;
+    
+    addToCart({
+        id: product.id,
+        title: product.title,
+        price: price,
+        quantity: 1,
+        size: '—',
+        color: '—',
+        image: image
+    });
 }
 
 // Отобразить корзину
@@ -74,32 +103,71 @@ function updateCartDisplay() {
         total += itemTotal;
         html += `
             <div class="cart-item" data-id="${item.id}" data-size="${item.size}" data-color="${item.color}" style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #eee;">
-                <div style="width:60px;height:60px;background:#f5f5f5;border-radius:12px;display:flex;align-items:center;justify-content:center;">${item.image ? `<img src="${item.image}" style="width:100%;height:100%;object-fit:cover;">` : '👕'}</div>
-                <div style="flex:1;"><div style="font-weight:600;">${item.title}</div><div style="font-size:12px;color:#666;">${item.size} / ${item.color}</div><div style="font-size:12px;color:#00897b;">${item.price.toLocaleString()} ₽</div></div>
-                <div style="display:flex;align-items:center;gap:8px;"><button class="qty-minus">−</button><span>${item.quantity}</span><button class="qty-plus">+</button></div>
-                <div style="text-align:right;"><div style="font-weight:700;color:#00897b;">${itemTotal.toLocaleString()} ₽</div><button class="remove-item" style="background:none;border:none;color:#e74c3c;cursor:pointer;">Удалить</button></div>
+                <div style="width:60px;height:60px;background:#f5f5f5;border-radius:12px;display:flex;align-items:center;justify-content:center;">
+                    ${item.image ? `<img src="${item.image}" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">` : '👕'}
+                </div>
+                <div style="flex:1;">
+                    <div style="font-weight:600;">${item.title}</div>
+                    <div style="font-size:12px;color:#666;">${item.size} / ${item.color}</div>
+                    <div style="font-size:12px;color:#00897b;">${item.price.toLocaleString()} ₽</div>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <button class="qty-minus" style="width:30px;height:30px;border-radius:50%;border:1px solid #ddd;background:white;cursor:pointer;">−</button>
+                    <span style="min-width:30px;text-align:center;">${item.quantity}</span>
+                    <button class="qty-plus" style="width:30px;height:30px;border-radius:50%;border:1px solid #ddd;background:white;cursor:pointer;">+</button>
+                </div>
+                <div style="text-align:right;">
+                    <div style="font-weight:700;color:#00897b;">${itemTotal.toLocaleString()} ₽</div>
+                    <button class="remove-item" style="background:none;border:none;color:#e74c3c;cursor:pointer;">Удалить</button>
+                </div>
             </div>
         `;
     });
     container.innerHTML = html;
-    if (totalDiv) totalDiv.innerHTML = `<div style="display:flex;justify-content:space-between;font-weight:700;padding:15px 0;border-top:1px solid #eee;"><span>Итого:</span><strong style="color:#00897b;">${total.toLocaleString()} ₽</strong></div>`;
+    if (totalDiv) {
+        totalDiv.innerHTML = `<div style="display:flex;justify-content:space-between;font-weight:700;padding:15px 0;border-top:1px solid #eee;"><span>Итого:</span><strong style="color:#00897b;">${total.toLocaleString()} ₽</strong></div>`;
+    }
 
     document.querySelectorAll('.cart-item').forEach(el => {
         const id = parseInt(el.dataset.id);
         const size = el.dataset.size;
         const color = el.dataset.color;
-        el.querySelector('.qty-minus')?.onclick = () => { let cart = getCart(); const i = cart.findIndex(x => x.id === id && x.size === size && x.color === color); if (i !== -1) { cart[i].quantity--; if (cart[i].quantity <= 0) cart.splice(i,1); saveCart(cart); } };
-        el.querySelector('.qty-plus')?.onclick = () => { let cart = getCart(); const i = cart.findIndex(x => x.id === id && x.size === size && x.color === color); if (i !== -1) { cart[i].quantity++; saveCart(cart); } };
-        el.querySelector('.remove-item')?.onclick = () => { let cart = getCart(); saveCart(cart.filter(x => !(x.id === id && x.size === size && x.color === color))); showToast('Товар удалён'); };
+        
+        el.querySelector('.qty-minus')?.addEventListener('click', () => {
+            let cart = getCart();
+            const i = cart.findIndex(x => x.id === id && x.size === size && x.color === color);
+            if (i !== -1) {
+                cart[i].quantity--;
+                if (cart[i].quantity <= 0) cart.splice(i, 1);
+                saveCart(cart);
+            }
+        });
+        
+        el.querySelector('.qty-plus')?.addEventListener('click', () => {
+            let cart = getCart();
+            const i = cart.findIndex(x => x.id === id && x.size === size && x.color === color);
+            if (i !== -1) {
+                cart[i].quantity++;
+                saveCart(cart);
+            }
+        });
+        
+        el.querySelector('.remove-item')?.addEventListener('click', () => {
+            let cart = getCart();
+            saveCart(cart.filter(x => !(x.id === id && x.size === size && x.color === color)));
+            showToast('Товар удалён');
+        });
     });
 }
 
-// Открыть/закрыть корзину
+// Открыть корзину
 function openCart() {
     document.getElementById('cartSidebar')?.classList.add('open');
     document.getElementById('cartOverlay')?.classList.add('active');
     document.body.style.overflow = 'hidden';
 }
+
+// Закрыть корзину
 function closeCart() {
     document.getElementById('cartSidebar')?.classList.remove('open');
     document.getElementById('cartOverlay')?.classList.remove('active');
@@ -108,8 +176,17 @@ function closeCart() {
 
 // Инициализация
 document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('cartBtn')?.addEventListener('click', openCart);
-    document.getElementById('closeCartBtn')?.addEventListener('click', closeCart);
-    document.getElementById('cartOverlay')?.addEventListener('click', closeCart);
+    const cartBtn = document.getElementById('cartBtn');
+    const closeCartBtn = document.getElementById('closeCartBtn');
+    const overlay = document.getElementById('cartOverlay');
+    const checkoutBtn = document.getElementById('cartCheckoutBtn');
+    
+    if (cartBtn) cartBtn.addEventListener('click', openCart);
+    if (closeCartBtn) closeCartBtn.addEventListener('click', closeCart);
+    if (overlay) overlay.addEventListener('click', closeCart);
+    if (checkoutBtn) checkoutBtn.addEventListener('click', () => {
+        if (typeof openCheckout === 'function') openCheckout();
+    });
+    
     updateCartCount();
 });
