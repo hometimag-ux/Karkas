@@ -527,3 +527,169 @@
         padding: 1rem;
     }
 }
+
+/* Карточка товара в модалке быстрого заказа */
+.order-product-card {
+    display: flex;
+    gap: 1rem;
+    background: #f8fafc;
+    border-radius: 20px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid #e2edf4;
+}
+
+.order-product-image {
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #f4f9fe;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.order-product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.order-product-image div {
+    font-size: 2.5rem;
+}
+
+.order-product-details {
+    flex: 1;
+}
+
+.order-product-title {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #1a2c3e;
+    margin-bottom: 0.25rem;
+}
+
+.order-product-price {
+    font-weight: 700;
+    color: #00897b;
+    margin-bottom: 0.25rem;
+}
+
+.order-product-specs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-size: 0.7rem;
+    color: #5e7f97;
+}
+
+.order-product-specs span {
+    background: white;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+}
+
+/* Форма в модалке */
+#quickOrderForm {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.form-row {
+    display: flex;
+    gap: 0.8rem;
+}
+
+.form-row input {
+    flex: 1;
+}
+
+#quickOrderForm input,
+#quickOrderForm textarea {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid #cbdde9;
+    border-radius: 40px;
+    font-size: 0.9rem;
+    outline: none;
+    transition: 0.2s;
+}
+
+#quickOrderForm textarea {
+    border-radius: 20px;
+    resize: vertical;
+}
+
+#quickOrderForm input:focus,
+#quickOrderForm textarea:focus {
+    border-color: #4db6ac;
+    box-shadow: 0 0 0 3px rgba(77, 182, 172, 0.1);
+}
+
+.order-total {
+    text-align: right;
+    padding: 0.8rem 0;
+    border-top: 1px solid #e2edf4;
+    font-size: 1rem;
+}
+
+.order-total span {
+    color: #5e7f97;
+}
+
+.order-total strong {
+    font-size: 1.3rem;
+    color: #00897b;
+    margin-left: 0.5rem;
+}
+
+.order-submit-btn {
+    background: linear-gradient(135deg, #00897b, #4db6ac);
+    color: white;
+    border: none;
+    padding: 0.9rem;
+    border-radius: 40px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.2s;
+    margin-top: 0.5rem;
+}
+
+.order-submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0, 137, 123, 0.25);
+}
+
+.order-privacy {
+    font-size: 0.7rem;
+    color: #94a3b8;
+    text-align: center;
+    margin-top: 0.8rem;
+}
+
+@media (max-width: 480px) {
+    .order-product-card {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .order-product-image {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .form-row {
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+    
+    .order-total {
+        text-align: center;
+    }
+}
