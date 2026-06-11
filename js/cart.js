@@ -182,9 +182,8 @@ function openCartSidebar() {
 
 // ===== ОФОРМЛЕНИЕ ЗАКАЗА =====
 function openCheckoutModal() {
-    // Защита от двойного открытия
     if (isCheckoutModalOpen) {
-        console.log('Модалка оформления заказа уже открыта');
+        console.log('Модалка уже открыта');
         return;
     }
     
@@ -232,7 +231,6 @@ function openCheckoutModal() {
                         </div>
                     </div>
                     
-                    <!-- Форма заказа -->
                     <form id="checkoutForm">
                         <div class="form-row">
                             <div class="form-group">
@@ -268,8 +266,8 @@ function openCheckoutModal() {
                             <div class="styled-select-wrapper">
                                 <select id="checkoutPayment" class="styled-select">
                                     <option value="card">💳 Банковская карта</option>
-                                    <option value="sbp">📱 СБП (по номеру телефона)</option>
-                                    <option value="cash">💰 Наличные при получении</option>
+                                    <option value="sbp">📱 СБП</option>
+                                    <option value="cash">💰 Наличные</option>
                                 </select>
                                 <span class="select-arrow">▼</span>
                             </div>
@@ -280,18 +278,9 @@ function openCheckoutModal() {
                         </div>
                         
                         <div class="checkout-total" id="checkoutTotal">
-                            <div class="total-row">
-                                <span>Товары:</span>
-                                <span>${subtotal.toLocaleString()} ₽</span>
-                            </div>
-                            <div class="total-row" id="deliveryRow">
-                                <span>Доставка:</span>
-                                <span id="deliveryCost">350 ₽</span>
-                            </div>
-                            <div class="total-row grand-total">
-                                <span>Итого к оплате:</span>
-                                <strong id="finalTotal">${(subtotal + 350).toLocaleString()} ₽</strong>
-                            </div>
+                            <div class="total-row"><span>Товары:</span><span>${subtotal.toLocaleString()} ₽</span></div>
+                            <div class="total-row" id="deliveryRow"><span>Доставка:</span><span id="deliveryCost">350 ₽</span></div>
+                            <div class="total-row grand-total"><span>Итого к оплате:</span><strong id="finalTotal">${(subtotal + 350).toLocaleString()} ₽</strong></div>
                         </div>
                         
                         <button type="submit" class="checkout-submit-btn">💳 Перейти к оплате</button>
@@ -306,27 +295,18 @@ function openCheckoutModal() {
     document.body.insertAdjacentHTML('beforeend', modalHtml);
     document.body.style.overflow = 'hidden';
     
-    // Закрытие модалки (сброс флага)
+    // Закрытие модалки
     const closeModal = document.getElementById('closeCheckoutModal');
     const modalOverlay = document.getElementById('checkoutModal');
     
-    if (closeModal) {
-        closeModal.onclick = () => {
-            modalOverlay.remove();
-            document.body.style.overflow = '';
-            isCheckoutModalOpen = false;
-        };
-    }
+    const closeModalHandler = () => {
+        modalOverlay.remove();
+        document.body.style.overflow = '';
+        isCheckoutModalOpen = false;
+    };
     
-    if (modalOverlay) {
-        modalOverlay.onclick = (e) => {
-            if (e.target === modalOverlay) {
-                modalOverlay.remove();
-                document.body.style.overflow = '';
-                isCheckoutModalOpen = false;
-            }
-        };
-    }
+    if (closeModal) closeModal.onclick = closeModalHandler;
+    if (modalOverlay) modalOverlay.onclick = (e) => { if (e.target === modalOverlay) closeModalHandler(); };
     
     // Обновление суммы при выборе доставки
     const deliverySelect = document.getElementById('checkoutDelivery');
@@ -338,7 +318,6 @@ function openCheckoutModal() {
         const selectedOption = deliverySelect.options[deliverySelect.selectedIndex];
         const deliveryPrice = parseInt(selectedOption.dataset.price);
         const total = subtotal + deliveryPrice;
-        
         addressGroup.style.display = deliverySelect.value === 'courier' ? 'block' : 'none';
         deliveryCostSpan.textContent = deliveryPrice === 0 ? 'Бесплатно' : deliveryPrice.toLocaleString() + ' ₽';
         finalTotalSpan.textContent = total.toLocaleString() + ' ₽';
@@ -354,14 +333,11 @@ function openCheckoutModal() {
         if (input) {
             const saved = localStorage.getItem(`checkout_${id}`);
             if (saved) input.value = saved;
-            
-            input.addEventListener('input', () => {
-                localStorage.setItem(`checkout_${id}`, input.value);
-            });
+            input.addEventListener('input', () => localStorage.setItem(`checkout_${id}`, input.value));
         }
     });
     
-    // Отправка формы (БЕЗ УДАЛЕНИЯ ТОВАРОВ)
+    // Отправка формы — ТОЛЬКО ПЕРЕХОД К ОПЛАТЕ, КОРЗИНУ НЕ ОЧИЩАЕМ
     const form = document.getElementById('checkoutForm');
     form.onsubmit = (e) => {
         e.preventDefault();
@@ -382,10 +358,7 @@ function openCheckoutModal() {
         const orderData = {
             items: cart,
             subtotal: subtotal,
-            delivery: {
-                method: deliverySelect.value,
-                price: deliveryPrice
-            },
+            delivery: { method: deliverySelect.value, price: deliveryPrice },
             address: address,
             total: total,
             customer: {
@@ -398,7 +371,7 @@ function openCheckoutModal() {
             date: new Date().toLocaleString()
         };
         
-        console.log('📦 ЗАКАЗ:', orderData);
+        console.log('📦 ЗАКАЗ ДЛЯ ОПЛАТЫ:', orderData);
         localStorage.setItem('pendingOrder', JSON.stringify(orderData));
         
         // Закрываем модалку, НО НЕ ОЧИЩАЕМ КОРЗИНУ
@@ -407,8 +380,11 @@ function openCheckoutModal() {
         isCheckoutModalOpen = false;
         
         if (typeof showToast === 'function') {
-            showToast(`💳 Спасибо, ${name}! Сумма к оплате: ${total.toLocaleString()} ₽`);
+            showToast(`💳 Перенаправление на оплату... Сумма: ${total.toLocaleString()} ₽`);
         }
+        
+        // РЕДИРЕКТ НА СТРАНИЦУ ОПЛАТЫ
+        // window.location.href = '/payment.html';
     };
 }
 
@@ -418,9 +394,7 @@ function clearCartAfterPayment() {
     if (typeof updateCartCount === 'function') updateCartCount();
     
     const formInputs = ['checkoutName', 'checkoutPhone', 'checkoutEmail', 'checkoutAddress', 'checkoutComment'];
-    formInputs.forEach(id => {
-        localStorage.removeItem(`checkout_${id}`);
-    });
+    formInputs.forEach(id => localStorage.removeItem(`checkout_${id}`));
     localStorage.removeItem('pendingOrder');
     
     if (typeof showToast === 'function') showToast('✅ Заказ оплачен! Спасибо за покупку!');
