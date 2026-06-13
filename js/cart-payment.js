@@ -272,3 +272,39 @@ function showToast(msg) {
 // Делаем функции глобальными
 window.openPayment = openPayment;
 window.finalizeOrder = finalizeOrder;
+
+// Получить настройки платёжной системы
+function getPaymentSystemSettings() {
+    const saved = localStorage.getItem('payment_settings');
+    if (saved) {
+        try {
+            return JSON.parse(saved);
+        } catch(e) {}
+    }
+    return null;
+}
+
+// В функции processPayment добавить проверку
+function processPayment(orderData) {
+    const settings = getPaymentSystemSettings();
+    const method = orderData.payment;
+    
+    if (method === 'card') {
+        // Проверяем, какая система настроена
+        if (settings?.yookassa?.shop_id && settings.yookassa.secret_key) {
+            processYookassaPayment(orderData, settings.yookassa);
+        } else if (settings?.tinkoff?.terminal_key && settings.tinkoff.secret_key) {
+            processTinkoffPayment(orderData, settings.tinkoff);
+        } else {
+            showCard(orderData); // Демо-режим
+        }
+    } else if (method === 'sbp') {
+        if (settings?.sbp?.recipient_name) {
+            processSbpPayment(orderData, settings.sbp);
+        } else {
+            showSbp(orderData);
+        }
+    } else if (method === 'cash') {
+        showCash(orderData);
+    }
+}
