@@ -159,10 +159,7 @@
 <!-- ===== ТЕСТОВЫЙ ПОЛЬЗОВАТЕЛЬ ===== -->
 <script>
     (function() {
-        // Номер телефона в едином формате (как в заказах CRM)
         const testPhone = '79063771985';
-        
-        // Проверяем и создаём тестового пользователя
         const userKey = `user_${testPhone}`;
         let testUser = localStorage.getItem(userKey);
         
@@ -178,13 +175,17 @@
                 total_spent: 0
             };
             localStorage.setItem(userKey, JSON.stringify(testUser));
-            console.log('✅ Тестовый пользователь создан:', testUser.name);
-            console.log('📞 Телефон:', formatPhone(testPhone));
         }
         
-        // Автоматический вход
         localStorage.setItem('current_user_phone', testPhone);
         console.log('✅ Автоматический вход выполнен для телефона:', testPhone);
+        
+        // ПРИНУДИТЕЛЬНО ОБНОВЛЯЕМ СТРАНИЦУ
+        if (typeof renderAccount === 'function') {
+            renderAccount();
+        } else {
+            setTimeout(() => location.reload(), 100);
+        }
     })();
 </script>
 
