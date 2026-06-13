@@ -21,6 +21,71 @@
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f7fa; min-height: 100vh; }
         .main-content { min-height: calc(100vh - 300px); padding: 40px 0; }
         .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        
+        /* Стили формы входа */
+        .login-container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 28px;
+            padding: 40px 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .login-container h2 {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #1a2c3e;
+        }
+        .login-container p {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 30px;
+        }
+        .login-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid #cbdde9;
+            border-radius: 40px;
+            font-size: 16px;
+            margin-bottom: 16px;
+        }
+        .login-input:focus {
+            outline: none;
+            border-color: #00897b;
+        }
+        .login-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #00897b, #4db6ac);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 40px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,137,123,0.3);
+        }
+        .error-msg {
+            background: #ffebee;
+            color: #c62828;
+            padding: 10px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            text-align: center;
+            font-size: 14px;
+        }
+        .test-credentials {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 12px;
+            margin-top: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #64748b;
+        }
     </style>
 </head>
 <body>
@@ -31,22 +96,17 @@
         <button class="header-burger" id="burgerBtn">
             <span></span><span></span><span></span>
         </button>
-
         <div class="header-search">
             <input type="text" id="searchInput" placeholder="Поиск товаров...">
             <button class="header-search__voice" id="voiceBtn">🎤</button>
         </div>
-
         <a href="index.html" class="header-logo">MURANO APPAREL</a>
-
         <button class="header-mobile-search" id="mobileSearchIcon">🔍</button>
-
         <div class="header-actions">
             <button class="header-account" id="accountBtn">👤 <span>Кабинет</span></button>
             <button class="header-cart" id="cartBtn">🛒 <span id="cartCounter">0</span></button>
         </div>
     </div>
-
     <div class="header-mobile-menu" id="mobileMenu">
         <div class="mobile-menu-header">
             <span>Меню</span>
@@ -62,7 +122,6 @@
         </nav>
     </div>
     <div class="header-overlay" id="mobileOverlay"></div>
-
     <div class="mobile-search" id="mobileSearch">
         <input type="text" id="mobileSearchInput" placeholder="Поиск...">
         <button id="closeMobileSearch">✕</button>
@@ -73,6 +132,7 @@
 <main class="main-content">
     <div class="container">
         <div id="accountContainer">
+            <!-- Контент загружается через JS -->
             <div style="text-align: center; padding: 60px;">
                 <div class="loading-spinner">🔄 Загрузка...</div>
             </div>
@@ -125,28 +185,6 @@
     </div>
 </footer>
 
-<!-- Модальное окно авторизации -->
-<div id="authModal" class="auth-modal-overlay">
-    <div class="auth-modal">
-        <button class="auth-modal-close" id="closeAuthModal">&times;</button>
-        <h2>🔐 Вход в личный кабинет</h2>
-        <div id="authContent">
-            <input type="tel" id="authPhone" class="auth-input" placeholder="+7 (___) ___-__-__">
-            <button id="sendCodeBtn" class="auth-btn">Получить код</button>
-        </div>
-        <div id="resendInfo" style="margin-top: 15px; font-size: 12px; color: #999;"></div>
-    </div>
-</div>
-
-<!-- Модальное окно деталей заказа -->
-<div id="orderDetailModal" class="auth-modal-overlay">
-    <div class="auth-modal" style="max-width: 600px;">
-        <button class="auth-modal-close" id="closeOrderDetailModal">&times;</button>
-        <h2 id="orderDetailTitle">📋 Детали заказа</h2>
-        <div id="orderDetailContent" style="text-align: left;"></div>
-    </div>
-</div>
-
 <!-- Скрипты -->
 <script src="js/cart-ui.js"></script>
 <script src="js/auth.js"></script>
@@ -156,35 +194,97 @@
 <script src="js/header.js"></script>
 <script src="js/products.js"></script>
 
-<!-- ===== ТЕСТОВЫЙ ПОЛЬЗОВАТЕЛЬ ===== -->
+<!-- ===== АВТОРИЗАЦИЯ ПО ТЕЛЕФОНУ И ПАРОЛЮ ===== -->
 <script>
     (function() {
-        const testPhone = '79063771985';
-        const userKey = `user_${testPhone}`;
-        let testUser = localStorage.getItem(userKey);
+        // Тестовый пароль
+        const TEST_PASSWORD = '888999';
         
-        if (!testUser) {
-            testUser = {
-                id: 999,
-                phone: testPhone,
-                name: 'Тестовый Пользователь',
-                email: 'test@murano-apparel.ru',
-                default_address: 'г. Москва, ул. Тестовая, д. 1, кв. 1',
-                created_at: new Date().toISOString(),
-                bonuses: 0,
-                total_spent: 0
-            };
-            localStorage.setItem(userKey, JSON.stringify(testUser));
-        }
+        // Функция входа
+        window.loginWithPassword = function(phone, password) {
+            // Нормализуем телефон
+            const cleanPhone = phone.replace(/[^0-9]/g, '');
+            const normalizedPhone = cleanPhone.length === 10 ? '7' + cleanPhone : cleanPhone;
+            
+            // Проверка пароля
+            if (password !== TEST_PASSWORD) {
+                document.getElementById('loginError').innerText = '❌ Неверный пароль';
+                return false;
+            }
+            
+            if (normalizedPhone.length !== 11) {
+                document.getElementById('loginError').innerText = '❌ Неверный формат телефона';
+                return false;
+            }
+            
+            // Создаём или получаем пользователя
+            const userKey = `user_${normalizedPhone}`;
+            let user = localStorage.getItem(userKey);
+            
+            if (!user) {
+                user = {
+                    id: Date.now(),
+                    phone: normalizedPhone,
+                    name: '',
+                    email: '',
+                    default_address: '',
+                    created_at: new Date().toISOString(),
+                    bonuses: 0,
+                    total_spent: 0
+                };
+                localStorage.setItem(userKey, JSON.stringify(user));
+            } else {
+                user = JSON.parse(user);
+            }
+            
+            // Сохраняем сессию
+            localStorage.setItem('current_user_phone', normalizedPhone);
+            
+            // Перезагружаем страницу для отображения кабинета
+            location.reload();
+            return true;
+        };
         
-        localStorage.setItem('current_user_phone', testPhone);
-        console.log('✅ Автоматический вход выполнен для телефона:', testPhone);
+        // Функция выхода
+        window.logoutUser = function() {
+            localStorage.removeItem('current_user_phone');
+            location.reload();
+        };
         
-        // ПРИНУДИТЕЛЬНО ОБНОВЛЯЕМ СТРАНИЦУ
-        if (typeof renderAccount === 'function') {
-            renderAccount();
+        // Проверяем, есть ли активная сессия
+        const currentPhone = localStorage.getItem('current_user_phone');
+        const isLoggedIn = currentPhone && localStorage.getItem(`user_${currentPhone}`);
+        
+        if (!isLoggedIn) {
+            // Показываем форму входа
+            const container = document.getElementById('accountContainer');
+            if (container) {
+                container.innerHTML = `
+                    <div class="login-container">
+                        <h2>🔐 Вход в личный кабинет</h2>
+                        <p>Введите номер телефона и пароль</p>
+                        <div id="loginError" class="error-msg" style="display:none;"></div>
+                        <input type="tel" id="loginPhone" class="login-input" placeholder="+7 (906) 377-19-85" value="+7 906 377 19 85">
+                        <input type="password" id="loginPassword" class="login-input" placeholder="Пароль" value="888999">
+                        <button class="login-btn" onclick="loginWithPassword(document.getElementById('loginPhone').value, document.getElementById('loginPassword').value)">Войти</button>
+                        <div class="test-credentials">
+                            <strong>📱 Тестовые данные:</strong><br>
+                            Телефон: +7 906 377 19 85<br>
+                            Пароль: 888999
+                        </div>
+                    </div>
+                `;
+            }
         } else {
-            setTimeout(() => location.reload(), 100);
+            // Пользователь авторизован — отображаем кабинет
+            if (typeof renderAccount === 'function') {
+                renderAccount();
+            } else {
+                console.log('⏳ Ожидание загрузки account.js...');
+                setTimeout(() => {
+                    if (typeof renderAccount === 'function') renderAccount();
+                }, 500);
+            }
         }
     })();
 </script>
