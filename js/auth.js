@@ -2,33 +2,54 @@
 
 let currentUser = null;
 
+// Нормализация телефона (только цифры, без +7, без пробелов)
+function normalizePhone(phone) {
+    if (!phone) return '';
+    const cleaned = String(phone).replace(/[^0-9]/g, '');
+    if (cleaned.length === 11 && cleaned[0] === '7') {
+        return cleaned;
+    }
+    if (cleaned.length === 10) {
+        return '7' + cleaned;
+    }
+    return cleaned;
+}
+
+// Форматирование телефона для отображения
+function formatPhone(phone) {
+    const str = normalizePhone(phone);
+    if (str.length === 11 && str[0] === '7') {
+        return `+7 ${str.slice(1,4)} ${str.slice(4,7)}-${str.slice(7,9)}-${str.slice(9,11)}`;
+    }
+    return phone;
+}
+
 function getUserKey(phone) {
-    return `user_${phone.replace(/[^0-9]/g, '')}`;
+    return `user_${normalizePhone(phone)}`;
 }
 
 // Отправка кода авторизации
 async function sendAuthCode(phone) {
-    const cleanPhone = phone.replace(/[^0-9]/g, '');
-    if (cleanPhone.length < 10) {
-        showToast('❌ Введите корректный номер телефона');
+    const cleanPhone = normalizePhone(phone);
+    if (cleanPhone.length !== 11) {
+        showToast('❌ Введите корректный номер телефона (10 цифр)');
         return false;
     }
     
     const code = Math.floor(100000 + Math.random() * 900000).toString();
     localStorage.setItem(`auth_code_${cleanPhone}`, JSON.stringify({
         code: code,
-        expires: Date.now() + 5 * 60 * 1000 // 5 минут
+        expires: Date.now() + 5 * 60 * 1000
     }));
     
-    // В реальном проекте здесь отправка SMS/Email
-    console.log(`📱 Код для ${phone}: ${code}`);
+    console.log(`📱 Код для ${formatPhone(cleanPhone)}: ${code}`);
     showToast(`📧 Код отправлен на email: ${code}`, 'info');
     return true;
 }
 
 // Проверка кода
 function verifyCode(phone, code) {
-    const cleanPhone = phone.replace(/[^0-9]/g, '');
+    const cleanPhone = normalizePhone(phone);
     const stored = localStorage.getItem(`auth_code_${cleanPhone}`);
     
     if (!stored) {
@@ -49,8 +70,7 @@ function verifyCode(phone, code) {
             return false;
         }
         
-        // Код верный — авторизуем
-        loginUser(phone);
+        loginUser(cleanPhone);
         localStorage.removeItem(`auth_code_${cleanPhone}`);
         return true;
     } catch(e) {
@@ -60,14 +80,13 @@ function verifyCode(phone, code) {
 
 // Вход пользователя
 function loginUser(phone) {
-    const cleanPhone = phone.replace(/[^0-9]/g, '');
+    const cleanPhone = normalizePhone(phone);
     const userKey = getUserKey(cleanPhone);
     let user = localStorage.getItem(userKey);
     
     if (user) {
         user = JSON.parse(user);
     } else {
-        // Новый пользователь
         user = {
             id: Date.now(),
             phone: cleanPhone,
@@ -105,7 +124,8 @@ function getCurrentUser() {
     
     const savedPhone = localStorage.getItem('current_user_phone');
     if (savedPhone) {
-        const userKey = getUserKey(savedPhone);
+        const cleanPhone = normalizePhone(savedPhone);
+        const userKey = getUserKey(cleanPhone);
         const user = localStorage.getItem(userKey);
         if (user) {
             currentUser = JSON.parse(user);
@@ -131,10 +151,9 @@ function updateUserProfile(updates) {
 function addBonuses(amount, reason) {
     if (!currentUser) return false;
     
-    currentUser.bonuses += amount;
+    currentUser.bonuses = (currentUser.bonuses || 0) + amount;
     currentUser.total_spent = (currentUser.total_spent || 0) + amount;
     
-    // Добавляем запись о начислении
     const bonusHistory = JSON.parse(localStorage.getItem(`bonus_history_${currentUser.id}`) || '[]');
     bonusHistory.unshift({
         date: new Date().toISOString(),
