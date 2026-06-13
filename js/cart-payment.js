@@ -1,8 +1,5 @@
 // ===== js/cart-payment.js - ОПЛАТА =====
 
-// URL для отправки в CRM (ЗАМЕНИТЕ НА ВАШ РЕАЛЬНЫЙ)
-const CRM_API_URL = 'https://your-crm.com/api/orders';
-
 function openPayment(orderData) {
     const method = orderData.payment;
     if (method === 'card') showCard(orderData);
@@ -38,7 +35,7 @@ function showCard(orderData) {
     document.getElementById('payCancelBtn').onclick = function() { 
         modal.remove(); 
         document.body.style.overflow = ''; 
-        showToast('❌ Оплата отменена', 'error'); 
+        showToast('❌ Оплата отменена'); 
     };
     modal.onclick = function(e) { if (e.target === modal) { modal.remove(); document.body.style.overflow = ''; } };
 }
@@ -75,7 +72,7 @@ function showSbp(orderData) {
     document.getElementById('payCancelBtn').onclick = function() { 
         modal.remove(); 
         document.body.style.overflow = ''; 
-        showToast('❌ Оплата отменена', 'error'); 
+        showToast('❌ Оплата отменена'); 
     };
     modal.onclick = function(e) { if (e.target === modal) { modal.remove(); document.body.style.overflow = ''; } };
 }
@@ -108,7 +105,7 @@ function showCash(orderData) {
     document.getElementById('payCancelBtn').onclick = function() { 
         modal.remove(); 
         document.body.style.overflow = ''; 
-        showToast('❌ Заказ отменён', 'error'); 
+        showToast('❌ Заказ отменён'); 
     };
     modal.onclick = function(e) { if (e.target === modal) { modal.remove(); document.body.style.overflow = ''; } };
 }
@@ -117,91 +114,95 @@ function showCash(orderData) {
 function finalizeOrder(orderData) {
     console.log('🏁 ФИНАЛИЗАЦИЯ ЗАКАЗА:', orderData);
     
-    // 1. Отправляем заказ в CRM
-    sendOrderToCRM(orderData);
+    // 1. Сохраняем заказ в CRM
+    saveOrderToCRM(orderData);
     
     // 2. Очищаем корзину
     clearCart();
     
     // 3. Очищаем незавершённый заказ
-    clearPendingOrder();
+    if (typeof clearPendingOrder === 'function') clearPendingOrder();
     
     // 4. Показываем сообщение об успехе
     showSuccessMessage(orderData);
     
-    // 5. Закрываем все модальные окна
+    // 5. Закрываем модальные окна
     const paymentModal = document.getElementById('paymentModal');
     if (paymentModal) paymentModal.remove();
     document.body.style.overflow = '';
     
-    // 6. Опционально: перезагружаем отображение корзины
+    // 6. Обновляем отображение корзины
     if (typeof updateCartCount === 'function') updateCartCount();
     if (typeof updateCartDisplay === 'function') updateCartDisplay();
 }
 
-// Отправка заказа в CRM
-function sendOrderToCRM(orderData) {
-    console.log('📤 Отправка заказа в CRM...');
+// СОХРАНЕНИЕ ЗАКАЗА В CRM
+function saveOrderToCRM(orderData) {
+    console.log('📤 Сохранение заказа в CRM...');
     
-    const crmData = {
+    const orderForCRM = {
         order_id: orderData.orderId,
         date: orderData.date,
         customer: {
             name: orderData.customer.name,
             phone: orderData.customer.phone,
-            email: orderData.customer.email
+            email: orderData.customer.email || ''
         },
         delivery: {
             method: orderData.delivery.method,
-            price: orderData.delivery.price,
-            address: orderData.address
+            price: orderData.delivery.price
         },
+        address: orderData.address || '',
         items: orderData.items.map(item => ({
             id: item.id,
-            name: item.title,
+            title: item.title,
             price: item.price,
             quantity: item.quantity,
-            size: item.size,
-            color: item.color,
-            article: item.article
+            size: item.size || '—',
+            color: item.color || '—',
+            article: item.article || '—'
         })),
         total: orderData.total,
         payment: orderData.payment,
-        comment: orderData.comment
+        comment: orderData.comment || '',
+        status: 'new'
     };
     
-    // Реальная отправка на сервер
-    fetch(CRM_API_URL, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest'
-        },
-        body: JSON.stringify(crmData)
-    })
-    .then(response => {
-        if (!response.ok) throw new Error('Ошибка отправки');
-        return response.json();
-    })
-    .then(data => {
-        console.log('✅ Заказ успешно отправлен в CRM:', data);
-    })
-    .catch(error => {
-        console.error('❌ Ошибка отправки в CRM:', error);
-        // Сохраняем неотправленный заказ в localStorage
-        const failedOrders = JSON.parse(localStorage.getItem('failedOrders') || '[]');
-        failedOrders.push({
-            ...crmData,
-            failed_at: new Date().toISOString()
-        });
-        localStorage.setItem('failedOrders', JSON.stringify(failedOrders));
-        console.warn('⚠️ Заказ сохранён в failedOrders');
-    });
+    // Загружаем существующие данные
+    let crmData = localStorage.getItem('crm_data');
+    let allOrders = [];
+    let allProducts = [];
+    let allCategories = [];
+    
+    if (crmData) {
+        try {
+            const data = JSON.parse(crmData);
+            allOrders = data.orders || [];
+            allProducts = data.products || [];
+            allCategories = data.categories || [];
+        } catch(e) {
+            console.error('Ошибка парсинга crm_data', e);
+        }
+    }
+    
+    // Добавляем заказ
+    allOrders.unshift(orderForCRM);
+    
+    // Сохраняем
+    const newCrmData = { 
+        orders: allOrders, 
+        products: allProducts,
+        categories: allCategories,
+        leads: [],
+        messages: {},
+        settings: {}
+    };
+    
+    localStorage.setItem('crm_data', JSON.stringify(newCrmData));
+    console.log('✅ Заказ сохранён в CRM, всего заказов:', allOrders.length);
 }
 
-// Показать сообщение об успешном заказе
 function showSuccessMessage(orderData) {
-    // Создаём красивое оповещение
     const modal = document.createElement('div');
     modal.id = 'successModal';
     modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;z-index:10003;';
@@ -227,7 +228,6 @@ function showSuccessMessage(orderData) {
     document.getElementById('successCloseBtn').onclick = function() {
         successModal.remove();
         document.body.style.overflow = '';
-        // Закрываем корзину если открыта
         if (typeof closeCart === 'function') closeCart();
     };
     modal.onclick = function(e) {
@@ -239,8 +239,6 @@ function showSuccessMessage(orderData) {
     };
 }
 
-// Функция для очистки корзины (должна быть определена в cart-ui.js)
-// Если нет - добавляем
 function clearCart() {
     localStorage.setItem('cart', '[]');
     if (typeof updateCartCount === 'function') updateCartCount();
@@ -248,7 +246,29 @@ function clearCart() {
     console.log('🗑️ Корзина очищена');
 }
 
-// Функция для очистки незавершённого заказа
-function clearPendingOrder() {
-    localStorage.removeItem('pendingOrder');
+function escapeHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+    });
 }
+
+function showToast(msg) {
+    let t = document.getElementById('cartToast');
+    if (!t) {
+        t = document.createElement('div');
+        t.id = 'cartToast';
+        t.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1a2c3e;color:white;padding:12px 24px;border-radius:40px;z-index:100000;font-size:14px;opacity:0;transition:0.3s';
+        document.body.appendChild(t);
+    }
+    t.textContent = msg;
+    t.style.opacity = '1';
+    setTimeout(function() { t.style.opacity = '0'; }, 3000);
+}
+
+// Делаем функции глобальными
+window.openPayment = openPayment;
+window.finalizeOrder = finalizeOrder;
