@@ -44,6 +44,7 @@ function updateCartCount() {
     if (c) c.textContent = total;
 }
 
+// Добавить товар с выбором размера и цвета
 function addToCart(product) {
     const cart = getCart();
     let found = false;
@@ -65,15 +66,17 @@ function addToCart(product) {
             size: product.size || '—',
             color: product.color || '—',
             article: product.article || '—',
-            image: product.image || null
+            image: product.image || null,
+            barcode: product.barcode || null
         });
     }
     
     saveCart(cart);
-    showToast('✅ ' + product.title + ' добавлен в корзину');
+    showToast('✅ ' + product.title + ' (' + product.size + ', ' + product.color + ') добавлен в корзину');
 }
 
-function addToCartById(id, size = '—', color = '—', quantity = 1) {
+// Добавить по ID - теперь с выбором размера и цвета
+function addToCartById(id, size = null, color = null, quantity = 1) {
     if (!window.allProducts || window.allProducts.length === 0) {
         showToast('Ошибка: каталог не загружен');
         return;
@@ -85,22 +88,51 @@ function addToCartById(id, size = '—', color = '—', quantity = 1) {
         return;
     }
     
-    let price = product.discount_price && product.discount_price < product.price ? product.discount_price : product.price;
-    let image = product.images && product.images.length > 0 ? product.images[0] : null;
-    let article = product.article || '—';
+    // Если размер не указан, берём первый доступный
+    let selectedSize = size;
+    let selectedColor = color;
+    let selectedBarcode = null;
+    let selectedPrice = product.discount_price && product.discount_price < product.price ? product.discount_price : product.price;
+    
+    // Если есть sizes_data, ищем конкретный размер
+    if (product.sizes_data && product.sizes_data.length > 0 && !selectedSize) {
+        selectedSize = product.sizes_data[0].size;
+        selectedColor = product.sizes_data[0].color || product.color || '—';
+        selectedBarcode = product.sizes_data[0].barcode;
+        if (product.sizes_data[0].price) selectedPrice = product.sizes_data[0].price;
+    }
+    
+    // Если размер не передан, но есть sizes массив
+    if (!selectedSize && product.sizes && product.sizes.length > 0) {
+        selectedSize = product.sizes[0];
+        selectedColor = product.color || '—';
+    }
+    
+    // Если всё ещё нет размера
+    if (!selectedSize) {
+        selectedSize = '—';
+        selectedColor = product.color || '—';
+    }
+    
+    let image = null;
+    if (product.images && product.images.length > 0) {
+        image = product.images[0];
+    }
     
     addToCart({
         id: product.id,
         title: product.title,
-        price: price,
+        price: selectedPrice,
         quantity: quantity,
-        size: size,
-        color: color,
-        article: article,
-        image: image
+        size: selectedSize,
+        color: selectedColor,
+        article: product.article || '—',
+        image: image,
+        barcode: selectedBarcode
     });
 }
 
+// Отобразить корзину
 function updateCartDisplay() {
     const cart = getCart();
     const container = document.getElementById('cartItems');
@@ -139,6 +171,7 @@ function updateCartDisplay() {
                         <span class="cart-product-detail">📏 ${escapeHtml(item.size)}</span>
                         <span class="cart-product-detail">🎨 ${escapeHtml(item.color)}</span>
                         ${item.article && item.article !== '—' ? '<span class="cart-product-detail">📦 Арт: ' + escapeHtml(item.article) + '</span>' : ''}
+                        ${item.barcode ? '<span class="cart-product-detail">🔢 ШК: ' + escapeHtml(item.barcode) + '</span>' : ''}
                     </div>
                     <div class="cart-product-price">${Number(item.price).toLocaleString()} ₽ / шт</div>
                 </div>
