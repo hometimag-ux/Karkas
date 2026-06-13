@@ -82,3 +82,23 @@ document.addEventListener('DOMContentLoaded', function() {
     
     console.log('✅ Шапка инициализирована');
 });
+
+// В js/header.js, в DOMContentLoaded
+const accountBtn = document.getElementById('accountBtn');
+if (accountBtn) {
+    accountBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        // Проверяем авторизацию
+        const userPhone = localStorage.getItem('current_user_phone');
+        if (userPhone) {
+            window.location.href = 'account.html';
+        } else {
+            // Запрашиваем телефон
+            const phone = prompt('Введите номер телефона для входа в личный кабинет:', '+7');
+            if (phone && phone.length > 10) {
+                localStorage.setItem('current_user_phone', phone.replace(/[^0-9]/g, ''));
+                window.location.href = 'account.html';
+            }
+        }
+    });
+}
