@@ -5,6 +5,9 @@ window.categories = [];
 let currentCategory = 'all';
 let currentSearch = '';
 
+// Глобальная переменная для хранения выбранного товара
+let selectedProductForCart = null;
+
 function loadProductsFromCRM() {
     console.log('🔄 loadProductsFromCRM вызвана');
     const saved = localStorage.getItem('crm_data');
@@ -82,6 +85,155 @@ function renderFilters() {
     });
 }
 
+// Функция для открытия модального окна выбора размера
+function openSizeModal(productId) {
+    const product = window.allProducts.find(p => p.id === productId);
+    if (!product) {
+        showToast('Товар не найден');
+        return;
+    }
+    
+    selectedProductForCart = product;
+    
+    // Получаем список размеров
+    let sizes = [];
+    let colors = [];
+    
+    if (product.sizes_data && product.sizes_data.length > 0) {
+        sizes = [...new Set(product.sizes_data.map(s => s.size))];
+        colors = [...new Set(product.sizes_data.map(s => s.color || product.color || '—'))];
+    } else if (product.sizes && product.sizes.length > 0) {
+        sizes = product.sizes;
+        colors = [product.color || '—'];
+    } else {
+        sizes = ['—'];
+        colors = [product.color || '—'];
+    }
+    
+    const modalHtml = `
+        <div id="sizeModal" class="size-modal-overlay">
+            <div class="size-modal">
+                <div class="size-modal-header">
+                    <h3>Выберите размер</h3>
+                    <button class="size-modal-close" id="closeSizeModal">&times;</button>
+                </div>
+                <div class="size-modal-body">
+                    <div class="size-product-info">
+                        <div class="size-product-title">${escapeHtml(product.title)}</div>
+                        <div class="size-product-price">${product.discount_price && product.discount_price < product.price ? product.discount_price.toLocaleString() : product.price.toLocaleString()} ₽</div>
+                    </div>
+                    <div class="size-options">
+                        <div class="size-label">Размер:</div>
+                        <div class="size-buttons" id="sizeButtons">
+                            ${sizes.map(size => `
+                                <button class="size-btn" data-size="${escapeHtml(size)}">${escapeHtml(size)}</button>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <div class="color-options">
+                        <div class="color-label">Цвет:</div>
+                        <div class="color-buttons" id="colorButtons">
+                            ${colors.map(color => `
+                                <button class="color-btn" data-color="${escapeHtml(color)}">${escapeHtml(color)}</button>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <button id="confirmAddToCart" class="confirm-cart-btn">🛒 Добавить в корзину</button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    document.body.style.overflow = 'hidden';
+    
+    let selectedSize = sizes[0] || '—';
+    let selectedColor = colors[0] || '—';
+    
+    // Выбор размера
+    document.querySelectorAll('.size-btn').forEach(btn => {
+        btn.onclick = () => {
+            document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            selectedSize = btn.dataset.size;
+        };
+    });
+    
+    // Выбор цвета
+    document.querySelectorAll('.color-btn').forEach(btn => {
+        btn.onclick = () => {
+            document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            selectedColor = btn.dataset.color;
+        };
+    });
+    
+    // Активируем первый элемент
+    if (document.querySelector('.size-btn')) document.querySelector('.size-btn').classList.add('active');
+    if (document.querySelector('.color-btn')) document.querySelector('.color-btn').classList.add('active');
+    
+    // Подтверждение добавления
+    document.getElementById('confirmAddToCart').onclick = () => {
+        const price = product.discount_price && product.discount_price < product.price ? product.discount_price : product.price;
+        const image = product.images && product.images.length > 0 ? product.images[0] : null;
+        
+        addToCart({
+            id: product.id,
+            title: product.title,
+            price: price,
+            quantity: 1,
+            size: selectedSize,
+            color: selectedColor,
+            article: product.article || '—',
+            image: image
+        });
+        
+        closeSizeModal();
+    };
+    
+    // Закрытие модального окна
+    const closeSizeModal = () => {
+        const modal = document.getElementById('sizeModal');
+        if (modal) modal.remove();
+        document.body.style.overflow = '';
+    };
+    
+    document.getElementById('closeSizeModal').onclick = closeSizeModal;
+    document.getElementById('sizeModal').onclick = (e) => {
+        if (e.target === document.getElementById('sizeModal')) closeSizeModal();
+    };
+}
+
+// Добавление в корзину (уже есть, но убедимся)
+function addToCart(product) {
+    const cart = getCart();
+    let found = false;
+    
+    for (let i = 0; i < cart.length; i++) {
+        if (cart[i].id === product.id && cart[i].size === product.size && cart[i].color === product.color) {
+            cart[i].quantity += (product.quantity || 1);
+            found = true;
+            break;
+        }
+    }
+    
+    if (!found) {
+        cart.push({
+            id: product.id,
+            title: product.title,
+            price: product.price,
+            quantity: product.quantity || 1,
+            size: product.size || '—',
+            color: product.color || '—',
+            article: product.article || '—',
+            image: product.image || null
+        });
+    }
+    
+    saveCart(cart);
+    showToast('✅ ' + product.title + ' (' + product.size + ', ' + product.color + ') добавлен в корзину');
+}
+
 function renderProducts() {
     const grid = document.getElementById('productsGrid');
     if (!grid) {
@@ -112,12 +264,12 @@ function renderProducts() {
         const rating = p.rating || getRandomRating();
         const img = p.images && p.images.length > 0 ? p.images[0] : null;
         
-        // Получаем размеры
+        // Получаем размеры для отображения
         let sizesText = '—';
         if (p.sizes && p.sizes.length > 0) {
             sizesText = p.sizes.join(', ');
         } else if (p.sizes_data && p.sizes_data.length > 0) {
-            sizesText = p.sizes_data.map(s => s.size).join(', ');
+            sizesText = [...new Set(p.sizes_data.map(s => s.size))].join(', ');
         }
         
         // Левая метка (скидка или тег)
@@ -196,18 +348,13 @@ function attachProductEvents() {
         };
     });
     
-    // Добавление в корзину
+    // Добавление в корзину - теперь с выбором размера
     document.querySelectorAll('.add-to-cart').forEach(btn => {
         btn.onclick = (e) => {
             e.stopPropagation();
             const id = parseInt(btn.dataset.id);
             console.log('🛒 Добавление в корзину, id:', id);
-            if (id && typeof addToCartById === 'function') {
-                addToCartById(id);
-            } else {
-                console.error('addToCartById не определена');
-                showToast('Ошибка добавления в корзину');
-            }
+            openSizeModal(id);
         };
     });
 }
@@ -244,6 +391,7 @@ window.allProducts = window.allProducts;
 window.categories = window.categories;
 window.renderProducts = renderProducts;
 window.currentSearch = currentSearch;
+window.openSizeModal = openSizeModal;
 
 // Автоматическая инициализация при загрузке
 console.log('products.js загружен');
