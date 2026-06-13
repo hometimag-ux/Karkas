@@ -1,264 +1,81 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Личный кабинет — Murano Apparel</title>
-    
-    <!-- Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Styles -->
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/header.css">
-    <link rel="stylesheet" href="css/footer.css">
-    <link rel="stylesheet" href="css/responsive.css">
-    <link rel="stylesheet" href="css/account.css">
-    
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f7fa; min-height: 100vh; }
-        .main-content { min-height: calc(100vh - 300px); padding: 40px 0; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-        
-        /* Стили формы входа */
-        .login-container {
-            max-width: 400px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 28px;
-            padding: 40px 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-        .login-container h2 {
-            text-align: center;
-            margin-bottom: 10px;
-            color: #1a2c3e;
-        }
-        .login-container p {
-            text-align: center;
-            color: #64748b;
-            margin-bottom: 30px;
-        }
-        .login-input {
-            width: 100%;
-            padding: 14px 16px;
-            border: 1px solid #cbdde9;
-            border-radius: 40px;
-            font-size: 16px;
-            margin-bottom: 16px;
-        }
-        .login-input:focus {
-            outline: none;
-            border-color: #00897b;
-        }
-        .login-btn {
-            width: 100%;
-            background: linear-gradient(135deg, #00897b, #4db6ac);
-            color: white;
-            border: none;
-            padding: 14px;
-            border-radius: 40px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        .login-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,137,123,0.3);
-        }
-        .error-msg {
-            background: #ffebee;
-            color: #c62828;
-            padding: 10px;
-            border-radius: 12px;
-            margin-bottom: 16px;
-            text-align: center;
-            font-size: 14px;
-        }
-        .test-credentials {
-            background: #f8fafc;
-            border-radius: 16px;
-            padding: 12px;
-            margin-top: 20px;
-            text-align: center;
-            font-size: 12px;
-            color: #64748b;
-        }
-    </style>
-</head>
-<body>
-
-<!-- Шапка -->
-<header class="main-header">
-    <div class="header-container">
-        <button class="header-burger" id="burgerBtn">
-            <span></span><span></span><span></span>
-        </button>
-        <div class="header-search">
-            <input type="text" id="searchInput" placeholder="Поиск товаров...">
-            <button class="header-search__voice" id="voiceBtn">🎤</button>
-        </div>
-        <a href="index.html" class="header-logo">MURANO APPAREL</a>
-        <button class="header-mobile-search" id="mobileSearchIcon">🔍</button>
-        <div class="header-actions">
-            <button class="header-account" id="accountBtn">👤 <span>Кабинет</span></button>
-            <button class="header-cart" id="cartBtn">🛒 <span id="cartCounter">0</span></button>
-        </div>
-    </div>
-    <div class="header-mobile-menu" id="mobileMenu">
-        <div class="mobile-menu-header">
-            <span>Меню</span>
-            <button class="mobile-menu-close" id="closeMobileMenu">✕</button>
-        </div>
-        <nav class="mobile-nav-links">
-            <a href="index.html">Главная</a>
-            <a href="catalog.html">Каталог</a>
-            <a href="#">О компании</a>
-            <a href="#">Доставка</a>
-            <a href="#">Контакты</a>
-            <a href="#">Оптовым клиентам</a>
-        </nav>
-    </div>
-    <div class="header-overlay" id="mobileOverlay"></div>
-    <div class="mobile-search" id="mobileSearch">
-        <input type="text" id="mobileSearchInput" placeholder="Поиск...">
-        <button id="closeMobileSearch">✕</button>
-    </div>
-</header>
-
-<!-- Личный кабинет -->
-<main class="main-content">
-    <div class="container">
-        <div id="accountContainer">
-            <!-- Контент загружается через JS -->
-            <div style="text-align: center; padding: 60px;">
-                <div class="loading-spinner">🔄 Загрузка...</div>
-            </div>
-        </div>
-    </div>
-</main>
-
-<!-- Подвал -->
-<footer class="main-footer">
-    <div class="footer-container">
-        <div class="footer-grid">
-            <div class="footer-col">
-                <div class="footer-logo">🩺 MURANO APPAREL</div>
-                <p>Медицинская одежда для тех, кто спасает жизни.</p>
-                <div class="footer-contacts">
-                    <p>✉️ <a href="mailto:murano-apparel@bk.ru">murano-apparel@bk.ru</a></p>
-                    <p>📞 <a href="tel:+79063771985">+7 (906) 377-19-85</a></p>
-                </div>
-            </div>
-            <div class="footer-col">
-                <h4>Документы</h4>
-                <ul>
-                    <li><a href="#" class="footer-link" data-doc="offer">Оферта</a></li>
-                    <li><a href="#" class="footer-link" data-doc="privacy">Политика конфиденциальности</a></li>
-                    <li><a href="#" class="footer-link" data-doc="agreement">Соглашение</a></li>
-                    <li><a href="#" class="footer-link" data-doc="return">Возврат</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Информация</h4>
-                <ul>
-                    <li><a href="#" class="footer-link" data-doc="about">О компании</a></li>
-                    <li><a href="#" class="footer-link" data-doc="delivery">Доставка</a></li>
-                    <li><a href="#" class="footer-link" data-doc="contacts">Контакты</a></li>
-                    <li><a href="#" class="footer-link" data-doc="wholesale">Опт</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Подпишитесь</h4>
-                <div class="social-links">
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-telegram"></i></a>
-                    <a href="#"><i class="fab fa-whatsapp"></i></a>
-                </div>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>© 2026 Murano Apparel — медицинская одежда</p>
-        </div>
-    </div>
-</footer>
-
-<!-- Скрипты -->
-<script src="js/cart-ui.js"></script>
-<script src="js/auth.js"></script>
-<script src="js/wishlist.js"></script>
-<script src="js/bonuses.js"></script>
-<script src="js/account.js"></script>
-<script src="js/header.js"></script>
-<script src="js/products.js"></script>
-
-<!-- ===== АВТОРИЗАЦИЯ ПО ТЕЛЕФОНУ И ПАРОЛЮ ===== -->
 <script>
-    (function() {
-        // Тестовый пароль
+    // Функция входа
+    window.loginWithPassword = function() {
+        // Находим элементы внутри формы входа
+        const phoneInput = document.getElementById('loginPhone');
+        const passwordInput = document.getElementById('loginPassword');
+        const errorDiv = document.getElementById('loginError');
+        
+        // Проверяем, что элементы существуют
+        if (!phoneInput || !passwordInput) {
+            console.error('Элементы формы не найдены');
+            return;
+        }
+        
+        const phone = phoneInput.value || '';
+        const password = passwordInput.value || '';
         const TEST_PASSWORD = '888999';
         
-        // Функция входа
-        window.loginWithPassword = function(phone, password) {
-            // Нормализуем телефон
-            const cleanPhone = phone.replace(/[^0-9]/g, '');
-            const normalizedPhone = cleanPhone.length === 10 ? '7' + cleanPhone : cleanPhone;
-            
-            // Проверка пароля
-            if (password !== TEST_PASSWORD) {
-                document.getElementById('loginError').innerText = '❌ Неверный пароль';
-                return false;
-            }
-            
-            if (normalizedPhone.length !== 11) {
-                document.getElementById('loginError').innerText = '❌ Неверный формат телефона';
-                return false;
-            }
-            
-            // Создаём или получаем пользователя
-            const userKey = `user_${normalizedPhone}`;
-            let user = localStorage.getItem(userKey);
-            
-            if (!user) {
-                user = {
-                    id: Date.now(),
-                    phone: normalizedPhone,
-                    name: '',
-                    email: '',
-                    default_address: '',
-                    created_at: new Date().toISOString(),
-                    bonuses: 0,
-                    total_spent: 0
-                };
-                localStorage.setItem(userKey, JSON.stringify(user));
-            } else {
-                user = JSON.parse(user);
-            }
-            
-            // Сохраняем сессию
-            localStorage.setItem('current_user_phone', normalizedPhone);
-            
-            // Перезагружаем страницу для отображения кабинета
-            location.reload();
-            return true;
-        };
+        // Нормализация телефона
+        const cleanPhone = String(phone).replace(/[^0-9]/g, '');
+        const normalizedPhone = cleanPhone.length === 10 ? '7' + cleanPhone : cleanPhone;
         
-        // Функция выхода
-        window.logoutUser = function() {
-            localStorage.removeItem('current_user_phone');
-            location.reload();
-        };
+        // Проверка пароля
+        if (password !== TEST_PASSWORD) {
+            if (errorDiv) {
+                errorDiv.innerText = '❌ Неверный пароль';
+                errorDiv.style.display = 'block';
+            }
+            return;
+        }
         
-        // Проверяем, есть ли активная сессия
-        const currentPhone = localStorage.getItem('current_user_phone');
-        const isLoggedIn = currentPhone && localStorage.getItem(`user_${currentPhone}`);
+        // Проверка телефона
+        if (normalizedPhone.length !== 11) {
+            if (errorDiv) {
+                errorDiv.innerText = '❌ Неверный формат телефона';
+                errorDiv.style.display = 'block';
+            }
+            return;
+        }
         
-        if (!isLoggedIn) {
-            // Показываем форму входа
+        // Создаём или получаем пользователя
+        const userKey = `user_${normalizedPhone}`;
+        let user = localStorage.getItem(userKey);
+        
+        if (!user) {
+            user = {
+                id: Date.now(),
+                phone: normalizedPhone,
+                name: '',
+                email: '',
+                default_address: '',
+                created_at: new Date().toISOString(),
+                bonuses: 0,
+                total_spent: 0
+            };
+            localStorage.setItem(userKey, JSON.stringify(user));
+        }
+        
+        // Сохраняем сессию и перезагружаем
+        localStorage.setItem('current_user_phone', normalizedPhone);
+        location.reload();
+    };
+    
+    // Функция выхода
+    window.logoutUser = function() {
+        localStorage.removeItem('current_user_phone');
+        location.reload();
+    };
+    
+    // Проверяем, есть ли активная сессия
+    const currentPhone = localStorage.getItem('current_user_phone');
+    const isLoggedIn = currentPhone && localStorage.getItem(`user_${currentPhone}`);
+    
+    if (!isLoggedIn) {
+        // Ждём загрузки DOM перед отрисовкой формы
+        document.addEventListener('DOMContentLoaded', function() {
             const container = document.getElementById('accountContainer');
-            if (container) {
+            if (container && container.innerHTML.includes('🔄 Загрузка')) {
                 container.innerHTML = `
                     <div class="login-container">
                         <h2>🔐 Вход в личный кабинет</h2>
@@ -266,7 +83,7 @@
                         <div id="loginError" class="error-msg" style="display:none;"></div>
                         <input type="tel" id="loginPhone" class="login-input" placeholder="+7 (906) 377-19-85" value="+7 906 377 19 85">
                         <input type="password" id="loginPassword" class="login-input" placeholder="Пароль" value="888999">
-                        <button class="login-btn" onclick="loginWithPassword(document.getElementById('loginPhone').value, document.getElementById('loginPassword').value)">Войти</button>
+                        <button class="login-btn" onclick="loginWithPassword()">Войти</button>
                         <div class="test-credentials">
                             <strong>📱 Тестовые данные:</strong><br>
                             Телефон: +7 906 377 19 85<br>
@@ -275,8 +92,10 @@
                     </div>
                 `;
             }
-        } else {
-            // Пользователь авторизован — отображаем кабинет
+        });
+    } else {
+        // Пользователь авторизован — отображаем кабинет
+        document.addEventListener('DOMContentLoaded', function() {
             if (typeof renderAccount === 'function') {
                 renderAccount();
             } else {
@@ -285,9 +104,6 @@
                     if (typeof renderAccount === 'function') renderAccount();
                 }, 500);
             }
-        }
-    })();
+        });
+    }
 </script>
-
-</body>
-</html>
