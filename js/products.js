@@ -170,8 +170,8 @@ function renderProducts() {
                         }
                     </div>
                     <div class="product-actions">
-                        <button class="quick-view" data-id="${p.id}">👁️ Быстрый просмотр</button>
-                        <button class="add-to-cart" data-id="${p.id}">🛒 В корзину</button>
+                        <button class="quick-view" data-id="${p.id}">👁️</button>
+                        <button class="add-to-cart" data-id="${p.id}">🛒</button>
                     </div>
                 </div>
             </div>
