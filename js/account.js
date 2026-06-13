@@ -1,6 +1,14 @@
-// ===== js/account.js - ЛИЧНЫЙ КАБИНЕТ =====
+// ===== js/account.js - ЛИЧНЫЙ КАБИНЕТ (ОПТИМИЗИРОВАННЫЙ) =====
 
 let currentTab = 'profile';
+let cachedUserOrders = null;  // Кэш заказов пользователя
+let cachedUserStats = null;   // Кэш статистики
+
+// Сброс кэша при изменении данных
+function clearUserCache() {
+    cachedUserOrders = null;
+    cachedUserStats = null;
+}
 
 // Нормализация телефона
 function normalizePhone(phone) {
@@ -28,7 +36,6 @@ function getStatusText(status) {
     return map[status] || status;
 }
 
-// ===== ПОЛУЧЕНИЕ ТЕКУЩЕГО ПОЛЬЗОВАТЕЛЯ =====
 function getCurrentUser() {
     const savedPhone = localStorage.getItem('current_user_phone');
     if (!savedPhone) return null;
@@ -41,8 +48,14 @@ function getCurrentUser() {
     return null;
 }
 
-// ===== ЗАКАЗЫ ПОЛЬЗОВАТЕЛЯ =====
-function getUserOrders() {
+// ОПТИМИЗИРОВАННАЯ: заказы пользователя (с кэшем)
+function getUserOrders(forceRefresh = false) {
+    if (forceRefresh) clearUserCache();
+    
+    if (cachedUserOrders !== null) {
+        return cachedUserOrders;  // Возвращаем кэш
+    }
+    
     const user = getCurrentUser();
     if (!user) return [];
     
@@ -55,13 +68,13 @@ function getUserOrders() {
             const data = JSON.parse(saved);
             const allOrders = data.orders || [];
             
-            const userOrders = allOrders.filter(order => {
+            cachedUserOrders = allOrders.filter(order => {
                 const orderPhone = normalizePhone(order.customer?.phone);
                 return orderPhone === userPhone;
             });
             
-            console.log(`📦 Найдено заказов: ${userOrders.length}`);
-            return userOrders;
+            console.log(`📦 Найдено заказов: ${cachedUserOrders.length} (кэшировано)`);
+            return cachedUserOrders;
         } catch(e) {
             console.error('Ошибка загрузки заказов:', e);
         }
@@ -69,8 +82,14 @@ function getUserOrders() {
     return [];
 }
 
-// ===== СТАТИСТИКА ПОЛЬЗОВАТЕЛЯ =====
-function getUserStats() {
+// ОПТИМИЗИРОВАННАЯ: статистика (с кэшем)
+function getUserStats(forceRefresh = false) {
+    if (forceRefresh) clearUserCache();
+    
+    if (cachedUserStats !== null) {
+        return cachedUserStats;
+    }
+    
     const orders = getUserOrders();
     const totalSpent = orders.reduce((sum, order) => {
         if (order.status === 'paid' || order.status === 'delivered') {
@@ -80,10 +99,11 @@ function getUserStats() {
     }, 0);
     
     const bonuses = Math.floor(totalSpent * 0.05);
-    return { totalSpent, bonuses };
+    cachedUserStats = { totalSpent, bonuses };
+    return cachedUserStats;
 }
 
-// ===== ОБНОВЛЕНИЕ ПРОФИЛЯ =====
+// При обновлении профиля или добавлении заказа — сбрасываем кэш
 function updateUserProfile(updates) {
     const user = getCurrentUser();
     if (!user) return false;
@@ -92,6 +112,7 @@ function updateUserProfile(updates) {
     const userKey = `user_${user.phone}`;
     localStorage.setItem(userKey, JSON.stringify(user));
     
+    clearUserCache();  // Сбрасываем кэш
     showToast('✅ Профиль обновлён');
     return true;
 }
@@ -147,35 +168,12 @@ function getBonusHistory() {
     return JSON.parse(localStorage.getItem(`bonus_history_${user.id}`) || '[]');
 }
 
-function addBonuses(amount, reason) {
-    const user = getCurrentUser();
-    if (!user) return false;
-    
-    user.bonuses = (user.bonuses || 0) + amount;
-    user.total_spent = (user.total_spent || 0) + amount;
-    
-    const bonusHistory = JSON.parse(localStorage.getItem(`bonus_history_${user.id}`) || '[]');
-    bonusHistory.unshift({
-        date: new Date().toISOString(),
-        amount: amount,
-        reason: reason,
-        balance: user.bonuses
-    });
-    localStorage.setItem(`bonus_history_${user.id}`, JSON.stringify(bonusHistory));
-    
-    const userKey = `user_${user.phone}`;
-    localStorage.setItem(userKey, JSON.stringify(user));
-    
-    return true;
-}
-
 // ===== ОТРИСОВКА КАБИНЕТА =====
 function renderAccount() {
     const user = getCurrentUser();
     const container = document.getElementById('accountContainer');
     
     if (!user) {
-        // Показываем форму входа
         container.innerHTML = `
             <div class="login-container">
                 <h2>🔐 Вход в личный кабинет</h2>
@@ -196,6 +194,7 @@ function renderAccount() {
     
     const stats = getUserStats();
     const orders = getUserOrders();
+    const wishlistCount = getWishlist().length;
     
     container.innerHTML = `
         <div class="account-header">
@@ -212,7 +211,7 @@ function renderAccount() {
         <div class="account-tabs">
             <button class="tab-btn ${currentTab === 'profile' ? 'active' : ''}" data-tab="profile">👤 Профиль</button>
             <button class="tab-btn ${currentTab === 'orders' ? 'active' : ''}" data-tab="orders">📦 Мои заказы (${orders.length})</button>
-            <button class="tab-btn ${currentTab === 'wishlist' ? 'active' : ''}" data-tab="wishlist">❤️ Избранное (${getWishlist().length})</button>
+            <button class="tab-btn ${currentTab === 'wishlist' ? 'active' : ''}" data-tab="wishlist">❤️ Избранное (${wishlistCount})</button>
             <button class="tab-btn ${currentTab === 'bonuses' ? 'active' : ''}" data-tab="bonuses">💰 Бонусы</button>
         </div>
         
@@ -239,9 +238,9 @@ function renderAccount() {
         </div>
     `;
     
-    // Обработчики
     document.getElementById('logoutBtn')?.addEventListener('click', () => {
         localStorage.removeItem('current_user_phone');
+        clearUserCache();
         location.reload();
     });
     document.getElementById('saveProfileBtn')?.addEventListener('click', saveProfile);
@@ -361,8 +360,55 @@ function renderBonusHistory() {
 function viewOrderDetails(orderId) {
     const order = getUserOrders().find(o => o.order_id === orderId);
     if (!order) return;
+    alert(`📋 Заказ ${order.order_id}\n💰 Сумма: ${order.total} ₽\n📊 Статус: ${getStatusText(order.status)}`);
+}
+
+function loginWithPassword() {
+    const phone = document.getElementById('loginPhone')?.value || '';
+    const password = document.getElementById('loginPassword')?.value || '';
+    const TEST_PASSWORD = '888999';
     
-    alert(`Детали заказа ${order.orderId}\nСумма: ${order.total} ₽\nСтатус: ${getStatusText(order.status)}`);
+    const cleanPhone = phone.replace(/[^0-9]/g, '');
+    const normalizedPhone = cleanPhone.length === 10 ? '7' + cleanPhone : cleanPhone;
+    
+    if (password !== TEST_PASSWORD) {
+        const errorDiv = document.getElementById('loginError');
+        if (errorDiv) {
+            errorDiv.innerText = '❌ Неверный пароль';
+            errorDiv.style.display = 'block';
+        }
+        return;
+    }
+    
+    if (normalizedPhone.length !== 11) {
+        const errorDiv = document.getElementById('loginError');
+        if (errorDiv) {
+            errorDiv.innerText = '❌ Неверный формат телефона';
+            errorDiv.style.display = 'block';
+        }
+        return;
+    }
+    
+    const userKey = `user_${normalizedPhone}`;
+    let user = localStorage.getItem(userKey);
+    
+    if (!user) {
+        user = {
+            id: Date.now(),
+            phone: normalizedPhone,
+            name: '',
+            email: '',
+            default_address: '',
+            created_at: new Date().toISOString(),
+            bonuses: 0,
+            total_spent: 0
+        };
+        localStorage.setItem(userKey, JSON.stringify(user));
+    }
+    
+    localStorage.setItem('current_user_phone', normalizedPhone);
+    clearUserCache();
+    location.reload();
 }
 
 function escapeHtml(str) {
