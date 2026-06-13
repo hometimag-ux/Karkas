@@ -164,9 +164,9 @@ function updateCartDisplay() {
                 <div class="cart-product-info">
                     <div class="cart-product-title">${escapeHtml(item.title)}</div>
                     <div class="cart-product-details">
-                        <span class="cart-product-detail">📏 ${escapeHtml(item.size)}</span>
-                        <span class="cart-product-detail">🎨 ${escapeHtml(item.color)}</span>
-                        ${item.article && item.article !== '—' ? '<span class="cart-product-detail">📦 Арт: ' + escapeHtml(item.article) + '</span>' : ''}
+                        <span class="cart-product-detail">Размер: ${escapeHtml(item.size)}</span>
+                        <span class="cart-product-detail">Цвет: ${escapeHtml(item.color)}</span>
+                        ${item.article && item.article !== '—' ? '<span class="cart-product-detail">Артикул: ' + escapeHtml(item.article) + '</span>' : ''}
                     </div>
                     <div class="cart-product-price">${Number(item.price).toLocaleString()} ₽ / шт</div>
                 </div>
