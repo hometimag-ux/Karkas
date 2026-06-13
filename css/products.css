@@ -57,7 +57,7 @@
     box-shadow: 0 12px 24px rgba(0,0,0,0.12);
 }
 
-/* Изображение - вертикальное 3:4 */
+/* Изображение - на всю ширину, вертикальное 3:4 */
 .product-img {
     position: relative;
     width: 100%;
@@ -77,12 +77,12 @@
     transform: scale(1.05);
 }
 
-/* Левая метка (скидка, новинка, хит) */
+/* Левая метка (скидка, новинка, хит) - поверх фото */
 .product-badge {
     position: absolute;
     top: 12px;
     left: 12px;
-    z-index: 2;
+    z-index: 10;
     padding: 5px 12px;
     border-radius: 30px;
     font-size: 0.7rem;
@@ -112,12 +112,12 @@
     color: white;
 }
 
-/* Правая метка (рейтинг) */
+/* Правая метка (рейтинг) - поверх фото */
 .product-rating-badge {
     position: absolute;
     top: 12px;
     right: 12px;
-    z-index: 2;
+    z-index: 10;
     background: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(4px);
     padding: 4px 10px;
@@ -140,12 +140,13 @@
     font-size: 0.7rem;
 }
 
-/* Информация о товаре */
+/* Информация о товаре - под фото */
 .product-info {
     padding: 14px;
     flex: 1;
     display: flex;
     flex-direction: column;
+    background: white;
 }
 
 .product-title {
@@ -192,21 +193,13 @@
 
 .current-price.discounted {
     color: #e74c3c;
+    font-size: 1.1rem;
 }
 
 .old-price {
     font-size: 0.7rem;
     color: #94a3b8;
     text-decoration: line-through;
-}
-
-.discount-percent {
-    font-size: 0.65rem;
-    font-weight: 700;
-    color: #e74c3c;
-    background: #fee2e2;
-    padding: 2px 6px;
-    border-radius: 20px;
 }
 
 /* Кнопки действий */
