@@ -21,25 +21,21 @@ function renderProducts() {
         const img = p.images && p.images.length > 0 ? p.images[0] : null;
         const sizesText = p.sizes ? p.sizes.join(', ') : (p.sizes_data ? p.sizes_data.map(s => s.size).join(', ') : '—');
         
-        // Определяем метку товара
-        let badgeHtml = '';
-        
-        // Скидка (самый высокий приоритет)
+        // Левая метка (скидка или тег)
+        let leftBadgeHtml = '';
         if (hasDiscount) {
-            badgeHtml = `<div class="product-badge discount">🔥 -${discountPercent}%</div>`;
-        } 
-        // Иначе проверяем метки из tags
-        else if (p.tags && p.tags.length > 0) {
+            leftBadgeHtml = `<div class="product-badge discount">🔥 -${discountPercent}%</div>`;
+        } else if (p.tags && p.tags.length > 0) {
             if (p.tags.includes('новинка')) {
-                badgeHtml = `<div class="product-badge new">✨ Новинка</div>`;
+                leftBadgeHtml = `<div class="product-badge new">✨ Новинка</div>`;
             } else if (p.tags.includes('хит')) {
-                badgeHtml = `<div class="product-badge hit">⭐ Хит продаж</div>`;
+                leftBadgeHtml = `<div class="product-badge hit">⭐ Хит продаж</div>`;
             } else if (p.tags.includes('популярное')) {
-                badgeHtml = `<div class="product-badge popular">🔥 Популярное</div>`;
+                leftBadgeHtml = `<div class="product-badge popular">🔥 Популярное</div>`;
             }
         }
         
-        // Рейтинг звёздами
+        // Правая метка (рейтинг)
         const fullStars = Math.floor(rating);
         const halfStar = rating % 1 >= 0.5;
         const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
@@ -49,9 +45,17 @@ function renderProducts() {
         if (halfStar) starsHtml += '½';
         for (let i = 0; i < emptyStars; i++) starsHtml += '☆';
         
+        const rightBadgeHtml = `
+            <div class="product-rating-badge">
+                <span class="stars">${starsHtml}</span>
+                <span class="rating-value">${rating}</span>
+            </div>
+        `;
+        
         return `
             <div class="product-card" data-id="${p.id}">
-                ${badgeHtml}
+                ${leftBadgeHtml}
+                ${rightBadgeHtml}
                 <div class="product-img">
                     ${img ? `<img src="${img}" alt="${escapeHtml(p.title)}">` : `<div style="font-size: 4rem;">${p.emoji || '👕'}</div>`}
                 </div>
@@ -59,14 +63,11 @@ function renderProducts() {
                     <div class="product-title">${escapeHtml(p.title)}</div>
                     <div class="product-category">${category ? escapeHtml(category.title) : ''}</div>
                     <div class="product-sizes">📏 Размеры: ${sizesText}</div>
-                    <div class="product-rating">
-                        <div class="stars">${starsHtml}</div>
-                        <span class="rating-value">${rating}</span>
-                    </div>
                     <div class="product-prices">
                         ${hasDiscount ? 
                             `<span class="current-price discounted">${p.discount_price.toLocaleString()} ₽</span>
-                             <span class="old-price">${p.price.toLocaleString()} ₽</span>` :
+                             <span class="old-price">${p.price.toLocaleString()} ₽</span>
+                             <span class="discount-percent">-${discountPercent}%</span>` :
                             `<span class="current-price">${p.price.toLocaleString()} ₽</span>`
                         }
                     </div>
