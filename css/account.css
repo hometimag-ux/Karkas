@@ -321,3 +321,31 @@
     .bonus-amount { font-size: 28px; }
     .wishlist-grid { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* Дополнительные стили для модальных окон */
+.auth-modal-close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+    color: #94a3b8;
+}
+
+.auth-modal-close:hover {
+    color: #1a2c3e;
+}
+
+.loading-spinner {
+    font-size: 1.2rem;
+    color: #94a3b8;
+}
+
+/* Статусы заказов */
+.status-new { background: #e3f2fd; color: #1976d2; }
+.status-paid { background: #e8f5e9; color: #2e7d32; }
+.status-shipped { background: #fff3e0; color: #ef6c00; }
+.status-delivered { background: #e8f5e9; color: #2e7d32; }
+.status-cancelled { background: #ffebee; color: #c62828; }
