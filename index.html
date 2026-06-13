@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Murano Apparel — Медицинская одежда</title>
     
-    <!-- Fonts & Icons & Шрифты -->
+    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -28,7 +28,7 @@
     <link rel="stylesheet" href="css/modal-quickview.css">
     <link rel="stylesheet" href="css/modal-quickorder.css">
     
-    <!-- Page-specific styles (will be overridden) -->
+    <!-- Page-specific styles -->
     <link rel="stylesheet" href="css/hero.css">
     <link rel="stylesheet" href="css/products.css">
     <link rel="stylesheet" href="css/carousel.css">
@@ -37,7 +37,7 @@
 </head>
 <body>
 
-<!-- МОДАЛЬНОЕ ОКНО (ДОЛЖНО БЫТЬ В САМОМ НАЧАЛЕ, НЕ ВНУТРИ ФУТЕРА!) -->
+<!-- МОДАЛЬНОЕ ОКНО ДОКУМЕНТОВ -->
 <div class="modal-overlay" id="docModalOverlay">
     <div class="modal-container">
         <div class="modal-header">
@@ -50,7 +50,7 @@
     </div>
 </div>
 
-<!-- Модальное окно для куки (нижняя панель + затемнение) -->
+<!-- Модальное окно для куки -->
 <div class="cookie-overlay" id="cookieOverlay"></div>
 <div class="cookie-bar" id="cookieBar">
     <div class="cookie-bar-content">
@@ -67,7 +67,7 @@
     </div>
 </div>
     
-<!-- Маскот — Реалистичное человеческое сердце (только для десктопа) -->
+<!-- Маскот -->
 <div class="mascot" id="mascot">
     <div class="mascot-icon">
         <svg width="44" height="44" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -88,35 +88,29 @@
     </div>
 </div>
     
-<!-- ==================== ШАПКА (НАЧАЛО) ==================== -->
+<!-- ==================== ШАПКА ==================== -->
 <header class="main-header">
     <div class="header-container">
-        <!-- Бургер (для мобильных и десктопа) -->
         <button class="header-burger" id="burgerBtn">
             <span></span><span></span><span></span>
         </button>
 
-        <!-- Поиск (десктоп) -->
         <div class="header-search">
             <input type="text" id="searchInput" placeholder="Поиск товаров...">
             <button class="header-search__voice" id="voiceBtn">🎤</button>
         </div>
 
-        <!-- Логотип -->
         <a href="index.html" class="header-logo">MURANO APPAREL</a>
 
-        <!-- Иконка поиска (мобильная) -->
         <button class="header-mobile-search" id="mobileSearchIcon">🔍</button>
 
-        <!-- Иконки кабинета и корзины -->
         <div class="header-actions">
             <button class="header-account" id="accountBtn">👤 <span>Кабинет</span></button>
             <button class="header-cart" id="cartBtn">🛒 <span id="cartCounter">0</span></button>
         </div>
     </div>
 
-    <!-- Мобильное меню (выезжает слева) -->
-     <div class="header-mobile-menu" id="mobileMenu">
+    <div class="header-mobile-menu" id="mobileMenu">
         <div class="mobile-menu-header">
             <span>Меню</span>
             <button class="mobile-menu-close" id="closeMobileMenu">✕</button>
@@ -131,21 +125,93 @@
     </div>
     <div class="header-overlay" id="mobileOverlay"></div>
 
-    <!-- Мобильный поиск (выезжает сверху) -->
     <div class="mobile-search" id="mobileSearch">
         <input type="text" id="mobileSearchInput" placeholder="Поиск...">
         <button id="closeMobileSearch">✕</button>
     </div>
 </header>
-<!-- ==================== ШАПКА (КОНЕЦ) ==================== -->
 
 <!-- ==================== ОСНОВНОЙ КОНТЕНТ ==================== -->
 <main class="main-content">
-    <!-- Сюда будет вставляться содержимое страниц -->
-</main>
-<!-- ==================== КОНТЕНТ ЗАКОНЧЕН ==================== -->
+    <!-- Hero секция -->
+    <section class="hero">
+        <div class="hero-slider swiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide hero-slide" style="background: linear-gradient(135deg, #00897b, #004d40);">
+                    <div class="hero-content">
+                        <h1>Медицинская одежда<br>для настоящих профессионалов</h1>
+                        <p>Качество, комфорт и стиль — всё, что нужно для вашей работы</p>
+                        <a href="catalog.html" class="hero-btn">В каталог</a>
+                    </div>
+                </div>
+                <div class="swiper-slide hero-slide" style="background: linear-gradient(135deg, #1565c0, #0d47a1);">
+                    <div class="hero-content">
+                        <h1>Новая коллекция<br>осень-зима 2025</h1>
+                        <p>Тёплые и стильные модели для медицинских работников</p>
+                        <a href="catalog.html" class="hero-btn">Смотреть новинки</a>
+                    </div>
+                </div>
+            </div>
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
+    </section>
 
-<!-- ==================== ПОДВАЛ (НАЧАЛО) ==================== -->
+    <!-- Популярные товары -->
+    <section class="products-section">
+        <div class="container">
+            <h2 class="section-title">Популярные товары</h2>
+            <div class="products-grid" id="featuredProducts"></div>
+        </div>
+    </section>
+
+    <!-- Преимущества -->
+    <section class="advantages">
+        <div class="container">
+            <h2 class="section-title">Почему выбирают нас</h2>
+            <div class="advantages-grid">
+                <div class="advantage-item">
+                    <div class="advantage-icon">🇷🇺</div>
+                    <h3>Российское производство</h3>
+                    <p>Собственное производство и контроль качества</p>
+                </div>
+                <div class="advantage-item">
+                    <div class="advantage-icon">📏</div>
+                    <h3>Широкая размерная сетка</h3>
+                    <p>От XS до 5XL — подберём идеальный размер</p>
+                </div>
+                <div class="advantage-item">
+                    <div class="advantage-icon">🚚</div>
+                    <h3>Быстрая доставка</h3>
+                    <p>По всей России от 1 до 5 дней</p>
+                </div>
+                <div class="advantage-item">
+                    <div class="advantage-icon">💳</div>
+                    <h3>Удобная оплата</h3>
+                    <p>Картой, СБП, наличными при получении</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Контактная форма -->
+    <section class="contact-section">
+        <div class="container">
+            <h2 class="section-title">Есть вопросы?</h2>
+            <p class="section-subtitle">Напишите нам, и мы ответим в ближайшее время</p>
+            <form class="contact-form" id="contactForm">
+                <input type="text" placeholder="Ваше имя" required>
+                <input type="tel" placeholder="Телефон" required>
+                <input type="email" placeholder="Email">
+                <textarea rows="4" placeholder="Сообщение"></textarea>
+                <button type="submit" class="btn-primary">Отправить</button>
+            </form>
+        </div>
+    </section>
+</main>
+
+<!-- ==================== ПОДВАЛ ==================== -->
 <footer class="main-footer">
     <div class="footer-container">
         <div class="footer-grid">
@@ -190,36 +256,46 @@
         </div>
     </div>
 </footer>
-<!-- ==================== ПОДВАЛ (КОНЕЦ) ==================== -->
 
-<!-- Боковая корзина -->
-<div class="cart-sidebar" id="cartSidebar">
-    <div class="cart-header">
-        <h3>🛒 Корзина</h3>
-        <button id="closeCart">✕</button>
+<!-- ==================== МОДАЛЬНАЯ КОРЗИНА ==================== -->
+<div id="cartModalOverlay" class="cart-modal-overlay">
+    <div class="cart-modal">
+        <div class="cart-modal-header">
+            <h3>🛒 Корзина</h3>
+            <button id="closeCartModal" class="cart-modal-close">&times;</button>
+        </div>
+        <div id="cartItems" class="cart-items-container"></div>
+        <div id="cartTotal" class="cart-footer"></div>
     </div>
-    <div id="cartItems" class="cart-items">Корзина пуста</div>
-    <div id="cartTotal" class="cart-total"></div>
-    <button id="checkoutBtn" class="cart-checkout-btn">Оформить заказ</button>
 </div>
-<div class="overlay" id="overlay"></div>
 
-<!-- Скрипты -->
-<script src="js/cart-core.js"></script>
+<!-- ==================== СКРИПТЫ ==================== -->
+<!-- Корзина (3 файла) -->
 <script src="js/cart-ui.js"></script>
 <script src="js/cart-checkout.js"></script>
 <script src="js/cart-payment.js"></script>
-<script src="js/cart-init.js"></script>
-    
+
+<!-- Остальные скрипты -->
 <script src="js/utils.js"></script>
 <script src="js/products.js"></script>
 <script src="js/quickview.js"></script>
 <script src="js/header.js"></script>
 <script src="js/modal.js"></script>
-    
 <script src="js/mascot.js"></script>
 <script src="js/cookie.js"></script>
 <script src="js/catalog.js"></script>
+
+<script>
+    // Инициализация слайдера
+    document.addEventListener('DOMContentLoaded', function() {
+        const heroSwiper = new Swiper('.hero-slider', {
+            loop: true,
+            autoplay: { delay: 5000, disableOnInteraction: false },
+            pagination: { el: '.swiper-pagination', clickable: true },
+            navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' }
+        });
+    });
+</script>
 
 </body>
 </html>
