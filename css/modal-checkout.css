@@ -451,3 +451,7 @@
         flex-direction: column;
     }
 }
+
+.city-suggestion:hover {
+    background: #f0f0f0;
+}
