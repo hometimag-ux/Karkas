@@ -1,417 +1,126 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Личный кабинет — Murano Apparel</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: system-ui, sans-serif; background: #f5f7fa; padding: 20px; }
-        
-        .container { max-width: 1200px; margin: 0 auto; }
-        
-        /* Шапка кабинета */
-        .account-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 15px; }
-        .account-header h1 { font-size: 28px; color: #1a2c3e; }
-        .logout-btn { background: #e74c3c; color: white; border: none; padding: 10px 24px; border-radius: 40px; cursor: pointer; font-weight: 600; }
-        
-        /* Бонусная карта */
-        .bonus-card { background: linear-gradient(135deg, #00897b, #4db6ac); border-radius: 24px; padding: 25px; color: white; margin-bottom: 30px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px; }
-        .bonus-amount { font-size: 32px; font-weight: 800; }
-        .bonus-rate { font-size: 13px; opacity: 0.9; }
-        
-        /* Табы */
-        .tabs { display: flex; gap: 10px; margin-bottom: 30px; border-bottom: 1px solid #e2edf4; flex-wrap: wrap; }
-        .tab-btn { background: none; border: none; padding: 12px 24px; font-size: 16px; font-weight: 600; cursor: pointer; color: #64748b; border-bottom: 2px solid transparent; }
-        .tab-btn.active { color: #00897b; border-bottom-color: #00897b; }
-        
-        .tab-content { display: none; background: white; border-radius: 24px; padding: 24px; }
-        .tab-content.active { display: block; }
-        
-        /* Форма профиля */
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; color: #1a2c3e; }
-        .form-group input, .form-group textarea { width: 100%; padding: 12px 16px; border: 1px solid #cbdde9; border-radius: 12px; font-size: 14px; }
-        .save-btn { background: #00897b; color: white; border: none; padding: 12px 30px; border-radius: 40px; font-weight: 600; cursor: pointer; }
-        
-        /* Заказы */
-        .order-card { background: #f8fafc; border-radius: 16px; padding: 16px; margin-bottom: 12px; cursor: pointer; transition: 0.2s; }
-        .order-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        .order-header { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
-        .order-number { font-weight: 700; }
-        .order-status { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
-        .status-new { background: #e3f2fd; color: #1976d2; }
-        .status-paid { background: #e8f5e9; color: #2e7d32; }
-        .order-total { font-weight: 700; color: #00897b; }
-        
-        /* Избранное */
-        .wishlist-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
-        .wishlist-item { background: #f8fafc; border-radius: 16px; padding: 12px; text-align: center; position: relative; }
-        .wishlist-remove { position: absolute; top: 8px; right: 8px; background: white; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; }
-        .wishlist-item-img { font-size: 48px; margin-bottom: 8px; }
-        .wishlist-item-title { font-weight: 600; font-size: 14px; }
-        .wishlist-item-price { color: #00897b; font-weight: 700; margin: 8px 0; }
-        
-        /* Форма входа */
-        .login-container { max-width: 400px; margin: 0 auto; background: white; border-radius: 28px; padding: 40px 30px; text-align: center; }
-        .login-input { width: 100%; padding: 14px 16px; border: 1px solid #cbdde9; border-radius: 40px; font-size: 16px; margin-bottom: 16px; }
-        .login-btn { width: 100%; background: #00897b; color: white; border: none; padding: 14px; border-radius: 40px; font-weight: 600; cursor: pointer; }
-        .error-msg { color: #e74c3c; margin-bottom: 16px; display: none; }
-        .test-credentials { background: #f8fafc; border-radius: 16px; padding: 12px; margin-top: 20px; font-size: 12px; color: #64748b; }
-        
-        .loading { text-align: center; padding: 60px; color: #64748b; }
-    </style>
-</head>
-<body>
-<div class="container" id="app">
-    <div class="loading">🔄 Загрузка...</div>
-</div>
+function renderOrders() {
+    const orders = getUserOrders();
+    const container = document.getElementById('ordersList');
+    
+    if (!container) return;
+    
+    if (orders.length === 0) {
+        container.innerHTML = '<div style="text-align:center; padding:40px;">📭 У вас пока нет заказов</div>';
+        return;
+    }
+    
+    container.innerHTML = orders.map(order => `
+        <div class="order-card" onclick="showOrderDetails('${order.order_id}')">
+            <div class="order-header">
+                <span class="order-number">📋 ${order.order_id}</span>
+                <span class="order-date">📅 ${order.date || '—'}</span>
+                <span class="order-status status-${order.status || 'new'}">${getStatusText(order.status)}</span>
+                <span class="order-total">${(order.total || 0).toLocaleString()} ₽</span>
+            </div>
+            <div class="order-products">
+                ${(order.items || []).map(i => `${escapeHtml(i.title)} x${i.quantity}`).join(', ')}
+            </div>
+            ${order.tracking_number ? `
+            <div class="order-tracking" style="margin-top: 12px; padding-top: 8px; border-top: 1px solid #e2edf4; font-size: 13px;">
+                <span style="color: #00897b;">📦 Трек-номер:</span> 
+                <strong>${escapeHtml(order.tracking_number)}</strong>
+                <a href="https://www.cdek.ru/tracking?code=${encodeURIComponent(order.tracking_number)}" target="_blank" style="color: #00897b; margin-left: 10px; text-decoration: none;">🔍 Отследить</a>
+            </div>
+            ` : ''}
+        </div>
+    `).join('');
+}
 
-<script>
-    // ===== ФУНКЦИИ =====
-    function normalizePhone(phone) {
-        if (!phone) return '';
-        const cleaned = String(phone).replace(/[^0-9]/g, '');
-        if (cleaned.length === 11 && cleaned[0] === '7') return cleaned;
-        if (cleaned.length === 10) return '7' + cleaned;
-        return cleaned;
-    }
+// Функция для показа деталей заказа (с трек-номером)
+window.showOrderDetails = function(orderId) {
+    const orders = getUserOrders();
+    const order = orders.find(o => o.order_id === orderId);
+    if (!order) return;
     
-    function formatPhone(phone) {
-        const str = normalizePhone(phone);
-        if (str.length === 11 && str[0] === '7') {
-            return `+7 ${str.slice(1,4)} ${str.slice(4,7)}-${str.slice(7,9)}-${str.slice(9,11)}`;
-        }
-        return phone;
-    }
+    const itemsHtml = (order.items || []).map(item => `
+        <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #eee;">
+            <span>${escapeHtml(item.title)} (${escapeHtml(item.size || '—')}, ${escapeHtml(item.color || '—')}) x${item.quantity}</span>
+            <span style="color:#00897b;">${(item.price * item.quantity).toLocaleString()} ₽</span>
+        </div>
+    `).join('');
     
-    function getStatusText(status) {
-        const map = { 'new': '🆕 Новый', 'paid': '💳 Оплачен', 'shipped': '📦 Отправлен', 'delivered': '✅ Доставлен', 'cancelled': '❌ Отменён' };
-        return map[status] || status;
-    }
-    
-    function getCurrentUser() {
-        const savedPhone = localStorage.getItem('current_user_phone');
-        if (!savedPhone) return null;
-        const userKey = `user_${normalizePhone(savedPhone)}`;
-        const user = localStorage.getItem(userKey);
-        if (user) return JSON.parse(user);
-        return null;
-    }
-    
-    function getUserOrders() {
-        const user = getCurrentUser();
-        if (!user) return [];
-        
-        const userPhone = normalizePhone(user.phone);
-        const saved = localStorage.getItem('crm_data');
-        if (saved) {
-            try {
-                const data = JSON.parse(saved);
-                const allOrders = data.orders || [];
-                return allOrders.filter(order => {
-                    const orderPhone = normalizePhone(order.customer?.phone);
-                    return orderPhone === userPhone;
-                });
-            } catch(e) { console.error(e); }
-        }
-        return [];
-    }
-    
-    function getUserStats() {
-        const orders = getUserOrders();
-        const totalSpent = orders.reduce((sum, order) => {
-            if (order.status === 'paid' || order.status === 'delivered') {
-                return sum + (order.total || 0);
-            }
-            return sum;
-        }, 0);
-        return { totalSpent, bonuses: Math.floor(totalSpent * 0.05) };
-    }
-    
-    function getWishlist() {
-        const user = getCurrentUser();
-        if (!user) return [];
-        return JSON.parse(localStorage.getItem(`wishlist_${user.id}`) || '[]');
-    }
-    
-    function getWishlistProducts() {
-        const wishlist = getWishlist();
-        if (!window.allProducts) return [];
-        return window.allProducts.filter(p => wishlist.includes(p.id));
-    }
-    
-    function removeFromWishlist(productId) {
-        const user = getCurrentUser();
-        if (!user) return;
-        let wishlist = getWishlist();
-        wishlist = wishlist.filter(id => id !== productId);
-        localStorage.setItem(`wishlist_${user.id}`, JSON.stringify(wishlist));
-        renderAccount();
-        showToast('🗑️ Товар удалён из избранного');
-    }
-    
-    function addToCartById(productId) {
-        if (typeof window.addToCartById === 'function') {
-            window.addToCartById(productId);
-        } else {
-            showToast('🛒 Товар добавлен в корзину');
-        }
-    }
-    
-    function showToast(msg) {
-        let t = document.getElementById('toastMsg');
-        if (!t) {
-            t = document.createElement('div');
-            t.id = 'toastMsg';
-            t.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1a2c3e;color:white;padding:12px 24px;border-radius:40px;z-index:10000;font-size:14px;opacity:0;transition:0.3s';
-            document.body.appendChild(t);
-        }
-        t.textContent = msg;
-        t.style.opacity = '1';
-        setTimeout(() => t.style.opacity = '0', 3000);
-    }
-    
-    function escapeHtml(str) {
-        if (!str) return '';
-        return String(str).replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
-    }
-    
-    // ===== ОТРИСОВКА КАБИНЕТА =====
-    let currentTab = 'profile';
-    
-    function renderAccount() {
-        const user = getCurrentUser();
-        const app = document.getElementById('app');
-        
-        if (!user) {
-            // Форма входа
-            app.innerHTML = `
-                <div class="login-container">
-                    <h2>🔐 Вход в личный кабинет</h2>
-                    <div id="loginError" class="error-msg"></div>
-                    <input type="tel" id="loginPhone" class="login-input" placeholder="+7 (906) 377-19-85" value="+7 906 377 19 85">
-                    <input type="password" id="loginPassword" class="login-input" placeholder="Пароль" value="888999">
-                    <button class="login-btn" onclick="login()">Войти</button>
-                    <div class="test-credentials">
-                        📱 Тестовые данные:<br>
-                        Телефон: +7 906 377 19 85<br>
-                        Пароль: 888999
+    const modalHtml = `
+        <div id="orderDetailsModal" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;z-index:20000;">
+            <div style="background:white;border-radius:28px;max-width:500px;width:90%;max-height:80vh;overflow-y:auto;padding:24px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                    <h3 style="margin:0;">📋 Заказ ${order.order_id}</h3>
+                    <button onclick="closeOrderDetails()" style="background:none;border:none;font-size:24px;cursor:pointer;">&times;</button>
+                </div>
+                
+                <div style="margin-bottom:16px; padding:12px; background:#f8fafc; border-radius:16px;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                        <span>📅 Дата:</span>
+                        <span>${order.date || '—'}</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                        <span>📊 Статус:</span>
+                        <span class="order-status status-${order.status || 'new'}">${getStatusText(order.status)}</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                        <span>🚚 Доставка:</span>
+                        <span>${order.delivery?.method === 'courier' ? 'Курьером' : order.delivery?.method === 'pickup' ? 'Самовывоз' : '—'} (${(order.delivery?.price || 0).toLocaleString()} ₽)</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                        <span>📍 Адрес:</span>
+                        <span style="text-align:right;">${escapeHtml(order.address || '—')}</span>
+                    </div>
+                    ${order.tracking_number ? `
+                    <div style="display:flex; justify-content:space-between; margin-top:12px; padding-top:12px; border-top:1px solid #e2edf4;">
+                        <span>📦 Трек-номер:</span>
+                        <span>
+                            <strong>${escapeHtml(order.tracking_number)}</strong>
+                            <a href="https://www.cdek.ru/tracking?code=${encodeURIComponent(order.tracking_number)}" target="_blank" style="color:#00897b; margin-left:8px;">🔍 Отследить</a>
+                        </span>
+                    </div>
+                    ` : ''}
+                </div>
+                
+                <div style="margin-bottom:16px;">
+                    <h4 style="margin:0 0 12px 0;">🛍️ Товары в заказе:</h4>
+                    ${itemsHtml}
+                    <div style="display:flex; justify-content:space-between; padding-top:12px; margin-top:8px; border-top:2px solid #00897b; font-weight:700;">
+                        <span>Итого:</span>
+                        <span style="color:#00897b;">${(order.total || 0).toLocaleString()} ₽</span>
                     </div>
                 </div>
-            `;
-            return;
-        }
-        
-        const stats = getUserStats();
-        const orders = getUserOrders();
-        const wishlistCount = getWishlist().length;
-        
-        app.innerHTML = `
-            <div class="account-header">
-                <h1>👤 Личный кабинет</h1>
-                <button class="logout-btn" onclick="logout()">🚪 Выйти</button>
-            </div>
-            
-            <div class="bonus-card">
-                <div><div class="bonus-amount">${stats.bonuses.toLocaleString()} ₽</div><div class="bonus-rate">накоплено бонусов</div></div>
-                <div><div class="bonus-amount">${stats.totalSpent.toLocaleString()} ₽</div><div class="bonus-rate">потрачено всего</div></div>
-                <div><div>🎁 5% бонусами с каждого заказа</div></div>
-            </div>
-            
-            <div class="tabs">
-                <button class="tab-btn ${currentTab === 'profile' ? 'active' : ''}" onclick="setTab('profile')">👤 Профиль</button>
-                <button class="tab-btn ${currentTab === 'orders' ? 'active' : ''}" onclick="setTab('orders')">📦 Мои заказы (${orders.length})</button>
-                <button class="tab-btn ${currentTab === 'wishlist' ? 'active' : ''}" onclick="setTab('wishlist')">❤️ Избранное (${wishlistCount})</button>
-                <button class="tab-btn ${currentTab === 'bonuses' ? 'active' : ''}" onclick="setTab('bonuses')">💰 Бонусы</button>
-            </div>
-            
-            <div id="tab-profile" class="tab-content ${currentTab === 'profile' ? 'active' : ''}">
-                <div class="form-group"><label>Имя</label><input type="text" id="profileName" value="${escapeHtml(user.name || '')}"></div>
-                <div class="form-group"><label>Телефон</label><input type="tel" id="profilePhone" value="${formatPhone(user.phone)}" readonly></div>
-                <div class="form-group"><label>Email</label><input type="email" id="profileEmail" value="${escapeHtml(user.email || '')}"></div>
-                <div class="form-group"><label>Адрес доставки</label><textarea id="profileAddress" rows="2">${escapeHtml(user.default_address || '')}</textarea></div>
-                <button class="save-btn" onclick="saveProfile()">💾 Сохранить изменения</button>
-            </div>
-            
-            <div id="tab-orders" class="tab-content ${currentTab === 'orders' ? 'active' : ''}">
-                <div id="ordersList"></div>
-            </div>
-            
-            <div id="tab-wishlist" class="tab-content ${currentTab === 'wishlist' ? 'active' : ''}">
-                <div id="wishlistGrid"></div>
-            </div>
-            
-            <div id="tab-bonuses" class="tab-content ${currentTab === 'bonuses' ? 'active' : ''}">
-                <div id="bonusHistory"></div>
-            </div>
-        `;
-        
-        renderOrders();
-        renderWishlist();
-        renderBonusHistory();
-    }
-    
-    function setTab(tab) {
-        currentTab = tab;
-        renderAccount();
-    }
-    
-    function saveProfile() {
-        const user = getCurrentUser();
-        if (!user) return;
-        
-        user.name = document.getElementById('profileName')?.value || '';
-        user.email = document.getElementById('profileEmail')?.value || '';
-        user.default_address = document.getElementById('profileAddress')?.value || '';
-        
-        localStorage.setItem(`user_${user.phone}`, JSON.stringify(user));
-        showToast('✅ Профиль обновлён');
-        renderAccount();
-    }
-    
-    function renderOrders() {
-        const orders = getUserOrders();
-        const container = document.getElementById('ordersList');
-        
-        if (!container) return;
-        
-        if (orders.length === 0) {
-            container.innerHTML = '<div style="text-align:center; padding:40px;">📭 У вас пока нет заказов</div>';
-            return;
-        }
-        
-        container.innerHTML = orders.map(order => `
-            <div class="order-card" onclick="alert('Заказ ${order.order_id}\nСумма: ${order.total} ₽\nСтатус: ${getStatusText(order.status)}')">
-                <div class="order-header">
-                    <span class="order-number">📋 ${order.order_id}</span>
-                    <span class="order-date">📅 ${order.date || '—'}</span>
-                    <span class="order-status status-${order.status || 'new'}">${getStatusText(order.status)}</span>
-                    <span class="order-total">${(order.total || 0).toLocaleString()} ₽</span>
+                
+                <div style="margin-bottom:16px;">
+                    <h4 style="margin:0 0 8px 0;">💳 Оплата:</h4>
+                    <div style="padding:8px 12px; background:#f8fafc; border-radius:12px;">
+                        ${order.payment === 'card' ? '💳 Банковской картой' : order.payment === 'sbp' ? '📱 СБП' : '💰 Наличными при получении'}
+                        ${order.payment_status === 'paid' ? ' <span style="color:#2e7d32;">(Оплачен)</span>' : ' <span style="color:#e74c3c;">(Ожидает оплаты)</span>'}
+                    </div>
                 </div>
-                <div class="order-products">
-                    ${(order.items || []).map(i => `${escapeHtml(i.title)} x${i.quantity}`).join(', ')}
+                
+                ${order.comment ? `
+                <div>
+                    <h4 style="margin:0 0 8px 0;">💬 Комментарий:</h4>
+                    <div style="padding:8px 12px; background:#f8fafc; border-radius:12px;">
+                        ${escapeHtml(order.comment)}
+                    </div>
                 </div>
+                ` : ''}
+                
+                <button onclick="closeOrderDetails()" style="width:100%; margin-top:20px; padding:12px; background:#00897b; color:white; border:none; border-radius:40px; cursor:pointer;">Закрыть</button>
             </div>
-        `).join('');
-    }
+        </div>
+    `;
     
-    function renderWishlist() {
-        const products = getWishlistProducts();
-        const container = document.getElementById('wishlistGrid');
-        
-        if (!container) return;
-        
-        if (products.length === 0) {
-            container.innerHTML = '<div style="text-align:center; padding:40px;">❤️ Нет товаров в избранном</div>';
-            return;
-        }
-        
-        container.innerHTML = products.map(product => `
-            <div class="wishlist-item">
-                <button class="wishlist-remove" onclick="removeFromWishlist(${product.id})">🗑️</button>
-                <div class="wishlist-item-img">${product.images?.[0] ? `<img src="${product.images[0]}" style="width:100%; border-radius:12px;">` : '👕'}</div>
-                <div class="wishlist-item-title">${escapeHtml(product.title)}</div>
-                <div class="wishlist-item-price">${(product.discount_price || product.price).toLocaleString()} ₽</div>
-                <button class="save-btn" style="width:100%;" onclick="addToCartById(${product.id})">🛒 В корзину</button>
-            </div>
-        `).join('');
-    }
+    // Удаляем старую модалку, если есть
+    const oldModal = document.getElementById('orderDetailsModal');
+    if (oldModal) oldModal.remove();
     
-    function renderBonusHistory() {
-        const orders = getUserOrders();
-        const container = document.getElementById('bonusHistory');
-        
-        if (!container) return;
-        
-        const paidOrders = orders.filter(o => o.status === 'paid' || o.status === 'delivered');
-        
-        if (paidOrders.length === 0) {
-            container.innerHTML = '<div style="text-align:center; padding:40px;">💰 История начислений пуста</div>';
-            return;
-        }
-        
-        let balance = 0;
-        const history = paidOrders.map(order => {
-            const amount = Math.floor((order.total || 0) * 0.05);
-            balance += amount;
-            return `<tr><td style="padding:8px;">${order.date || '—'}</td><td style="padding:8px; color:#00897b;">+${amount} ₽</td><td style="padding:8px;">Заказ ${order.order_id}</td><td style="padding:8px;">${balance} ₽</td></tr>`;
-        }).join('');
-        
-        container.innerHTML = `<table style="width:100%; border-collapse:collapse;"><thead><tr style="background:#f8fafc;"><th style="padding:12px;">Дата</th><th>Сумма</th><th>Описание</th><th>Баланс</th></tr></thead><tbody>${history}</tbody></table>`;
-    }
-    
-    // ===== АВТОРИЗАЦИЯ =====
-    window.login = function() {
-        const phoneInput = document.getElementById('loginPhone');
-        const passwordInput = document.getElementById('loginPassword');
-        const errorDiv = document.getElementById('loginError');
-        
-        if (!phoneInput || !passwordInput) return;
-        
-        const phone = phoneInput.value;
-        const password = passwordInput.value;
-        
-        if (password !== '888999') {
-            errorDiv.style.display = 'block';
-            errorDiv.textContent = '❌ Неверный пароль';
-            return;
-        }
-        
-        const cleanPhone = String(phone).replace(/[^0-9]/g, '');
-        const normalizedPhone = cleanPhone.length === 10 ? '7' + cleanPhone : cleanPhone;
-        
-        if (normalizedPhone.length !== 11) {
-            errorDiv.style.display = 'block';
-            errorDiv.textContent = '❌ Неверный формат телефона';
-            return;
-        }
-        
-        const userKey = `user_${normalizedPhone}`;
-        if (!localStorage.getItem(userKey)) {
-            localStorage.setItem(userKey, JSON.stringify({
-                id: Date.now(),
-                phone: normalizedPhone,
-                name: '',
-                email: '',
-                default_address: '',
-                created_at: new Date().toISOString(),
-                bonuses: 0,
-                total_spent: 0
-            }));
-        }
-        
-        localStorage.setItem('current_user_phone', normalizedPhone);
-        renderAccount();
-        showToast('✅ Добро пожаловать!');
-    };
-    
-    window.logout = function() {
-        localStorage.removeItem('current_user_phone');
-        renderAccount();
-        showToast('👋 Вы вышли из аккаунта');
-    };
-    
-    // Делаем функции глобальными
-    window.setTab = setTab;
-    window.saveProfile = saveProfile;
-    window.removeFromWishlist = removeFromWishlist;
-    window.addToCartById = addToCartById;
-    
-    // Загрузка товаров из CRM
-    if (typeof window.allProducts === 'undefined') {
-        const saved = localStorage.getItem('crm_data');
-        if (saved) {
-            try {
-                const data = JSON.parse(saved);
-                window.allProducts = data.products || [];
-                window.categories = data.categories || [];
-            } catch(e) {}
-        }
-    }
-    
-    // Запуск
-    renderAccount();
-</script>
-</body>
-</html>
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    document.body.style.overflow = 'hidden';
+};
+
+window.closeOrderDetails = function() {
+    const modal = document.getElementById('orderDetailsModal');
+    if (modal) modal.remove();
+    document.body.style.overflow = '';
+};
