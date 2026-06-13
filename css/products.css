@@ -1,336 +1,132 @@
-/* ===== КАРТОЧКИ ПРЕИМУЩЕСТВ ===== */
-.offers {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-    margin: 3rem 0;
-}
-
-.offer-card {
-    background: white;
-    border-radius: 1.5rem;
-    padding: 1.5rem;
-    text-align: center;
-    border: 1px solid #eef2f8;
-    transition: all 0.3s;
-}
-
-.offer-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 28px -12px rgba(0,0,0,0.1);
-}
-
-.offer-card .icon {
-    font-size: 2.5rem;
-    margin-bottom: 0.5rem;
-}
-
-.offer-card h3 {
-    font-size: 1.2rem;
-    margin-bottom: 0.5rem;
-    color: #1a2c3e;
-}
-
-.offer-card p {
-    color: #5e7f97;
-    font-size: 0.85rem;
-}
-
-.offer-card .price {
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: #1f6e8c;
-    margin-top: 0.5rem;
-}
-
-/* ===== КАТАЛОГ ТОВАРОВ ===== */
-.section-title {
-    text-align: center;
-    font-size: 2rem;
-    margin: 3rem 0 2rem;
-    color: #1a2c3e;
-}
-
-.filter-categories {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    margin-bottom: 2rem;
-    justify-content: center;
-}
-
-.filter-btn {
-    background: none;
-    border: 1px solid #cbdde9;
-    padding: 0.4rem 1rem;
-    border-radius: 30px;
-    cursor: pointer;
-    font-size: 0.85rem;
-    color: #405d77;
-    transition: all 0.2s;
-}
-
-.filter-btn:hover {
-    border-color: #1f6e8c;
-}
-
-.filter-btn.active {
-    background: #1f6e8c;
-    color: white;
-    border-color: #1f6e8c;
-}
-
-.filter-search {
-    text-align: center;
-    margin-bottom: 2rem;
-}
-
-.filter-search input {
-    padding: 0.5rem 1rem;
-    border: 1px solid #cbdde9;
-    border-radius: 30px;
-    width: 100%;
-    max-width: 300px;
-}
-
-/* ===== СЕТКА ТОВАРОВ ===== */
-/* Десктоп — 4 товара в ряд, отступ 0.5rem */
-.products-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0.5rem;
-    margin-bottom: 3rem;
-}
-
-/* Планшеты (до 1024px) — 2 товара в ряд */
-@media (max-width: 1024px) {
-    .products-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.5rem;
-    }
-}
-
-/* Мобильные телефоны (до 768px) — 2 товара в ряд */
-@media (max-width: 768px) {
-    .products-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.5rem;
-    }
-}
-
-/* Маленькие телефоны (до 480px) — 1 товар в ряд */
-@media (max-width: 480px) {
-    .products-grid {
-        grid-template-columns: 1fr;
-        gap: 0.5rem;
-    }
-}
-
-/* ===== КАРТОЧКА ТОВАРА ===== */
+/* Метки товаров */
 .product-card {
     position: relative;
     background: white;
-    border-radius: 0.8rem;
+    border-radius: 20px;
     overflow: hidden;
-    border: 1px solid #eef2f8;
-    transition: all 0.3s;
-    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
 }
 
 .product-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 28px -12px rgba(0,0,0,0.1);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.1);
 }
 
-/* Фото товара — вертикальное, чуть выше */
-.product-img {
-    aspect-ratio: 2 / 3;
-    width: 100%;
-    background: #f4f9fe;
-    overflow: hidden;
-}
-
-.product-img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-}
-
-.product-card:hover .product-img img {
-    transform: scale(1.02);
-}
-
-.product-img div {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 4rem;
-}
-
-/* Информация поверх фото (снизу) */
-.product-info {
+.product-badge {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 0.8rem 0.6rem;
-    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+    top: 12px;
+    left: 12px;
+    z-index: 2;
+    padding: 5px 12px;
+    border-radius: 30px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.product-badge.discount {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
     color: white;
 }
 
-.product-title {
-    font-size: 0.85rem;
-    font-weight: 600;
-    margin-bottom: 0.2rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.product-badge.new {
+    background: linear-gradient(135deg, #3498db, #2980b9);
     color: white;
 }
 
-.product-category {
-    font-size: 0.6rem;
-    margin-bottom: 0.2rem;
-    opacity: 0.8;
+.product-badge.hit {
+    background: linear-gradient(135deg, #f39c12, #e67e22);
     color: white;
 }
 
-.product-sizes {
-    font-size: 0.6rem;
-    margin: 0.2rem 0;
-    opacity: 0.8;
+.product-badge.popular {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
     color: white;
 }
 
-/* Рейтинг — правый верхний угол (симметрично скидке) */
+/* Рейтинг */
 .product-rating {
-    position: absolute;
-    top: 8px;
-    right: 8px;
     display: flex;
     align-items: center;
-    gap: 0.15rem;
-    background: rgba(0, 0, 0, 0.65);
-    backdrop-filter: blur(4px);
-    padding: 0.2rem 0.5rem;
-    border-radius: 20px;
-    z-index: 10;
+    gap: 8px;
+    margin: 8px 0;
 }
 
-.star {
-    color: #cbd5e1;
-    font-size: 0.65rem;
-}
-
-.star.filled {
-    color: #fbbf24;
+.stars {
+    color: #ffc107;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
 }
 
 .rating-value {
-    font-size: 0.65rem;
-    font-weight: 500;
-    color: white;
-    margin-left: 0.15rem;
-}
-
-/* Скидка — левый верхний угол */
-.discount-badge {
-    position: absolute;
-    top: 8px;
-    left: 8px;
-    background: #f43f5e;
-    color: white;
-    padding: 0.2rem 0.5rem;
-    border-radius: 20px;
-    font-size: 0.65rem;
+    font-size: 0.7rem;
     font-weight: 600;
-    z-index: 10;
+    color: #64748b;
 }
 
+/* Цены */
 .product-prices {
     display: flex;
     align-items: baseline;
-    gap: 0.3rem;
-    margin: 0.3rem 0;
+    gap: 10px;
     flex-wrap: wrap;
+    margin: 10px 0;
 }
 
 .current-price {
-    font-size: 0.9rem;
-    font-weight: 700;
-    color: #4db6ac;
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #00897b;
 }
 
 .current-price.discounted {
-    color: #f43f5e;
+    color: #e74c3c;
+    font-size: 1.1rem;
 }
 
 .old-price {
-    font-size: 0.65rem;
-    color: #cbd5e1;
+    font-size: 0.8rem;
+    color: #94a3b8;
     text-decoration: line-through;
 }
 
+/* Кнопки действий */
 .product-actions {
     display: flex;
-    gap: 0.3rem;
-    margin-top: 0.3rem;
+    gap: 10px;
+    margin-top: 12px;
 }
 
-.quick-view, .add-to-cart {
+.product-actions button {
     flex: 1;
-    background: rgba(255,255,255,0.2);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(255,255,255,0.3);
-    padding: 0.35rem;
+    padding: 10px 12px;
+    border: none;
     border-radius: 40px;
+    font-size: 0.8rem;
+    font-weight: 600;
     cursor: pointer;
-    font-size: 0.75rem;
-    transition: all 0.2s;
-    color: white;
-    font-weight: 500;
+    transition: all 0.2s ease;
 }
 
-.add-to-cart {
-    background: rgba(77, 182, 172, 0.8);
-    border-color: rgba(77, 182, 172, 0.5);
-}
-
-.add-to-cart:hover {
-    background: rgba(77, 182, 172, 1);
-}
-
-.quick-view:hover {
-    background: rgba(255,255,255,0.3);
-}
-
-/* ===== ПРЕИМУЩЕСТВА ===== */
-.benefits {
-    background: white;
-    border-radius: 2rem;
-    padding: 2rem;
-    margin: 3rem 0;
-    text-align: center;
-    border: 1px solid #eef2f8;
-}
-
-.benefits h3 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
+.quick-view {
+    background: #f1f5f9;
     color: #1a2c3e;
 }
 
-.benefits-grid {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    flex-wrap: wrap;
-    margin-top: 1.5rem;
+.quick-view:hover {
+    background: #e2edf4;
+    transform: translateY(-2px);
 }
 
-.benefit-item {
-    color: #405d77;
+.add-to-cart {
+    background: linear-gradient(135deg, #00897b, #4db6ac);
+    color: white;
+}
+
+.add-to-cart:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 137, 123, 0.3);
 }
