@@ -322,3 +322,136 @@
         margin: 0 auto;
     }
 }
+
+/* ==================== МОДАЛЬНОЕ ОКНО ВЫБОРА РАЗМЕРА ==================== */
+
+.size-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 20000;
+}
+
+.size-modal {
+    background: white;
+    border-radius: 28px;
+    width: 90%;
+    max-width: 400px;
+    overflow: hidden;
+    animation: modalSlideIn 0.3s ease;
+}
+
+.size-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e2edf4;
+}
+
+.size-modal-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.size-modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #94a3b8;
+}
+
+.size-modal-body {
+    padding: 1.5rem;
+}
+
+.size-product-info {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.size-product-title {
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+}
+
+.size-product-price {
+    font-weight: 600;
+    color: #00897b;
+    font-size: 1.1rem;
+}
+
+.size-options, .color-options {
+    margin-bottom: 1.5rem;
+}
+
+.size-label, .color-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+    color: #1a2c3e;
+}
+
+.size-buttons, .color-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.size-btn, .color-btn {
+    padding: 8px 20px;
+    border: 1px solid #cbdde9;
+    background: white;
+    border-radius: 40px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: 0.2s;
+}
+
+.size-btn:hover, .color-btn:hover {
+    border-color: #00897b;
+}
+
+.size-btn.active, .color-btn.active {
+    background: #00897b;
+    color: white;
+    border-color: #00897b;
+}
+
+.confirm-cart-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #00897b, #4db6ac);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 40px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.confirm-cart-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0, 137, 123, 0.25);
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
