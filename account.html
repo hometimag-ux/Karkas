@@ -1,112 +1,135 @@
-function renderOrders() {
-    const orders = getUserOrders();
-    const container = document.getElementById('ordersList');
-    
-    if (!container) return;
-    
-    if (orders.length === 0) {
-        container.innerHTML = '<div style="text-align:center; padding:40px;">📭 У вас пока нет заказов</div>';
-        return;
-    }
-    
-    container.innerHTML = orders.map(order => `
-        <div class="order-card" onclick="showOrderDetails('${order.order_id}')">
-            <div class="order-header">
-                <span class="order-number">📋 ${order.order_id}</span>
-                <span class="order-date">📅 ${order.date || '—'}</span>
-                <span class="order-status status-${order.status || 'new'}">${getStatusText(order.status)}</span>
-                <span class="order-total">${(order.total || 0).toLocaleString()} ₽</span>
-            </div>
-            <div class="order-products">
-                ${(order.items || []).map(i => `${escapeHtml(i.title)} x${i.quantity}`).join(', ')}
-            </div>
-            ${order.tracking_number ? `
-            <div class="order-tracking" style="margin-top: 12px; padding-top: 8px; border-top: 1px solid #e2edf4; font-size: 13px;">
-                <span style="color: #00897b;">📦 Трек-номер:</span> 
-                <strong>${escapeHtml(order.tracking_number)}</strong>
-                <a href="https://www.cdek.ru/tracking?code=${encodeURIComponent(order.tracking_number)}" target="_blank" style="color: #00897b; margin-left: 10px; text-decoration: none;">🔍 Отследить</a>
-            </div>
-            ` : ''}
-        </div>
-    `).join('');
-}
-
-// Функция для показа деталей заказа (с трек-номером)
 window.showOrderDetails = function(orderId) {
     const orders = getUserOrders();
     const order = orders.find(o => o.order_id === orderId);
     if (!order) return;
     
+    // Формируем таблицу товаров с полной информацией
     const itemsHtml = (order.items || []).map(item => `
-        <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #eee;">
-            <span>${escapeHtml(item.title)} (${escapeHtml(item.size || '—')}, ${escapeHtml(item.color || '—')}) x${item.quantity}</span>
-            <span style="color:#00897b;">${(item.price * item.quantity).toLocaleString()} ₽</span>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #e2edf4;">
+            <div style="flex: 2;">
+                <div style="font-weight: 600;">${escapeHtml(item.title)}</div>
+                <div style="font-size: 12px; color: #64748b; margin-top: 4px;">
+                    Арт: ${escapeHtml(item.article || '—')}
+                </div>
+            </div>
+            <div style="flex: 1; text-align: center;">
+                <div>${escapeHtml(item.size || '—')}</div>
+                <div style="font-size: 11px; color: #64748b;">Размер</div>
+            </div>
+            <div style="flex: 1; text-align: center;">
+                <div>${escapeHtml(item.color || '—')}</div>
+                <div style="font-size: 11px; color: #64748b;">Цвет</div>
+            </div>
+            <div style="flex: 0.5; text-align: center;">
+                <div>${item.quantity}</div>
+                <div style="font-size: 11px; color: #64748b;">Кол-во</div>
+            </div>
+            <div style="flex: 1; text-align: right;">
+                <div style="font-weight: 600; color: #00897b;">${(item.price * item.quantity).toLocaleString()} ₽</div>
+                <div style="font-size: 11px; color: #64748b;">${item.price.toLocaleString()} ₽ / шт</div>
+            </div>
         </div>
     `).join('');
     
+    // Информация о доставке
+    const deliveryInfo = order.delivery?.method === 'courier' ? '🚚 Курьерская доставка' : 
+                         order.delivery?.method === 'pickup' ? '🏪 Самовывоз' : 
+                         '—';
+    
+    const deliveryPrice = order.delivery?.price || 0;
+    const deliveryAddress = order.address || '—';
+    
+    // Статус оплаты
+    const paymentStatusHtml = order.payment_status === 'paid' 
+        ? '<span style="color: #2e7d32;">✅ Оплачен</span>' 
+        : '<span style="color: #e74c3c;">⏳ Ожидает оплаты</span>';
+    
+    // Способ оплаты
+    const paymentMethodHtml = order.payment === 'card' ? '💳 Банковской картой' : 
+                              order.payment === 'sbp' ? '📱 СБП' : 
+                              '💰 Наличными при получении';
+    
     const modalHtml = `
-        <div id="orderDetailsModal" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;z-index:20000;">
-            <div style="background:white;border-radius:28px;max-width:500px;width:90%;max-height:80vh;overflow-y:auto;padding:24px;">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+        <div id="orderDetailsModal" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;z-index:20000;">
+            <div style="background:white;border-radius:28px;max-width:700px;width:90%;max-height:85vh;overflow-y:auto;padding:0;">
+                <!-- Заголовок -->
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:20px 24px;border-bottom:1px solid #e2edf4;position:sticky;top:0;background:white;border-radius:28px 28px 0 0;">
                     <h3 style="margin:0;">📋 Заказ ${order.order_id}</h3>
-                    <button onclick="closeOrderDetails()" style="background:none;border:none;font-size:24px;cursor:pointer;">&times;</button>
+                    <button onclick="closeOrderDetails()" style="background:none;border:none;font-size:28px;cursor:pointer;color:#94a3b8;">&times;</button>
                 </div>
                 
-                <div style="margin-bottom:16px; padding:12px; background:#f8fafc; border-radius:16px;">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-                        <span>📅 Дата:</span>
-                        <span>${order.date || '—'}</span>
+                <div style="padding:24px;">
+                    <!-- Информация о заказе -->
+                    <div style="background:#f8fafc;border-radius:20px;padding:16px;margin-bottom:20px;">
+                        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;">
+                            <div><span style="color:#64748b;">📅 Дата:</span><br><strong>${order.date || '—'}</strong></div>
+                            <div><span style="color:#64748b;">📊 Статус:</span><br><span class="order-status status-${order.status || 'new'}" style="display:inline-block;">${getStatusText(order.status)}</span></div>
+                            <div><span style="color:#64748b;">🚚 Доставка:</span><br><strong>${deliveryInfo}</strong> (${deliveryPrice.toLocaleString()} ₽)</div>
+                            <div><span style="color:#64748b;">📍 Адрес:</span><br><strong>${escapeHtml(deliveryAddress)}</strong></div>
+                        </div>
                     </div>
-                    <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-                        <span>📊 Статус:</span>
-                        <span class="order-status status-${order.status || 'new'}">${getStatusText(order.status)}</span>
-                    </div>
-                    <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-                        <span>🚚 Доставка:</span>
-                        <span>${order.delivery?.method === 'courier' ? 'Курьером' : order.delivery?.method === 'pickup' ? 'Самовывоз' : '—'} (${(order.delivery?.price || 0).toLocaleString()} ₽)</span>
-                    </div>
-                    <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-                        <span>📍 Адрес:</span>
-                        <span style="text-align:right;">${escapeHtml(order.address || '—')}</span>
-                    </div>
+                    
+                    <!-- Трек-номер -->
                     ${order.tracking_number ? `
-                    <div style="display:flex; justify-content:space-between; margin-top:12px; padding-top:12px; border-top:1px solid #e2edf4;">
-                        <span>📦 Трек-номер:</span>
-                        <span>
-                            <strong>${escapeHtml(order.tracking_number)}</strong>
-                            <a href="https://www.cdek.ru/tracking?code=${encodeURIComponent(order.tracking_number)}" target="_blank" style="color:#00897b; margin-left:8px;">🔍 Отследить</a>
-                        </span>
+                    <div style="background:#e8f5e9;border-radius:20px;padding:16px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+                        <div>
+                            <span style="color:#2e7d32;">📦 Трек-номер для отслеживания:</span><br>
+                            <strong style="font-size:18px;">${escapeHtml(order.tracking_number)}</strong>
+                        </div>
+                        <a href="https://www.cdek.ru/tracking?code=${encodeURIComponent(order.tracking_number)}" target="_blank" style="background:#00897b;color:white;padding:10px 20px;border-radius:40px;text-decoration:none;font-size:14px;">🔍 Отследить на карте</a>
                     </div>
                     ` : ''}
-                </div>
-                
-                <div style="margin-bottom:16px;">
-                    <h4 style="margin:0 0 12px 0;">🛍️ Товары в заказе:</h4>
-                    ${itemsHtml}
-                    <div style="display:flex; justify-content:space-between; padding-top:12px; margin-top:8px; border-top:2px solid #00897b; font-weight:700;">
-                        <span>Итого:</span>
-                        <span style="color:#00897b;">${(order.total || 0).toLocaleString()} ₽</span>
+                    
+                    <!-- Товары в заказе -->
+                    <div style="margin-bottom:20px;">
+                        <h4 style="margin:0 0 16px 0; display:flex; align-items:center; gap:8px;">
+                            🛍️ Товары в заказе 
+                            <span style="font-size:12px; color:#64748b; font-weight:normal;">(${(order.items || []).length} позиций)</span>
+                        </h4>
+                        <div style="background:#f8fafc;border-radius:20px;overflow:hidden;">
+                            <div style="display:flex; justify-content:space-between; padding:12px 16px; background:#e2edf4; font-weight:600; font-size:13px;">
+                                <div style="flex:2;">Товар</div>
+                                <div style="flex:1; text-align:center;">Размер</div>
+                                <div style="flex:1; text-align:center;">Цвет</div>
+                                <div style="flex:0.5; text-align:center;">Кол-во</div>
+                                <div style="flex:1; text-align:right;">Сумма</div>
+                            </div>
+                            <div style="padding:0 16px;">
+                                ${itemsHtml}
+                            </div>
+                            <div style="display:flex; justify-content:flex-end; padding:16px; background:#e2edf4; font-weight:700;">
+                                <div style="text-align:right;">
+                                    <div>Итого к оплате:</div>
+                                    <div style="font-size:20px; color:#00897b;">${(order.total || 0).toLocaleString()} ₽</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                
-                <div style="margin-bottom:16px;">
-                    <h4 style="margin:0 0 8px 0;">💳 Оплата:</h4>
-                    <div style="padding:8px 12px; background:#f8fafc; border-radius:12px;">
-                        ${order.payment === 'card' ? '💳 Банковской картой' : order.payment === 'sbp' ? '📱 СБП' : '💰 Наличными при получении'}
-                        ${order.payment_status === 'paid' ? ' <span style="color:#2e7d32;">(Оплачен)</span>' : ' <span style="color:#e74c3c;">(Ожидает оплаты)</span>'}
+                    
+                    <!-- Оплата -->
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+                        <div style="background:#f8fafc;border-radius:20px;padding:16px;">
+                            <div style="color:#64748b; margin-bottom:4px;">💳 Способ оплаты</div>
+                            <div><strong>${paymentMethodHtml}</strong></div>
+                            <div style="margin-top:8px; font-size:13px;">${paymentStatusHtml}</div>
+                        </div>
+                        <div style="background:#f8fafc;border-radius:20px;padding:16px;">
+                            <div style="color:#64748b; margin-bottom:4px;">💰 Детали заказа</div>
+                            <div>Товары: ${(order.subtotal || order.total - deliveryPrice).toLocaleString()} ₽</div>
+                            <div>Доставка: ${deliveryPrice === 0 ? 'Бесплатно' : deliveryPrice.toLocaleString() + ' ₽'}</div>
+                        </div>
                     </div>
-                </div>
-                
-                ${order.comment ? `
-                <div>
-                    <h4 style="margin:0 0 8px 0;">💬 Комментарий:</h4>
-                    <div style="padding:8px 12px; background:#f8fafc; border-radius:12px;">
-                        ${escapeHtml(order.comment)}
+                    
+                    <!-- Комментарий -->
+                    ${order.comment ? `
+                    <div style="background:#f8fafc;border-radius:20px;padding:16px;margin-bottom:20px;">
+                        <div style="color:#64748b; margin-bottom:4px;">💬 Комментарий к заказу</div>
+                        <div>${escapeHtml(order.comment)}</div>
                     </div>
+                    ` : ''}
+                    
+                    <button onclick="closeOrderDetails()" style="width:100%; margin-top:8px; padding:14px; background:#00897b; color:white; border:none; border-radius:40px; cursor:pointer; font-weight:600;">Закрыть</button>
                 </div>
-                ` : ''}
-                
-                <button onclick="closeOrderDetails()" style="width:100%; margin-top:20px; padding:12px; background:#00897b; color:white; border:none; border-radius:40px; cursor:pointer;">Закрыть</button>
             </div>
         </div>
     `;
@@ -117,10 +140,4 @@ window.showOrderDetails = function(orderId) {
     
     document.body.insertAdjacentHTML('beforeend', modalHtml);
     document.body.style.overflow = 'hidden';
-};
-
-window.closeOrderDetails = function() {
-    const modal = document.getElementById('orderDetailsModal');
-    if (modal) modal.remove();
-    document.body.style.overflow = '';
 };
