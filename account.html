@@ -73,7 +73,6 @@
 <main class="main-content">
     <div class="container">
         <div id="accountContainer">
-            <!-- Контент загружается через JS -->
             <div style="text-align: center; padding: 60px;">
                 <div class="loading-spinner">🔄 Загрузка...</div>
             </div>
@@ -157,32 +156,34 @@
 <script src="js/header.js"></script>
 <script src="js/products.js"></script>
 
-<!-- ===== ТЕСТОВЫЙ ПОЛЬЗОВАТЕЛЬ ДЛЯ ПРОСМОТРА ===== -->
+<!-- ===== ТЕСТОВЫЙ ПОЛЬЗОВАТЕЛЬ (номер совпадает с CRM) ===== -->
 <script>
     (function() {
-        // Создаём тестового пользователя
-        const testPhone = '9999999999';
-        const testUser = {
-            id: 999,
-            phone: testPhone,
-            name: 'Тестовый Пользователь',
-            email: 'test@murano-apparel.ru',
-            default_address: 'г. Москва, ул. Тестовая, д. 1, кв. 1',
-            created_at: new Date().toISOString(),
-            bonuses: 1250,
-            total_spent: 25000
-        };
+        // Номер телефона в едином формате (только цифры)
+        const testPhone = '79063771985';
         
-        // Сохраняем тестового пользователя
+        // Проверяем и создаём тестового пользователя
         const userKey = `user_${testPhone}`;
-        if (!localStorage.getItem(userKey)) {
+        let testUser = localStorage.getItem(userKey);
+        
+        if (!testUser) {
+            testUser = {
+                id: 999,
+                phone: testPhone,
+                name: 'Тестовый Пользователь',
+                email: 'test@murano-apparel.ru',
+                default_address: 'г. Москва, ул. Тестовая, д. 1, кв. 1',
+                created_at: new Date().toISOString(),
+                bonuses: 0,
+                total_spent: 0
+            };
             localStorage.setItem(userKey, JSON.stringify(testUser));
             console.log('✅ Тестовый пользователь создан:', testUser.name);
         }
         
-        // Автоматически входим под тестовым пользователем
+        // Автоматический вход
         localStorage.setItem('current_user_phone', testPhone);
-        console.log('✅ Автоматический вход выполнен');
+        console.log('✅ Автоматический вход выполнен для телефона:', testPhone);
     })();
 </script>
 
