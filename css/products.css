@@ -1,4 +1,4 @@
-/* Метки товаров */
+/* Карточка товара */
 .product-card {
     position: relative;
     background: white;
@@ -13,6 +13,7 @@
     box-shadow: 0 12px 24px rgba(0,0,0,0.1);
 }
 
+/* Левая метка (скидка, новинка, хит) */
 .product-badge {
     position: absolute;
     top: 12px;
@@ -47,50 +48,115 @@
     color: white;
 }
 
-/* Рейтинг */
-.product-rating {
+/* Правая метка (рейтинг) */
+.product-rating-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 2;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    padding: 4px 10px;
+    border-radius: 30px;
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin: 8px 0;
-}
-
-.stars {
-    color: #ffc107;
-    font-size: 0.8rem;
-    letter-spacing: 2px;
-}
-
-.rating-value {
+    gap: 6px;
     font-size: 0.7rem;
+}
+
+.product-rating-badge .stars {
+    color: #ffc107;
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+}
+
+.product-rating-badge .rating-value {
+    color: white;
     font-weight: 600;
+    font-size: 0.7rem;
+}
+
+/* Изображение */
+.product-img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8fafc;
+    overflow: hidden;
+}
+
+.product-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover .product-img img {
+    transform: scale(1.05);
+}
+
+/* Информация о товаре */
+.product-info {
+    padding: 16px;
+}
+
+.product-title {
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 4px;
+    color: #1a2c3e;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.product-category {
+    font-size: 0.7rem;
+    color: #94a3b8;
+    margin-bottom: 8px;
+}
+
+.product-sizes {
+    font-size: 0.7rem;
     color: #64748b;
+    margin-bottom: 8px;
 }
 
 /* Цены */
 .product-prices {
     display: flex;
     align-items: baseline;
-    gap: 10px;
+    gap: 8px;
     flex-wrap: wrap;
     margin: 10px 0;
 }
 
 .current-price {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     font-weight: 800;
     color: #00897b;
 }
 
 .current-price.discounted {
     color: #e74c3c;
-    font-size: 1.1rem;
 }
 
 .old-price {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     color: #94a3b8;
     text-decoration: line-through;
+}
+
+.discount-percent {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #e74c3c;
+    background: #fee2e2;
+    padding: 2px 8px;
+    border-radius: 20px;
 }
 
 /* Кнопки действий */
@@ -105,7 +171,7 @@
     padding: 10px 12px;
     border: none;
     border-radius: 40px;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
