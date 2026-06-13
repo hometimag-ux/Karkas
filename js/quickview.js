@@ -37,6 +37,24 @@ function openQuickView(id) {
     const colors = product.colors || ['#8F9E6B', '#ffffff', '#2F5D50', '#4a708b'];
     const colorNames = product.color_names || ['оливковый', 'белый', 'тёмно-зелёный', 'синий'];
 
+    // Получаем артикул для выбранного размера
+    function getArticleForSize(size) {
+        if (product.sizes_data && product.sizes_data.length > 0) {
+            const sizeData = product.sizes_data.find(s => s.size === size);
+            if (sizeData && sizeData.article) return sizeData.article;
+        }
+        return product.article || '—';
+    }
+
+    // Получаем цену для выбранного размера
+    function getPriceForSize(size) {
+        if (product.sizes_data && product.sizes_data.length > 0) {
+            const sizeData = product.sizes_data.find(s => s.size === size);
+            if (sizeData && sizeData.price) return sizeData.price;
+        }
+        return hasDiscount ? product.discount_price : product.price;
+    }
+
     const modalHtml = `
         <div class="quick-view-modal" id="quickViewModal">
             <div class="quick-view-content">
@@ -79,7 +97,7 @@ function openQuickView(id) {
                         
                         <div class="price-card">
                             <div>
-                                <span class="current-price">${hasDiscount ? product.discount_price.toLocaleString() : product.price.toLocaleString()} ₽</span>
+                                <span class="current-price" id="modalCurrentPrice">${hasDiscount ? product.discount_price.toLocaleString() : product.price.toLocaleString()} ₽</span>
                                 ${hasDiscount ? `<span class="old-price">${product.price.toLocaleString()} ₽</span>` : ''}
                             </div>
                             <div class="installment">Бесплатная доставка от 3 500 ₽ / рассрочка без переплаты</div>
@@ -105,7 +123,7 @@ function openQuickView(id) {
                         ` : ''}
                         
                         <div class="action-group">
-                            <button class="btn-primary" id="modalBuyBtn">Добавить в корзину — ${hasDiscount ? product.discount_price.toLocaleString() : product.price.toLocaleString()} ₽</button>
+                            <button class="btn-primary" id="modalBuyBtn">Добавить в корзину — <span id="modalBuyPrice">${hasDiscount ? product.discount_price.toLocaleString() : product.price.toLocaleString()}</span> ₽</button>
                             <button class="btn-secondary" id="modalOneClickBtn">Быстрый заказ</button>
                         </div>
                         
@@ -138,10 +156,10 @@ function openQuickView(id) {
                                     <tbody>
                                         ${chars.brand ? `<tr><td style="padding:6px 0;">Бренд</td><td>${escapeHtml(chars.brand)}</td>` : ''}
                                         ${chars.material ? `<tr><td style="padding:6px 0;">Состав</td><td>${escapeHtml(chars.material)}</td>` : ''}
-                                        ${chars.collar ? `<td><td style="padding:6px 0;">Воротник</td><td>${escapeHtml(chars.collar)}</td>` : ''}
-                                        ${chars.sleeves ? `<td><td style="padding:6px 0;">Рукава</td><td>${escapeHtml(chars.sleeves)}</td>` : ''}
+                                        ${chars.collar ? `<tr><td style="padding:6px 0;">Воротник</td><td>${escapeHtml(chars.collar)}</td>` : ''}
+                                        ${chars.sleeves ? `<tr><td style="padding:6px 0;">Рукава</td><td>${escapeHtml(chars.sleeves)}</td>` : ''}
                                         ${chars.pockets ? `<tr><td style="padding:6px 0;">Карманы</td><td>${escapeHtml(chars.pockets)}</td>` : ''}
-                                        ${chars.country ? `<td><td style="padding:6px 0;">Страна</td><td>${escapeHtml(chars.country)}</td>` : ''}
+                                        ${chars.country ? `<tr><td style="padding:6px 0;">Страна</td><td>${escapeHtml(chars.country)}</td>` : ''}
                                     </tbody>
                                 </table>
                             </div>
@@ -185,6 +203,18 @@ function openQuickView(id) {
     // Выбранные опции
     let selectedSize = document.querySelector('#quickViewModal .size-btn.active')?.dataset.size || '—';
     let selectedColor = document.querySelector('#quickViewModal .swatch.active')?.dataset.color || '—';
+    let selectedPrice = getPriceForSize(selectedSize);
+    let selectedArticle = getArticleForSize(selectedSize);
+
+    // Функция обновления цены и артикула при смене размера
+    function updatePriceAndArticle(size) {
+        selectedPrice = getPriceForSize(size);
+        selectedArticle = getArticleForSize(size);
+        const priceSpan = document.getElementById('modalCurrentPrice');
+        const buyPriceSpan = document.getElementById('modalBuyPrice');
+        if (priceSpan) priceSpan.textContent = selectedPrice.toLocaleString() + ' ₽';
+        if (buyPriceSpan) buyPriceSpan.textContent = selectedPrice.toLocaleString();
+    }
 
     // === ОБРАБОТЧИКИ ===
 
@@ -220,12 +250,13 @@ function openQuickView(id) {
         });
     }
 
-    // Размеры
+    // Размеры - обновляем цену и артикул
     document.querySelectorAll('#quickViewModal .size-btn').forEach(btn => {
         btn.onclick = function() {
             document.querySelectorAll('#quickViewModal .size-btn').forEach(b => b.classList.remove('active'));
             this.classList.add('active');
             selectedSize = this.dataset.size;
+            updatePriceAndArticle(selectedSize);
         };
     });
 
@@ -252,15 +283,36 @@ function openQuickView(id) {
         };
     });
 
-    // Кнопка "Добавить в корзину"
+    // Кнопка "Добавить в корзину" - с выбранными размером и цветом
     const buyBtn = document.getElementById('modalBuyBtn');
     if (buyBtn) {
         buyBtn.onclick = () => {
-            const price = product.discount_price || product.price;
+            console.log('Добавление в корзину:', {
+                id: product.id,
+                title: product.title,
+                price: selectedPrice,
+                size: selectedSize,
+                color: selectedColor,
+                article: selectedArticle,
+                image: mainImg
+            });
+            
+            // Используем addToCartWithDetails если есть, иначе addToCart
             if (typeof addToCartWithDetails === 'function') {
-                addToCartWithDetails(product.id, product.title, price, selectedSize, selectedColor, article, mainImg);
+                addToCartWithDetails(product.id, product.title, selectedPrice, selectedSize, selectedColor, selectedArticle, mainImg);
+            } else if (typeof addToCart === 'function') {
+                addToCart({
+                    id: product.id,
+                    title: product.title,
+                    price: selectedPrice,
+                    quantity: 1,
+                    size: selectedSize,
+                    color: selectedColor,
+                    article: selectedArticle,
+                    image: mainImg
+                });
             } else if (typeof addToCartById === 'function') {
-                addToCartById(product.id);
+                addToCartById(product.id, selectedSize, selectedColor, 1);
             }
             closeQuickView();
         };
@@ -273,7 +325,7 @@ function openQuickView(id) {
             closeQuickView();
             setTimeout(() => {
                 if (typeof openQuickOrderForm === 'function') {
-                    openQuickOrderForm(product.title, selectedSize, selectedColor, article, mainImg, product.discount_price || product.price);
+                    openQuickOrderForm(product.title, selectedSize, selectedColor, selectedArticle, mainImg, selectedPrice);
                 } else {
                     showToast('📞 Оставьте номер телефона — менеджер перезвонит через 5 минут');
                 }
