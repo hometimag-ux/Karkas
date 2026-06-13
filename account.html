@@ -1,109 +1,57 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Личный кабинет — Murano Apparel</title>
+    <style>
+        body { font-family: sans-serif; background: #f5f7fa; padding: 40px; }
+        .container { max-width: 400px; margin: 0 auto; background: white; padding: 30px; border-radius: 28px; }
+        input, button { width: 100%; padding: 12px; margin-bottom: 12px; border-radius: 40px; border: 1px solid #ddd; }
+        button { background: #00897b; color: white; font-weight: bold; cursor: pointer; }
+        .error { color: red; margin-bottom: 12px; }
+    </style>
+</head>
+<body>
+<div class="container" id="app">
+    <h2>🔐 Вход в личный кабинет</h2>
+    <div id="errorMsg" class="error"></div>
+    <input type="tel" id="phone" placeholder="+7 906 377 19 85" value="+7 906 377 19 85">
+    <input type="password" id="password" placeholder="Пароль" value="888999">
+    <button id="loginBtn">Войти</button>
+    <div style="font-size: 12px; text-align: center; margin-top: 16px;">Тест: +7 906 377 19 85 / 888999</div>
+</div>
+
 <script>
-    // Функция входа
-    window.loginWithPassword = function() {
-        // Находим элементы внутри формы входа
-        const phoneInput = document.getElementById('loginPhone');
-        const passwordInput = document.getElementById('loginPassword');
-        const errorDiv = document.getElementById('loginError');
-        
-        // Проверяем, что элементы существуют
-        if (!phoneInput || !passwordInput) {
-            console.error('Элементы формы не найдены');
+    const loginBtn = document.getElementById('loginBtn');
+    const errorDiv = document.getElementById('errorMsg');
+
+    loginBtn.addEventListener('click', function() {
+        const phone = document.getElementById('phone').value;
+        const password = document.getElementById('password').value;
+        const testPassword = '888999';
+
+        if (password !== testPassword) {
+            errorDiv.innerText = '❌ Неверный пароль';
             return;
         }
-        
-        const phone = phoneInput.value || '';
-        const password = passwordInput.value || '';
-        const TEST_PASSWORD = '888999';
-        
-        // Нормализация телефона
+
         const cleanPhone = String(phone).replace(/[^0-9]/g, '');
         const normalizedPhone = cleanPhone.length === 10 ? '7' + cleanPhone : cleanPhone;
-        
-        // Проверка пароля
-        if (password !== TEST_PASSWORD) {
-            if (errorDiv) {
-                errorDiv.innerText = '❌ Неверный пароль';
-                errorDiv.style.display = 'block';
-            }
-            return;
-        }
-        
-        // Проверка телефона
+
         if (normalizedPhone.length !== 11) {
-            if (errorDiv) {
-                errorDiv.innerText = '❌ Неверный формат телефона';
-                errorDiv.style.display = 'block';
-            }
+            errorDiv.innerText = '❌ Неверный формат телефона';
             return;
         }
-        
-        // Создаём или получаем пользователя
+
         const userKey = `user_${normalizedPhone}`;
-        let user = localStorage.getItem(userKey);
-        
-        if (!user) {
-            user = {
-                id: Date.now(),
-                phone: normalizedPhone,
-                name: '',
-                email: '',
-                default_address: '',
-                created_at: new Date().toISOString(),
-                bonuses: 0,
-                total_spent: 0
-            };
-            localStorage.setItem(userKey, JSON.stringify(user));
+        if (!localStorage.getItem(userKey)) {
+            localStorage.setItem(userKey, JSON.stringify({ phone: normalizedPhone, name: '', bonuses: 0 }));
         }
-        
-        // Сохраняем сессию и перезагружаем
+
         localStorage.setItem('current_user_phone', normalizedPhone);
+        alert('✅ Вход выполнен! Страница перезагрузится.');
         location.reload();
-    };
-    
-    // Функция выхода
-    window.logoutUser = function() {
-        localStorage.removeItem('current_user_phone');
-        location.reload();
-    };
-    
-    // Проверяем, есть ли активная сессия
-    const currentPhone = localStorage.getItem('current_user_phone');
-    const isLoggedIn = currentPhone && localStorage.getItem(`user_${currentPhone}`);
-    
-    if (!isLoggedIn) {
-        // Ждём загрузки DOM перед отрисовкой формы
-        document.addEventListener('DOMContentLoaded', function() {
-            const container = document.getElementById('accountContainer');
-            if (container && container.innerHTML.includes('🔄 Загрузка')) {
-                container.innerHTML = `
-                    <div class="login-container">
-                        <h2>🔐 Вход в личный кабинет</h2>
-                        <p>Введите номер телефона и пароль</p>
-                        <div id="loginError" class="error-msg" style="display:none;"></div>
-                        <input type="tel" id="loginPhone" class="login-input" placeholder="+7 (906) 377-19-85" value="+7 906 377 19 85">
-                        <input type="password" id="loginPassword" class="login-input" placeholder="Пароль" value="888999">
-                        <button class="login-btn" onclick="loginWithPassword()">Войти</button>
-                        <div class="test-credentials">
-                            <strong>📱 Тестовые данные:</strong><br>
-                            Телефон: +7 906 377 19 85<br>
-                            Пароль: 888999
-                        </div>
-                    </div>
-                `;
-            }
-        });
-    } else {
-        // Пользователь авторизован — отображаем кабинет
-        document.addEventListener('DOMContentLoaded', function() {
-            if (typeof renderAccount === 'function') {
-                renderAccount();
-            } else {
-                console.log('⏳ Ожидание загрузки account.js...');
-                setTimeout(() => {
-                    if (typeof renderAccount === 'function') renderAccount();
-                }, 500);
-            }
-        });
-    }
+    });
 </script>
+</body>
+</html>
