@@ -1,7 +1,33 @@
 // ===== js/cart-checkout.js - ОФОРМЛЕНИЕ ЗАКАЗА =====
 
-// ===== ФУНКЦИИ ДЛЯ СДЭК =====
+// ===== НАСТРОЙКИ =====
+// Временно отключаем СДЭК (пока нет сервера)
+const CDEK_ENABLED = false;  // <- переключить в true, когда появится бэкенд
 
+// ===== ДАННЫЕ ДЛЯ САМОВЫВОЗА =====
+let selectedPickupPointForPickup = null;
+
+function getPickupSettings() {
+    const saved = localStorage.getItem('delivery_settings');
+    if (saved) {
+        try {
+            const data = JSON.parse(saved);
+            return data.pickup || {
+                address: 'г. Москва, ул. Тверская, д. 15',
+                hours: 'Пн-Вс: 10:00-20:00',
+                phone: '+7 (999) 123-45-67'
+            };
+        } catch(e) {}
+    }
+    return {
+        address: 'г. Москва, ул. Тверская, д. 15',
+        hours: 'Пн-Вс: 10:00-20:00',
+        phone: '+7 (999) 123-45-67'
+    };
+}
+
+// ===== ФУНКЦИИ ДЛЯ СДЭК (закомментированы, но готовы к использованию) =====
+/*
 let selectedCity = null;
 let selectedPickupPoint = null;
 let deliveryPriceCalculated = 0;
@@ -17,93 +43,21 @@ function getDeliverySettings() {
 }
 
 async function getCdekToken() {
-    const settings = getDeliverySettings();
-    if (!settings?.cdek) return null;
-    
-    const mode = settings.cdek.mode === 'live' 
-        ? 'https://api.cdek.ru/v2/oauth/token'
-        : 'https://api.edu.cdek.ru/v2/oauth/token';
-    
-    try {
-        const response = await fetch(mode, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `grant_type=client_credentials&client_id=${settings.cdek.client_id}&client_secret=${settings.cdek.client_secret}`
-        });
-        const data = await response.json();
-        return data.access_token;
-    } catch(e) {
-        console.error('Ошибка получения токена СДЭК', e);
-        return null;
-    }
+    // ... код для СДЭК
 }
 
 async function loadCdekCities(query) {
-    const settings = getDeliverySettings();
-    if (!settings?.cdek?.client_id) return [];
-    
-    try {
-        const token = await getCdekToken();
-        const response = await fetch(`https://api.cdek.ru/v2/location/cities?q=${encodeURIComponent(query)}`, {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
-        const data = await response.json();
-        return data;
-    } catch(e) {
-        console.error('Ошибка загрузки городов', e);
-        return [];
-    }
+    // ... код для СДЭК
 }
 
 async function calculateCdekPrice(toCityCode, weight = 0.5) {
-    const settings = getDeliverySettings();
-    if (!settings?.cdek?.client_id) return null;
-    
-    const mode = settings.cdek.mode === 'live'
-        ? 'https://api.cdek.ru/v2/calculator/tariff'
-        : 'https://api.edu.cdek.ru/v2/calculator/tariff';
-    
-    const token = await getCdekToken();
-    
-    const requestData = {
-        from_location: { code: 270 }, // Код Москвы, нужно будет получать из настроек
-        to_location: { code: toCityCode },
-        packages: [{ weight: weight * 1000, length: 30, width: 20, height: 10 }]
-    };
-    
-    try {
-        const response = await fetch(mode, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify(requestData)
-        });
-        const data = await response.json();
-        return data;
-    } catch(e) {
-        console.error('Ошибка расчёта доставки', e);
-        return null;
-    }
+    // ... код для СДЭК
 }
 
 async function getCdekPickupPoints(cityCode) {
-    const settings = getDeliverySettings();
-    if (!settings?.cdek?.client_id) return [];
-    
-    const token = await getCdekToken();
-    try {
-        const response = await fetch(`https://api.cdek.ru/v2/deliverypoints?city_code=${cityCode}&type=PVZ`, {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
-        const data = await response.json();
-        return data;
-    } catch(e) {
-        console.error('Ошибка загрузки ПВЗ', e);
-        return [];
-    }
+    // ... код для СДЭК
 }
+*/
 
 // ===== ОСНОВНЫЕ ФУНКЦИИ =====
 
@@ -134,7 +88,7 @@ function checkPendingOrder() {
     return false;
 }
 
-// ===== ОСНОВНАЯ ФУНКЦИЯ ОФОРМЛЕНИЯ ЗАКАЗА (С ИНТЕГРАЦИЕЙ СДЭК) =====
+// ===== ОСНОВНАЯ ФУНКЦИЯ ОФОРМЛЕНИЯ ЗАКАЗА =====
 function openCheckout() {
     const cart = getCart();
     if (cart.length === 0) {
@@ -146,8 +100,7 @@ function openCheckout() {
     closeCart();
 
     const subtotal = getCartTotal();
-    const deliverySettings = getDeliverySettings();
-    const isCdekEnabled = deliverySettings?.cdek?.client_id && deliverySettings.methods?.courier?.enabled;
+    const pickupSettings = getPickupSettings();
     
     const modalHtml = `
         <div id="checkoutModal" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;z-index:10001;">
@@ -162,7 +115,7 @@ function openCheckout() {
                         <h4 style="margin:0 0 10px 0;">Ваш заказ</h4>
                         ${cart.map(item => `
                             <div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #e2edf4;">
-                                <div style="width:50px;height:50px;background:#f0f0f0;border-radius:10px;display:flex;align-items:center;justify-content:center;">${item.image ? `<img src="${item.image}" style="width:100%;height:100%;object-fit:cover;">` : '👕'}</div>
+                                <div style="width:50px;height:50px;background:#f0f0f0;border-radius:10px;display:flex;align-items:center;justify-content:center;">${item.image ? `<img src="${item.image}" style="width:100%;height:100%;object-fit:cover;border-radius:10px;">` : '👕'}</div>
                                 <div style="flex:1;"><div style="font-weight:600;">${escapeHtml(item.title)}</div><div style="font-size:12px;color:#666;">${escapeHtml(item.size)} / ${escapeHtml(item.color)}</div></div>
                                 <div>${item.quantity} шт</div>
                                 <div style="font-weight:600;color:#00897b;">${(item.price * item.quantity).toLocaleString()} ₽</div>
@@ -179,34 +132,41 @@ function openCheckout() {
                         
                         <input type="email" id="chEmail" placeholder="Email" style="padding:12px 16px;border:1px solid #ddd;border-radius:40px;">
                         
-                        ${isCdekEnabled ? `
-                        <!-- Город для расчёта доставки -->
-                        <div class="form-group">
-                            <label>🏙️ Город доставки</label>
-                            <input type="text" id="chCity" placeholder="Введите ваш город" style="padding:12px 16px;border:1px solid #ddd;border-radius:40px;" autocomplete="off">
-                            <div id="citySuggestions" style="display:none; background:white; border:1px solid #ddd; border-radius:16px; margin-top:4px; max-height:200px; overflow-y:auto; position:absolute; z-index:100; width:calc(100% - 40px);"></div>
+                        <!-- Выбор способа доставки -->
+                        <select id="chDelivery" style="padding:12px 16px;border:1px solid #ddd;border-radius:40px;">
+                            <option value="courier" data-price="350">🚚 Курьерская доставка — 350 ₽</option>
+                            <option value="pickup" data-price="0">📦 Самовывоз — Бесплатно</option>
+                        </select>
+                        
+                        <!-- Блок для курьера (адрес) -->
+                        <div id="addressBlock">
+                            <input type="text" id="chAddress" placeholder="Улица, дом, квартира" style="width:100%;padding:12px 16px;border:1px solid #ddd;border-radius:40px;">
+                            <input type="text" id="chAddressExtra" placeholder="Подъезд, этаж, домофон (опционально)" style="width:100%;margin-top:8px;padding:12px 16px;border:1px solid #ddd;border-radius:40px;">
                         </div>
                         
-                        <button id="calcDeliveryBtn" style="background:#f0f0f0; border:1px solid #ddd; padding:10px; border-radius:40px; cursor:pointer;">📦 Рассчитать доставку</button>
-                        
-                        <div id="deliveryResult" style="display:none; background:#e8f5e9; border-radius:16px; padding:12px;"></div>
-                        
-                        <div id="pickupPointsBlock" style="display:none;">
-                            <label>🏪 Выберите пункт выдачи</label>
-                            <select id="pickupPointSelect" style="padding:12px 16px;border:1px solid #ddd;border-radius:40px; width:100%;"></select>
+                        <!-- Блок для самовывоза (информация о ПВЗ) -->
+                        <div id="pickupBlock" style="display:none; background:#f8fafc; border-radius:16px; padding:15px;">
+                            <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                                <span style="font-size:24px;">🏪</span>
+                                <span style="font-weight:600;">Пункт самовывоза</span>
+                            </div>
+                            <div style="font-size:13px; margin-bottom:8px;">
+                                <strong>📍 Адрес:</strong> ${escapeHtml(pickupSettings.address)}
+                            </div>
+                            <div style="font-size:13px; margin-bottom:8px;">
+                                <strong>⏰ Режим работы:</strong> ${escapeHtml(pickupSettings.hours)}
+                            </div>
+                            <div style="font-size:13px;">
+                                <strong>📞 Телефон:</strong> ${escapeHtml(pickupSettings.phone)}
+                            </div>
                         </div>
-                        ` : ''}
                         
-                        <div id="addressBlock" style="display:${!isCdekEnabled ? 'block' : 'none'};">
-                            <input type="text" id="chAddress" placeholder="Адрес доставки" style="width:100%;padding:12px 16px;border:1px solid #ddd;border-radius:40px;">
-                        </div>
-                        
-                        <textarea id="chComment" rows="2" placeholder="Комментарий" style="padding:12px 16px;border:1px solid #ddd;border-radius:20px;"></textarea>
+                        <textarea id="chComment" rows="2" placeholder="Комментарий к заказу" style="padding:12px 16px;border:1px solid #ddd;border-radius:20px;"></textarea>
                         
                         <div style="background:#f6faf7;border-radius:16px;padding:15px;">
                             <div style="display:flex;justify-content:space-between;"><span>Товары:</span><span>${subtotal.toLocaleString()} ₽</span></div>
-                            <div style="display:flex;justify-content:space-between;"><span>Доставка:</span><span id="deliveryCost">${isCdekEnabled ? 'Рассчитайте доставку' : '350 ₽'}</span></div>
-                            <div style="display:flex;justify-content:space-between;font-weight:700;font-size:18px;border-top:1px solid #ddd;margin-top:10px;padding-top:10px;"><span>Итого:</span><strong id="finalTotal" style="color:#00897b;">${isCdekEnabled ? subtotal.toLocaleString() : (subtotal + 350).toLocaleString()} ₽</strong></div>
+                            <div style="display:flex;justify-content:space-between;"><span>Доставка:</span><span id="deliveryCost">350 ₽</span></div>
+                            <div style="display:flex;justify-content:space-between;font-weight:700;font-size:18px;border-top:1px solid #ddd;margin-top:10px;padding-top:10px;"><span>Итого:</span><strong id="finalTotal" style="color:#00897b;">${(subtotal + 350).toLocaleString()} ₽</strong></div>
                         </div>
                         
                         <div>
@@ -228,100 +188,40 @@ function openCheckout() {
     document.body.insertAdjacentHTML('beforeend', modalHtml);
     document.body.style.overflow = 'hidden';
     
+    // Закрытие модального окна
     const closeBtn = document.getElementById('closeCheckoutBtn');
     const modal = document.getElementById('checkoutModal');
     if (closeBtn) closeBtn.onclick = () => { modal.remove(); document.body.style.overflow = ''; };
     if (modal) modal.onclick = (e) => { if (e.target === modal) { modal.remove(); document.body.style.overflow = ''; } };
     
-    if (isCdekEnabled) {
-        const cityInput = document.getElementById('chCity');
-        const suggestionsDiv = document.getElementById('citySuggestions');
-        let searchTimeout;
+    // Переключение между курьером и самовывозом
+    const deliverySelect = document.getElementById('chDelivery');
+    const addressBlock = document.getElementById('addressBlock');
+    const pickupBlock = document.getElementById('pickupBlock');
+    const deliveryCostSpan = document.getElementById('deliveryCost');
+    const finalTotalSpan = document.getElementById('finalTotal');
+    
+    function updateDeliveryOptions() {
+        const selectedOption = deliverySelect.options[deliverySelect.selectedIndex];
+        const deliveryPrice = parseInt(selectedOption.dataset.price);
+        const total = subtotal + deliveryPrice;
         
-        cityInput.addEventListener('input', async (e) => {
-            clearTimeout(searchTimeout);
-            const query = e.target.value.trim();
-            if (query.length < 2) {
-                suggestionsDiv.style.display = 'none';
-                return;
-            }
-            
-            searchTimeout = setTimeout(async () => {
-                const cities = await loadCdekCities(query);
-                if (cities && cities.length > 0) {
-                    suggestionsDiv.innerHTML = cities.map(city => 
-                        `<div class="city-suggestion" data-code="${city.code}" style="padding:10px; cursor:pointer; border-bottom:1px solid #eee;">${city.city}${city.region ? `, ${city.region}` : ''}</div>`
-                    ).join('');
-                    suggestionsDiv.style.display = 'block';
-                    
-                    document.querySelectorAll('.city-suggestion').forEach(el => {
-                        el.onclick = () => {
-                            cityInput.value = el.textContent;
-                            selectedCity = { code: el.dataset.code, name: el.textContent };
-                            suggestionsDiv.style.display = 'none';
-                        };
-                    });
-                }
-            }, 300);
-        });
+        if (deliverySelect.value === 'courier') {
+            addressBlock.style.display = 'block';
+            pickupBlock.style.display = 'none';
+        } else {
+            addressBlock.style.display = 'none';
+            pickupBlock.style.display = 'block';
+        }
         
-        document.addEventListener('click', (e) => {
-            if (e.target !== cityInput) suggestionsDiv.style.display = 'none';
-        });
-        
-        document.getElementById('calcDeliveryBtn').onclick = async () => {
-            if (!selectedCity) {
-                showToast('Выберите город из списка');
-                return;
-            }
-            
-            const totalWeight = cart.reduce((sum, item) => sum + (item.quantity * 0.5), 0.5);
-            showToast('🔄 Расчёт стоимости доставки...');
-            
-            const result = await calculateCdekPrice(selectedCity.code, totalWeight);
-            if (result && result.tariff_codes && result.tariff_codes.length > 0) {
-                const tariff = result.tariff_codes.find(t => t.tariff_code === 136);
-                if (tariff) {
-                    deliveryPriceCalculated = tariff.delivery_sum;
-                    document.getElementById('deliveryCost').innerHTML = `${deliveryPriceCalculated.toLocaleString()} ₽`;
-                    document.getElementById('finalTotal').innerHTML = `${(subtotal + deliveryPriceCalculated).toLocaleString()} ₽`;
-                    document.getElementById('deliveryResult').style.display = 'block';
-                    document.getElementById('deliveryResult').innerHTML = `
-                        <div style="display:flex; justify-content:space-between;">
-                            <span>📦 Стоимость:</span>
-                            <strong>${deliveryPriceCalculated.toLocaleString()} ₽</strong>
-                        </div>
-                        <div style="display:flex; justify-content:space-between; margin-top:8px;">
-                            <span>⏱️ Срок:</span>
-                            <span>${tariff.period_min} - ${tariff.period_max} дня</span>
-                        </div>
-                    `;
-                    
-                    const points = await getCdekPickupPoints(selectedCity.code);
-                    if (points && points.length > 0) {
-                        const select = document.getElementById('pickupPointSelect');
-                        select.innerHTML = '<option value="">-- Выберите пункт выдачи --</option>' + 
-                            points.map(point => `<option value="${point.code}" data-address="${point.address}">${point.name} - ${point.address}</option>`).join('');
-                        document.getElementById('pickupPointsBlock').style.display = 'block';
-                        
-                        select.onchange = () => {
-                            if (select.value) {
-                                const option = select.options[select.selectedIndex];
-                                selectedPickupPoint = {
-                                    code: select.value,
-                                    name: option.text,
-                                    address: option.dataset.address
-                                };
-                                document.getElementById('chAddress').value = selectedPickupPoint.address;
-                                document.getElementById('addressBlock').style.display = 'block';
-                            }
-                        };
-                    }
-                }
-            }
-        };
+        deliveryCostSpan.textContent = deliveryPrice === 0 ? 'Бесплатно' : deliveryPrice.toLocaleString() + ' ₽';
+        finalTotalSpan.textContent = total.toLocaleString() + ' ₽';
     }
     
+    deliverySelect.onchange = updateDeliveryOptions;
+    updateDeliveryOptions();
+    
+    // Обработчик кнопки "Перейти к оплате"
     const submitBtn = document.getElementById('goToPaymentBtn');
     submitBtn.onclick = () => {
         const name = document.getElementById('chName').value.trim();
@@ -331,19 +231,20 @@ function openCheckout() {
             return;
         }
         
-        let deliveryPrice = 0;
-        let deliveryMethod = 'pickup';
-        let deliveryAddress = document.getElementById('chAddress')?.value.trim() || '';
+        const selectedDelivery = deliverySelect.options[deliverySelect.selectedIndex];
+        const deliveryPrice = parseInt(selectedDelivery.dataset.price);
+        const total = subtotal + deliveryPrice;
+        const paymentMethod = document.querySelector('input[name="payment"]:checked')?.value || 'card';
+        const email = document.getElementById('chEmail')?.value.trim() || '';
+        const comment = document.getElementById('chComment')?.value.trim() || '';
         
-        if (isCdekEnabled && selectedCity) {
-            deliveryPrice = deliveryPriceCalculated || 0;
-            deliveryMethod = 'cdek';
-            if (selectedPickupPoint) {
-                deliveryAddress = selectedPickupPoint.address;
-            }
+        let address = '';
+        if (deliverySelect.value === 'courier') {
+            const street = document.getElementById('chAddress')?.value.trim() || '';
+            const extra = document.getElementById('chAddressExtra')?.value.trim() || '';
+            address = street + (extra ? ', ' + extra : '');
         } else {
-            deliveryPrice = 350;
-            deliveryMethod = 'courier';
+            address = `Самовывоз: ${pickupSettings.address}`;
         }
         
         const orderData = {
@@ -352,22 +253,18 @@ function openCheckout() {
             items: getCart(),
             subtotal: subtotal,
             delivery: { 
-                method: deliveryMethod, 
+                method: deliverySelect.value, 
                 price: deliveryPrice,
-                city: selectedCity?.name || '',
-                pickup_point: selectedPickupPoint
+                pickup_info: deliverySelect.value === 'pickup' ? pickupSettings : null
             },
-            address: deliveryAddress,
-            total: subtotal + deliveryPrice,
-            customer: { 
-                name, 
-                phone, 
-                email: document.getElementById('chEmail')?.value.trim() || '' 
-            },
-            payment: document.querySelector('input[name="payment"]:checked')?.value || 'card',
-            comment: document.getElementById('chComment')?.value.trim() || ''
+            address: address,
+            total: total,
+            customer: { name, phone, email },
+            payment: paymentMethod,
+            comment: comment
         };
         
+        localStorage.setItem('pendingOrder', JSON.stringify(orderData));
         modal.remove();
         document.body.style.overflow = '';
         
