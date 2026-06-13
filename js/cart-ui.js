@@ -66,8 +66,7 @@ function addToCart(product) {
             size: product.size || '—',
             color: product.color || '—',
             article: product.article || '—',
-            image: product.image || null,
-            barcode: product.barcode || null
+            image: product.image || null
         });
     }
     
@@ -75,7 +74,7 @@ function addToCart(product) {
     showToast('✅ ' + product.title + ' (' + product.size + ', ' + product.color + ') добавлен в корзину');
 }
 
-// Добавить по ID - теперь с выбором размера и цвета
+// Добавить по ID - с выбором размера и цвета
 function addToCartById(id, size = null, color = null, quantity = 1) {
     if (!window.allProducts || window.allProducts.length === 0) {
         showToast('Ошибка: каталог не загружен');
@@ -91,14 +90,12 @@ function addToCartById(id, size = null, color = null, quantity = 1) {
     // Если размер не указан, берём первый доступный
     let selectedSize = size;
     let selectedColor = color;
-    let selectedBarcode = null;
     let selectedPrice = product.discount_price && product.discount_price < product.price ? product.discount_price : product.price;
     
     // Если есть sizes_data, ищем конкретный размер
     if (product.sizes_data && product.sizes_data.length > 0 && !selectedSize) {
         selectedSize = product.sizes_data[0].size;
         selectedColor = product.sizes_data[0].color || product.color || '—';
-        selectedBarcode = product.sizes_data[0].barcode;
         if (product.sizes_data[0].price) selectedPrice = product.sizes_data[0].price;
     }
     
@@ -127,8 +124,7 @@ function addToCartById(id, size = null, color = null, quantity = 1) {
         size: selectedSize,
         color: selectedColor,
         article: product.article || '—',
-        image: image,
-        barcode: selectedBarcode
+        image: image
     });
 }
 
@@ -171,7 +167,6 @@ function updateCartDisplay() {
                         <span class="cart-product-detail">📏 ${escapeHtml(item.size)}</span>
                         <span class="cart-product-detail">🎨 ${escapeHtml(item.color)}</span>
                         ${item.article && item.article !== '—' ? '<span class="cart-product-detail">📦 Арт: ' + escapeHtml(item.article) + '</span>' : ''}
-                        ${item.barcode ? '<span class="cart-product-detail">🔢 ШК: ' + escapeHtml(item.barcode) + '</span>' : ''}
                     </div>
                     <div class="cart-product-price">${Number(item.price).toLocaleString()} ₽ / шт</div>
                 </div>
