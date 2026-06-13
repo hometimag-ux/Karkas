@@ -1,5 +1,24 @@
 /* ==================== СЕТКА ТОВАРОВ ==================== */
 
+/* Контейнер для ограничения ширины на десктопе */
+.catalog-container,
+.products-container {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Для основного контента */
+.main-content .container {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+    overflow-x: hidden;
+}
+
+/* Сетка товаров */
 .products-grid {
     display: grid;
     gap: 16px;
@@ -7,12 +26,18 @@
     width: 100%;
 }
 
-/* Десктоп: 4 товара в ряду */
+/* Десктоп: 4 товара в ряду, ограниченная ширина */
 @media (min-width: 1200px) {
     .products-grid {
         grid-template-columns: repeat(4, 1fr);
         gap: 24px;
         margin: 30px 0;
+    }
+    
+    /* Возвращаем карточкам нормальную ширину */
+    .product-card {
+        max-width: 100%;
+        margin: 0;
     }
 }
 
@@ -33,6 +58,10 @@
         margin: 15px 0;
         padding: 0 8px;
     }
+    
+    .main-content .container {
+        padding: 0 8px;
+    }
 }
 
 /* Маленький телефон: 1 товар в ряду */
@@ -50,6 +79,10 @@
         margin: 0;
         aspect-ratio: 3 / 4;
     }
+    
+    .main-content .container {
+        padding: 0 12px;
+    }
 }
 
 /* Очень маленькие телефоны (до 360px) */
@@ -57,6 +90,10 @@
     .products-grid {
         padding: 0 12px;
         gap: 12px;
+    }
+    
+    .main-content .container {
+        padding: 0 8px;
     }
 }
 
@@ -70,6 +107,7 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     transition: all 0.3s ease;
     aspect-ratio: 3 / 4;
+    width: 100%;
 }
 
 .product-card:hover {
@@ -334,19 +372,6 @@
     .product-rating-badge .rating-value {
         font-size: 0.55rem;
     }
-}
-
-/* Контейнер для каталога */
-.catalog-container, .products-container {
-    width: 100%;
-    overflow-x: hidden;
-}
-
-.main-content .container {
-    width: 100%;
-    max-width: 100%;
-    padding: 0;
-    overflow-x: hidden;
 }
 
 /* Фильтры на мобильных */
